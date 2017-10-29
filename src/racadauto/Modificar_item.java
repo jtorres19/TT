@@ -111,11 +111,13 @@ public class Modificar_item extends javax.swing.JFrame {
 
         int cont = 0;
         String nom = "";
-        String nom2 = JT_nom.getText();
+        String nom2 = JT_nom.getText().toUpperCase();
         String stock = JT_stock.getText();
         String vcosto = JT_vcosto.getText();
         String vventa = JT_vventa.getText();
-
+        String med = (String) cmb_med.getSelectedItem();
+        String fam = (String) cmb_fam.getSelectedItem();
+        
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT nombre FROM inventario");
@@ -135,6 +137,18 @@ public class Modificar_item extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
+        
+        /*if ((nom2.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 1)))
+                && (stock.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 2)))
+                && (vcosto.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 3))) 
+                && (vventa.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 4)))
+                && (med.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 5)))
+                && (fam.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 5)))){
+            JOptionPane.showMessageDialog(null,
+                    "Error, No Se Ha Modificado Nada", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        }*/
 
         if (JT_nom.getText().length() > 30) {
             JOptionPane.showMessageDialog(null,
@@ -254,7 +268,9 @@ public class Modificar_item extends javax.swing.JFrame {
 
         jLabel2.setText("Nombre :");
 
+        jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel(modeloTabla);
+        jTable1.setName(""); // NOI18N
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTable1MouseClicked(evt);
@@ -442,6 +458,18 @@ public class Modificar_item extends javax.swing.JFrame {
 
         String vventa = jTable1.getValueAt(jTable1.getSelectedRow(), 5).toString();
         JT_vventa.setText(vventa);
+        
+        int med = 0;
+        med = Integer.parseInt(jTable1.getValueAt(jTable1.getSelectedRow(), 7).toString());
+        med--;
+        cmb_med.setSelectedIndex(med);
+        
+        int fam = 0;
+        fam = Integer.parseInt(jTable1.getValueAt(jTable1.getSelectedRow(), 8).toString());
+        fam--;
+        cmb_med.setSelectedIndex(fam);
+
+
     }//GEN-LAST:event_jTable1MouseClicked
 
     /**
