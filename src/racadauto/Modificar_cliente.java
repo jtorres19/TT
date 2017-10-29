@@ -130,16 +130,16 @@ public class Modificar_cliente extends javax.swing.JFrame {
             cont++;
         }
         
-        /*if ((nombre.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 1)))
-                && (paterno.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 2)))
-                && (materno.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 3))) 
-                && (direccion.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 4)))
+        if ((nombre.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString()))
+                && (paterno.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 2).toString()))
+                && (materno.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 3).toString())) 
+                && (direccion.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 4).toString()))
                 && (ciudad.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 5)))){
             JOptionPane.showMessageDialog(null,
                     "Error, No Se Ha Modificado Nada", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
-        }*/
+        }
         
         if (nombre.matches("[-+]?\\d*\\.?\\d+")) {
             JOptionPane.showMessageDialog(null, "Error, nombre no tiene que ser númerico", "ERROR", JOptionPane.ERROR_MESSAGE);

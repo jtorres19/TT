@@ -137,17 +137,17 @@ public class Modificar_item extends javax.swing.JFrame {
             cont++;
         }
         
-        /*if ((nom2.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 1)))
-                && (stock.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 2)))
-                && (vcosto.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 3))) 
-                && (vventa.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 4)))
-                && (med.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 5)))
-                && (fam.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 5)))){
+        if ((nom2.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString()))
+                && (stock.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 3).toString()))
+                && (vcosto.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 4).toString())) 
+                && (vventa.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 5).toString()))
+                && (med.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 7)))
+                && (fam.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 8)))){
             JOptionPane.showMessageDialog(null,
                     "Error, No Se Ha Modificado Nada", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
-        }*/
+        }
 
         if (JT_nom.getText().length() > 30) {
             JOptionPane.showMessageDialog(null,

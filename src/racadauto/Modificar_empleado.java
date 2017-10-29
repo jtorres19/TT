@@ -106,7 +106,7 @@ public class Modificar_empleado extends javax.swing.JFrame {
         String nombre = JT_nom.getText().toUpperCase();
         String paterno = JT_paterno.getText().toUpperCase();
         String materno = JT_materno.getText().toUpperCase();
-        String fono = String.valueOf(JT_fono.getText()).toUpperCase();
+        String fono = String.valueOf(JT_fono.getText());
         String mail = JT_mail.getText();
         String cargo = (String) cmb_cargo.getSelectedItem();
         String rut2 = "";
@@ -133,17 +133,17 @@ public class Modificar_empleado extends javax.swing.JFrame {
             cont++;
         }
         
-        /*if ((nombre.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 1)))
-                && (paterno.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 2)))
-                && (materno.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 3))) 
-                && (fono.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 4)))
-                && (mail.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 5)))
-                && (cargo.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 5)))){
+        if ((nombre.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString()))
+                && (paterno.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 2).toString()))
+                && (materno.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 3).toString())) 
+                && (fono.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 4).toString()))
+                && (mail.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 5).toString()))
+                && (cargo.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 6)))){
             JOptionPane.showMessageDialog(null,
                     "Error, No Se Ha Modificado Nada", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
-        }*/
+        }   
         
         
         if (nombre.matches("[-+]?\\d*\\.?\\d+")) {
