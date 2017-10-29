@@ -9,12 +9,12 @@ package racadauto;
  *
  * @author falco
  */
-public class r5_1_2 extends javax.swing.JFrame {
+public class Modificar_contacto extends javax.swing.JFrame {
 
     /**
      * Creates new form Ingresar_contacto
      */
-    public r5_1_2() {
+    public Modificar_contacto() {
         initComponents();
     }
 
@@ -186,7 +186,7 @@ public class r5_1_2 extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new r5_1_2().setVisible(true);
+                new Modificar_contacto().setVisible(true);
             }
         });
     }

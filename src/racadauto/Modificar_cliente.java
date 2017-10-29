@@ -356,7 +356,7 @@ public class Modificar_cliente extends javax.swing.JFrame {
     }//GEN-LAST:event_JB_cancelActionPerformed
 
     private void JB_contactoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_contactoActionPerformed
-        r5_1_2 t=new r5_1_2();
+        Modificar_contacto t =new Modificar_contacto();
         t.setVisible(true); 
     }//GEN-LAST:event_JB_contactoActionPerformed
 
