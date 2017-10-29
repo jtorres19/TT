@@ -492,7 +492,7 @@ public class principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem18ActionPerformed
 
     private void mod_clientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mod_clientActionPerformed
-        r5_2 rr=new r5_2();
+        Modificar_cliente rr=new Modificar_cliente();
         rr.setVisible(true);
     }//GEN-LAST:event_mod_clientActionPerformed
 

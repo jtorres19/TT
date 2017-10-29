@@ -17,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author falco
  */
-public class Modificar_empleado extends javax.swing.JFrame {
+public class Modificar_cliente extends javax.swing.JFrame {
 
     private Statement sentencia;
     private Connection conexion;
@@ -25,9 +25,9 @@ public class Modificar_empleado extends javax.swing.JFrame {
     private String usuario = "root";
     private String password = "";
     private String msj;
-    DefaultTableModel modeloTabla;    
-     
-    public Modificar_empleado() {
+    DefaultTableModel modeloTabla;  
+    
+    public Modificar_cliente() {
         conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
@@ -48,7 +48,7 @@ public class Modificar_empleado extends javax.swing.JFrame {
     
     private String[] getColumnas() {
 
-        String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO", "FONO", "MAIL", "CARGO"};
+        String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO", "DIRECCION", "CIUDAD"};
 
         return columna;
     }
@@ -56,13 +56,13 @@ public class Modificar_empleado extends javax.swing.JFrame {
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM trabajador"
+            ResultSet lista = sentencia.executeQuery("SELECT * FROM cliente"
             /*"SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre " +
                             "FROM inventario i,unidad_medida m,familia f" + 
                             "WHERE i.id_familia = f.id_familia AND m.id_medida = i.id_medida"*/);
             Object datos[] = new Object[7];
             while (lista.next()) {
-                for (int i = 0; i < 7; i++) {
+                for (int i = 0; i < 6; i++) {
                     datos[i] = lista.getObject(i + 1);
                 }
                 modeloTabla.addRow(datos);
@@ -80,20 +80,19 @@ public class Modificar_empleado extends javax.swing.JFrame {
     }
      
      public void clean() {
-        JT_nom.setText("");
+        JT_nombre.setText("");
         JT_paterno.setText("");
         JT_materno.setText("");
-        JT_fono.setText("");
-        JT_mail.setText("");
+        JT_direccion.setText("");
     } 
 
     public void llenarCombo() {
-        cmb_cargo.removeAllItems();
+        CMB_ciudad.removeAllItems();
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM cargo");
+            ResultSet lista = sentencia.executeQuery("SELECT * FROM ciudad");
             while (lista.next()) {
-                cmb_cargo.addItem(lista.getString("nombre"));
+                CMB_ciudad.addItem(lista.getString("nombre"));
             }
         } catch (SQLException ed) {
             msj = "no se pudo seleccionar";
@@ -104,30 +103,28 @@ public class Modificar_empleado extends javax.swing.JFrame {
 
         int cont = 0;
         
-        String nombre = JT_nom.getText().toUpperCase();
+        String nombre = JT_nombre.getText().toUpperCase();
         String paterno = JT_paterno.getText().toUpperCase();
         String materno = JT_materno.getText().toUpperCase();
-        String fono = String.valueOf(JT_fono.getText()).toUpperCase();
-        String mail = JT_mail.getText();
-        String cargo = (String) cmb_cargo.getSelectedItem();
+        String direccion = JT_direccion.getText().toUpperCase();
+        String ciudad = (String) CMB_ciudad.getSelectedItem();
         String rut2 = "";
 
         try {
             sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
-            ResultSet rs = sentencia.executeQuery("SELECT rut_trabajador FROM trabajador");
+            ResultSet rs = sentencia.executeQuery("SELECT rut_cliente FROM cliente");
             while (rs.next()) {
-                rut2 = rs.getString("rut_trabajador");
+                rut2 = rs.getString("rut_cliente");
             }
         } catch (SQLException eg) {
             msj = "Error con su Solicitud";
         }
         
         
-        if ((JT_nom.getText().equals(""))
+        if ((JT_nombre.getText().equals(""))
                 || (JT_paterno.getText().equals(""))
                 || (JT_materno.getText().equals("")) 
-                || (JT_fono.getText().equals(""))
-                || (JT_mail.getText().equals(""))){
+                || (JT_direccion.getText().equals(""))){
             JOptionPane.showMessageDialog(null,
                     "Error, dejó una casilla vacía", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
@@ -137,20 +134,18 @@ public class Modificar_empleado extends javax.swing.JFrame {
         /*if ((nombre.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 1)))
                 && (paterno.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 2)))
                 && (materno.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 3))) 
-                && (fono.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 4)))
-                && (mail.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 5)))
-                && (cargo.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 5)))){
+                && (direccion.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 4)))
+                && (ciudad.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 5)))){
             JOptionPane.showMessageDialog(null,
                     "Error, No Se Ha Modificado Nada", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }*/
         
-        
         if (nombre.matches("[-+]?\\d*\\.?\\d+")) {
             JOptionPane.showMessageDialog(null, "Error, nombre no tiene que ser númerico", "ERROR", JOptionPane.ERROR_MESSAGE);
             cont++;
-        } else if (JT_nom.getText().length() >= 40) {
+        } else if (JT_nombre.getText().length() > 40) {
             JOptionPane.showMessageDialog(null,
                     "Error, nombre maximo 40 letras", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
@@ -183,34 +178,16 @@ public class Modificar_empleado extends javax.swing.JFrame {
             cont++;
         }
 
-        if (JT_fono.getText().length() > 15) {
+        if (JT_direccion.getText().length() > 60) {
             JOptionPane.showMessageDialog(null,
-                    "Error, fono no puede exceder los 15 numeros", "ERROR",
+                    "Error, Dirección no puede exceder los 60 caracteres", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
-        } else if (!fono.matches("[-+]?\\d*\\.?\\d+")) {
-            JOptionPane.showMessageDialog(null,
-                    "Error, fono tiene que ser numerico", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont++;
-        }
-        
-
-        if (JT_mail.getText().length() > 30) {
-            JOptionPane.showMessageDialog(null,
-                    "Error, mail no puede exceder los 30 caracteres", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont++;
-        } else if (!mail.matches("^([0-9a-zA-Z]([_.w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-w]*[0-9a-zA-Z].)+([a-zA-Z]{2,9}.)+[a-zA-Z]{2,3})$") ) {
-            JOptionPane.showMessageDialog(null,
-                    "Error, mail mal escrito", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont++;
-        }
+        } 
  
         return cont;
     }
-     
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -220,52 +197,53 @@ public class Modificar_empleado extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        jCheckBox1 = new javax.swing.JCheckBox();
         jLabel9 = new javax.swing.JLabel();
-        JB_cancel = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        JT_nombre = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        JT_nom = new javax.swing.JTextField();
-        JT_paterno = new javax.swing.JTextField();
-        JT_materno = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
+        JT_materno = new javax.swing.JTextField();
+        JT_paterno = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
+        JT_direccion = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        JT_fono = new javax.swing.JTextField();
-        JT_mail = new javax.swing.JTextField();
-        cmb_cargo = new javax.swing.JComboBox<>();
+        CMB_ciudad = new javax.swing.JComboBox<>();
+        JB_contacto = new javax.swing.JButton();
         JB_OK = new javax.swing.JButton();
+        JB_cancel = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         LBL_estado = new javax.swing.JLabel();
 
+        jLabel1.setText("jLabel1");
+
+        jCheckBox1.setText("jCheckBox1");
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(470, 300));
+        setResizable(false);
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel9.setText("RACAD AUTOMOTRIZ - MODIFICAR EMPLEADO");
+        jLabel9.setText("RACAD AUTOMOTRIZ - MODIFICAR CLIENTE");
 
-        JB_cancel.setText("Volver");
-        JB_cancel.addActionListener(new java.awt.event.ActionListener() {
+        jLabel3.setText("Nombre :");
+
+        jLabel4.setText("Apellido Paterno :");
+
+        jLabel5.setText("Apellido Materno :");
+
+        jLabel6.setText("Dirección :");
+
+        jLabel7.setText("CIUDAD :");
+
+        CMB_ciudad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Viña del Mar", "Quilpué" }));
+
+        JB_contacto.setText("Modificar Contactos");
+        JB_contacto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JB_cancelActionPerformed(evt);
-            }
-        });
-
-        jLabel2.setText("Nombre :");
-
-        jLabel3.setText("Apellido Paterno :");
-
-        jLabel4.setText("Apellido Materno :");
-
-        jLabel5.setText("Fono :");
-
-        jLabel6.setText("Cargo :");
-
-        jLabel7.setText("E-Mail :");
-
-        JT_mail.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JT_mailActionPerformed(evt);
+                JB_contactoActionPerformed(evt);
             }
         });
 
@@ -273,6 +251,13 @@ public class Modificar_empleado extends javax.swing.JFrame {
         JB_OK.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 JB_OKActionPerformed(evt);
+            }
+        });
+
+        JB_cancel.setText("Volver");
+        JB_cancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JB_cancelActionPerformed(evt);
             }
         });
 
@@ -291,43 +276,41 @@ public class Modificar_empleado extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel9)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(JT_materno))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(JT_paterno)))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(cmb_cargo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(JT_fono, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-                                    .addComponent(JT_mail))))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(JT_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel9)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel5)
+                                        .addComponent(jLabel4))
+                                    .addGap(10, 10, 10)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(JT_paterno, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(JT_materno, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(36, 36, 36)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabel7)
+                                                .addComponent(jLabel6))
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(JT_direccion)
+                                                .addComponent(CMB_ciudad, 0, 120, Short.MAX_VALUE)))
+                                        .addComponent(JB_contacto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(LBL_estado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(JB_cancel))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(74, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -335,26 +318,28 @@ public class Modificar_empleado extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel9)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5)
-                    .addComponent(JT_fono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(JT_paterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7)
-                    .addComponent(JT_mail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(JT_materno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
-                    .addComponent(cmb_cargo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(27, 27, 27)
+                    .addComponent(JT_direccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel4)
+                        .addComponent(JT_paterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel7)
+                        .addComponent(CMB_ciudad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5)
+                        .addComponent(JT_materno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(JB_contacto))
+                .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(JB_cancel)
@@ -370,14 +355,15 @@ public class Modificar_empleado extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_JB_cancelActionPerformed
 
-    private void JT_mailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JT_mailActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_JT_mailActionPerformed
+    private void JB_contactoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_contactoActionPerformed
+        r5_1_2 t=new r5_1_2();
+        t.setVisible(true); 
+    }//GEN-LAST:event_JB_contactoActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        // TODO add your handling code here:
+        
         String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString();
-        JT_nom.setText(nom);
+        JT_nombre.setText(nom);
 
         String paterno = jTable1.getValueAt(jTable1.getSelectedRow(), 2).toString();
         JT_paterno.setText(paterno);
@@ -385,71 +371,65 @@ public class Modificar_empleado extends javax.swing.JFrame {
         String materno = jTable1.getValueAt(jTable1.getSelectedRow(), 3).toString();
         JT_materno.setText(materno);
 
-        String fono = jTable1.getValueAt(jTable1.getSelectedRow(), 4).toString();
-        JT_fono.setText(fono);
+        String direccion = jTable1.getValueAt(jTable1.getSelectedRow(), 4).toString();
+        JT_direccion.setText(direccion);
         
-        String mail = jTable1.getValueAt(jTable1.getSelectedRow(), 5).toString();
-        JT_mail.setText(mail);
-        
-        int cargo = 0;
-        cargo = Integer.parseInt(jTable1.getValueAt(jTable1.getSelectedRow(), 6).toString());
-        cargo--;
-        cmb_cargo.setSelectedIndex(cargo);
+        int ciudad = 0;
+        ciudad = Integer.parseInt(jTable1.getValueAt(jTable1.getSelectedRow(), 5).toString());
+        ciudad--;
+        CMB_ciudad.setSelectedIndex(ciudad);
 
-        
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void JB_OKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_OKActionPerformed
-        // TODO add your handling code here:
+        
         if (verificar() == 0) {
-            String rut = "", cargo,rut2 = "";
+            String rut = "", ciudad,rut2 = "";
             rut = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
             int dis;
-            String nombre= JT_nom.getText().toUpperCase();
+            String nombre= JT_nombre.getText().toUpperCase();
             String paterno = JT_paterno.getText().toUpperCase();
             String materno = JT_materno.getText().toUpperCase();
-            String mail = JT_mail.getText();
-            int fono = Integer.parseInt(JT_fono.getText());
-            cargo = (String) cmb_cargo.getSelectedItem();
+            String direccion = JT_direccion.getText().toUpperCase();
+            ciudad = (String) CMB_ciudad.getSelectedItem();
             
-            int cargo2 = 0;
+            int ciudad2 = 0;
             
             try {
                 sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-                ResultSet rs = sentencia.executeQuery("SELECT id_cargo FROM cargo WHERE  nombre = '" + cargo + "'");
+                ResultSet rs = sentencia.executeQuery("SELECT cod_ciudad FROM ciudad WHERE  nombre = '" + ciudad + "'");
                 while (rs.next()) {
-                    cargo2 = rs.getInt("id_cargo");
+                    ciudad2 = rs.getInt("cod_ciudad");
                 }
             } catch (SQLException s) {
-                msj = "Error con Cargo";
+                msj = "Error con Ciudad";
             }
             
             try {
                 sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-                ResultSet rs = sentencia.executeQuery("SELECT rut_trabajador FROM trabajador WHERE rut_trabajador = '" + rut + "'");
+                ResultSet rs = sentencia.executeQuery("SELECT rut_cliente FROM cliente WHERE rut_cliente = '" + rut + "'");
                 while (rs.next()) {
-                    rut2 = rs.getString("rut_trabajador");
+                    rut2 = rs.getString("rut_cliente");
                 }
 
             } catch (SQLException f) {
                 msj = "Error con Codigo";
             }
 
-            String sql = "UPDATE trabajador "
+            String sql = "UPDATE cliente "
                     + "SET nombre ='" + nombre + "',"
                     + "ape_paterno = '" + paterno + "',"
                     + "ape_materno = '" + materno + "',"
-                    + "fono = '" + fono + "',"
-                    + "email = '" + mail + "',"
-                    + "id_cargo = '" + cargo2 + "'"
-                    + "WHERE rut_trabajador = '" + rut2 + "'";
+                    + "direccion = '" + direccion + "',"
+                    + "cod_ciudad = '" + ciudad2 + "'"
+                    + "WHERE rut_cliente = '" + rut2 + "'";
             try {
                 sentencia.executeUpdate(sql);
                 msj = "Datos Modificados";
                 LBL_estado.setText(msj);
                 dis = 1;
             } catch (SQLException e) {
-                msj = "Trabajador no Modificado";
+                msj = "Cliente no Modificado";
                 LBL_estado.setText(msj);
                 dis = 0;
             }
@@ -462,7 +442,7 @@ public class Modificar_empleado extends javax.swing.JFrame {
         }
 
         limpiaTabla();
-        setFilas();                
+        setFilas();        
     }//GEN-LAST:event_JB_OKActionPerformed
 
     /**
@@ -482,13 +462,13 @@ public class Modificar_empleado extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Ingresar_empleado.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ingresar_cliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Ingresar_empleado.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ingresar_cliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Ingresar_empleado.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ingresar_cliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Ingresar_empleado.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ingresar_cliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -496,22 +476,23 @@ public class Modificar_empleado extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Modificar_empleado().setVisible(true);
+                new Modificar_cliente().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> CMB_ciudad;
     private javax.swing.JButton JB_OK;
     private javax.swing.JButton JB_cancel;
-    private javax.swing.JTextField JT_fono;
-    private javax.swing.JTextField JT_mail;
+    private javax.swing.JButton JB_contacto;
+    private javax.swing.JTextField JT_direccion;
     private javax.swing.JTextField JT_materno;
-    private javax.swing.JTextField JT_nom;
+    private javax.swing.JTextField JT_nombre;
     private javax.swing.JTextField JT_paterno;
     private javax.swing.JLabel LBL_estado;
-    private javax.swing.JComboBox<String> cmb_cargo;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
