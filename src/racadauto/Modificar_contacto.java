@@ -5,19 +5,133 @@
  */
 package racadauto;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author falco
  */
 public class Modificar_contacto extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Ingresar_contacto
-     */
+    private Statement sentencia;
+    private Connection conexion;
+    private String nomBD = "racad";
+    private String usuario = "root";
+    private String password = "";
+    private String msj;
+    DefaultTableModel modeloTabla;
+    
     public Modificar_contacto() {
+        conectar();
+        modeloTabla = new DefaultTableModel(null, getColumnas());
+        setFilas();
         initComponents();
     }
 
+    public void conectar() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
+            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
+            this.sentencia = (Statement) this.conexion.createStatement();
+        } catch (ClassNotFoundException | SQLException e) {
+            msj = "ERROR AL CONECTAR";
+        }
+    }
+    
+    private String[] getColumnas() {
+
+        String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO", "NUMERO CONTACTO", "TIPO CONTACTO","CONTACTO","CONTACTO PRINCIPAL"};
+
+        return columna;
+    }
+    
+    private void setFilas() {
+        try {
+            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            ResultSet lista = sentencia.executeQuery("SELECT c.rut_cliente,c.nombre,c.ape_paterno,c.ape_materno,co.num_correlativo,co.tipo_contacto,co.contacto,co.contacto_ppal "
+                    + "                                 FROM cliente c, contacto co "
+                    + "                                 WHERE c.rut_cliente = co.rut_cliente group by c.rut_cliente");
+            Object datos[] = new Object[7];
+            while (lista.next()) {
+                for (int i = 0; i < 8; i++) {
+                    datos[i] = lista.getObject(i + 1);
+                }
+                modeloTabla.addRow(datos);
+            }
+        } catch (SQLException e) {
+            msj = "No se pudo llenar tabla";
+        }
+    }
+    
+     void limpiaTabla() {
+        do {
+            modeloTabla.getRowCount();
+            modeloTabla.removeRow(0);
+        } while (modeloTabla.getRowCount() != 0);
+    }
+     
+    public int verificar() {
+
+        int cont = 0;
+        String rut = "", contacto = "";
+        contacto = JT_contacto.getText();
+        String tipo = (String) CMB_contacto.getSelectedItem();
+        
+        if(jTable1.getSelectedRow() == -1){ 
+           JOptionPane.showMessageDialog(null, 
+                   "Error, No Se Ha Seleccionado Ningún Contacto De Cliente","ERROR",
+                   JOptionPane.ERROR_MESSAGE);
+           cont++;
+         }
+
+        if (tipo.equals("TELEFONO")) {
+            if (contacto.equals("")) {
+            JOptionPane.showMessageDialog(null,
+                    "Error, Dejó Una Casilla Vacía", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+            
+            }else if (!contacto.matches("[-+]?\\d*\\.?\\d+")) {
+                JOptionPane.showMessageDialog(null,
+                        "Error, Fono Tiene Que Ser Numérico", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                cont++;
+
+            } else if (contacto.length() > 30) {
+                JOptionPane.showMessageDialog(null,
+                        "Error, Fono No Puede Exceder Los 30 Numeros", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                cont++;
+            }
+
+        } else if (contacto.equals("")) {
+            JOptionPane.showMessageDialog(null,
+                    "Error, Dejó Una Casilla Vacía", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        } else if (!contacto.matches("^([0-9a-zA-Z]([_.w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-w]*[0-9a-zA-Z].)+([a-zA-Z]{2,9}.)+[a-zA-Z]{2,3})$")) {
+            JOptionPane.showMessageDialog(null,
+                    "Error, Formato de Mail incorrecto", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+
+        } else if (contacto.length() > 30) {
+            JOptionPane.showMessageDialog(null,
+                    "Error, Mail No Puede Exceder Los 30 Numeros", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        }
+
+        return cont;
+    } 
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -31,16 +145,15 @@ public class Modificar_contacto extends javax.swing.JFrame {
         jTextField7 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        CMB_contacto = new javax.swing.JComboBox<>();
         jLabel11 = new javax.swing.JLabel();
-        jTextField8 = new javax.swing.JTextField();
-        jLabel12 = new javax.swing.JLabel();
-        jTextField9 = new javax.swing.JTextField();
+        JT_contacto = new javax.swing.JTextField();
         JB_cancel = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        JB_OK = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        RB_principal = new javax.swing.JRadioButton();
 
         jLabel10.setText("Contacto (Correo o Numero) :");
 
@@ -52,94 +165,79 @@ public class Modificar_contacto extends javax.swing.JFrame {
 
         jLabel8.setText("Tipo Contacto :");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Telefono", "Correo" }));
-        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+        CMB_contacto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Telefono", "Correo" }));
+        CMB_contacto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox2ActionPerformed(evt);
+                CMB_contactoActionPerformed(evt);
             }
         });
 
         jLabel11.setText("Contacto (Correo o Numero) :");
 
-        jLabel12.setText("Prioridad de Contacto :");
-
-        jTextField9.setMaximumSize(new java.awt.Dimension(6, 20));
-
-        JB_cancel.setText("Cancelar");
+        JB_cancel.setText("Volver");
         JB_cancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 JB_cancelActionPerformed(evt);
             }
         });
 
-        jButton2.setText("OK");
+        JB_OK.setText("OK");
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel9.setText("RACAD AUTOMOTRIZ - MODIFICAR CONTACTOS");
 
-        jLabel2.setText("Seleccionar Contacto a Modificar :");
+        jTable1.setModel(modeloTabla);
+        jScrollPane1.setViewportView(jTable1);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Contacto 1", "Contacto 2" }));
+        RB_principal.setText("Contacto Principal");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel2)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel9)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel8)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(CMB_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel11)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(JT_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(RB_principal))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel11)
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(jLabel12)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jTextField8)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(JB_cancel))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(29, 29, 29))))
+                                .addComponent(JB_cancel))))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 572, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 62, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel12)
-                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(CMB_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11))
                 .addGap(18, 18, 18)
+                .addComponent(RB_principal)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
+                    .addComponent(JB_OK)
                     .addComponent(JB_cancel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -151,9 +249,9 @@ public class Modificar_contacto extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_JB_cancelActionPerformed
 
-    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+    private void CMB_contactoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CMB_contactoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox2ActionPerformed
+    }//GEN-LAST:event_CMB_contactoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -192,19 +290,18 @@ public class Modificar_contacto extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> CMB_contacto;
+    private javax.swing.JButton JB_OK;
     private javax.swing.JButton JB_cancel;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JTextField JT_contacto;
+    private javax.swing.JRadioButton RB_principal;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField7;
-    private javax.swing.JTextField jTextField8;
-    private javax.swing.JTextField jTextField9;
     // End of variables declaration//GEN-END:variables
 }

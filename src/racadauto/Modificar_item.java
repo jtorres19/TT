@@ -40,10 +40,9 @@ public class Modificar_item extends javax.swing.JFrame {
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM inventario"
-            /*"SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre " +
-                            "FROM inventario i,unidad_medida m,familia f" + 
-                            "WHERE i.id_familia = f.id_familia AND m.id_medida = i.id_medida"*/);
+            ResultSet lista = sentencia.executeQuery("SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre "
+                    + "                                 FROM inventario i,unidad_medida m,familia f "
+                    + "                                 WHERE i.id_familia = f.id_familia AND m.id_medida = i.id_medida");
             Object datos[] = new Object[9];
             while (lista.next()) {
                 for (int i = 0; i < 9; i++) {
@@ -287,7 +286,7 @@ public class Modificar_item extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(layout.createSequentialGroup()
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                     .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -324,8 +323,8 @@ public class Modificar_item extends javax.swing.JFrame {
                                             .addComponent(cmb_fam, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(JB_cancel))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 633, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(234, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 570, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -459,15 +458,11 @@ public class Modificar_item extends javax.swing.JFrame {
         String vventa = jTable1.getValueAt(jTable1.getSelectedRow(), 5).toString();
         JT_vventa.setText(vventa);
         
-        int med = 0;
-        med = Integer.parseInt(jTable1.getValueAt(jTable1.getSelectedRow(), 7).toString());
-        med--;
-        cmb_med.setSelectedIndex(med);
+        String med = jTable1.getValueAt(jTable1.getSelectedRow(), 7).toString();
+        cmb_med.setSelectedItem(med);
         
-        int fam = 0;
-        fam = Integer.parseInt(jTable1.getValueAt(jTable1.getSelectedRow(), 8).toString());
-        fam--;
-        cmb_med.setSelectedIndex(fam);
+        String fam = jTable1.getValueAt(jTable1.getSelectedRow(), 8).toString();
+        cmb_fam.setSelectedItem(fam);
 
 
     }//GEN-LAST:event_jTable1MouseClicked

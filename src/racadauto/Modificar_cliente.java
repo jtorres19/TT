@@ -56,10 +56,9 @@ public class Modificar_cliente extends javax.swing.JFrame {
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM cliente"
-            /*"SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre " +
-                            "FROM inventario i,unidad_medida m,familia f" + 
-                            "WHERE i.id_familia = f.id_familia AND m.id_medida = i.id_medida"*/);
+            ResultSet lista = sentencia.executeQuery("SELECT i.rut_cliente,i.nombre,i.ape_paterno,i.ape_materno,i.direccion,c.nombre "
+                    + "                                 FROM cliente i,ciudad c "
+                    + "                                 WHERE i.cod_ciudad = c.cod_ciudad");
             Object datos[] = new Object[7];
             while (lista.next()) {
                 for (int i = 0; i < 6; i++) {
@@ -301,7 +300,7 @@ public class Modificar_cliente extends javax.swing.JFrame {
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                                 .addComponent(JT_direccion)
-                                                .addComponent(CMB_ciudad, 0, 120, Short.MAX_VALUE)))
+                                                .addComponent(CMB_ciudad, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                         .addComponent(JB_contacto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -310,7 +309,7 @@ public class Modificar_cliente extends javax.swing.JFrame {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(JB_cancel))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(74, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -319,7 +318,7 @@ public class Modificar_cliente extends javax.swing.JFrame {
                 .addComponent(jLabel9)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(JT_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -374,10 +373,9 @@ public class Modificar_cliente extends javax.swing.JFrame {
         String direccion = jTable1.getValueAt(jTable1.getSelectedRow(), 4).toString();
         JT_direccion.setText(direccion);
         
-        int ciudad = 0;
-        ciudad = Integer.parseInt(jTable1.getValueAt(jTable1.getSelectedRow(), 5).toString());
-        ciudad--;
-        CMB_ciudad.setSelectedIndex(ciudad);
+        String ciudad = jTable1.getValueAt(jTable1.getSelectedRow(), 5).toString();
+     
+        CMB_ciudad.setSelectedItem(ciudad);
 
     }//GEN-LAST:event_jTable1MouseClicked
 

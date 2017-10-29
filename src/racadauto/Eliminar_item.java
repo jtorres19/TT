@@ -44,10 +44,9 @@ public class Eliminar_item extends javax.swing.JFrame {
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM inventario"
-            /*"SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre " +
-                            "FROM inventario i,unidad_medida m,familia f" + 
-                            "WHERE i.id_familia = f.id_familia AND m.id_medida = i.id_medida"*/);
+            ResultSet lista = sentencia.executeQuery("SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre "
+                    + "                                 FROM inventario i,unidad_medida m,familia f "
+                    + "                                 WHERE i.id_familia = f.id_familia AND m.id_medida = i.id_medida");
             Object datos[] = new Object[9];
             while (lista.next()) {
                 for (int i = 0; i < 9; i++) {

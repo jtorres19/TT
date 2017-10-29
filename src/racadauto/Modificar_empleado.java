@@ -56,10 +56,9 @@ public class Modificar_empleado extends javax.swing.JFrame {
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM trabajador"
-            /*"SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre " +
-                            "FROM inventario i,unidad_medida m,familia f" + 
-                            "WHERE i.id_familia = f.id_familia AND m.id_medida = i.id_medida"*/);
+            ResultSet lista = sentencia.executeQuery("SELECT t.rut_trabajador,t.nombre,t.ape_paterno,t.ape_materno,t.fono,t.email,c.nombre "
+                    + "                                 FROM trabajador t,cargo c "
+                    + "                                 WHERE t.id_cargo = c.id_cargo");
             Object datos[] = new Object[7];
             while (lista.next()) {
                 for (int i = 0; i < 7; i++) {
@@ -391,10 +390,8 @@ public class Modificar_empleado extends javax.swing.JFrame {
         String mail = jTable1.getValueAt(jTable1.getSelectedRow(), 5).toString();
         JT_mail.setText(mail);
         
-        int cargo = 0;
-        cargo = Integer.parseInt(jTable1.getValueAt(jTable1.getSelectedRow(), 6).toString());
-        cargo--;
-        cmb_cargo.setSelectedIndex(cargo);
+        String cargo = jTable1.getValueAt(jTable1.getSelectedRow(), 6).toString();
+        cmb_cargo.setSelectedItem(cargo);
 
         
     }//GEN-LAST:event_jTable1MouseClicked
