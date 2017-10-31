@@ -15,7 +15,7 @@ import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-public class Eliminar_cargo extends javax.swing.JFrame {
+public class Eliminar_familia extends javax.swing.JFrame {
 
     private Statement sentencia;
     private Connection conexion;
@@ -27,7 +27,7 @@ public class Eliminar_cargo extends javax.swing.JFrame {
     String filtro;
     private TableRowSorter trsfiltro;
 
-    public Eliminar_cargo() {
+    public Eliminar_familia() {
         conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
@@ -36,7 +36,7 @@ public class Eliminar_cargo extends javax.swing.JFrame {
 
     private String[] getColumnas() {
 
-        String columna[] = new String[]{"ID CARGO", "CARGO"};
+        String columna[] = new String[]{"ID FAMILIA", "NOMBRE"};
 
         return columna;
     }
@@ -44,7 +44,7 @@ public class Eliminar_cargo extends javax.swing.JFrame {
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM cargo");
+            ResultSet lista = sentencia.executeQuery("SELECT * FROM familia");
             Object datos[] = new Object[9];
             while (lista.next()) {
                 for (int i = 0; i < 2; i++) {
@@ -74,25 +74,25 @@ public class Eliminar_cargo extends javax.swing.JFrame {
     //verifica si los items están en otras tablas
     public int verificar() {
         int yes = 0;
-        int cargo = 0;
-        int cargo2 = 0;
+        int familia = 0;
+        int familia2 = 0;
         String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString();
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet rs = sentencia.executeQuery("SELECT id_cargo FROM cargo WHERE nombre = '" + nom + "'");
+            ResultSet rs = sentencia.executeQuery("SELECT id_familia FROM familia WHERE nombre = '" + nom + "'");
             while (rs.next()) {
-                cargo = rs.getInt("id_cargo");
+                familia = rs.getInt("id_familia");
             }
         } catch (SQLException eg) {
             msj = "Error con su Solicitud";
         }
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet rs = sentencia.executeQuery("SELECT * FROM trabajador");
+            ResultSet rs = sentencia.executeQuery("SELECT * FROM inventario");
             while (rs.next()) {
-                cargo2 = rs.getInt("id_cargo");
-                if (cargo == cargo2) {
-                    yes += rs.getInt("rut_trabajador");
+                familia2 = rs.getInt("id_familia");
+                if (familia == familia2) {
+                    yes += rs.getInt("cod_item");
                 }
             }
 
@@ -140,7 +140,7 @@ public class Eliminar_cargo extends javax.swing.JFrame {
         setResizable(false);
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel9.setText("RACAD AUTOMOTRIZ - ELIMINAR CARGO");
+        jLabel9.setText("RACAD AUTOMOTRIZ - ELIMINAR FAMILIA");
 
         JB_cancel.setText("Volver");
         JB_cancel.setPreferredSize(new java.awt.Dimension(100, 35));
@@ -232,29 +232,29 @@ public class Eliminar_cargo extends javax.swing.JFrame {
         String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString();
         
         int i = JOptionPane.showConfirmDialog(this,
-                "¿Realmente Desea Eliminar " + nom + " de los Cargos?","Confirmar Eliminación",
+                "¿Realmente Desea Eliminar " + nom + " De Las FAMILIAS?","Confirmar Eliminación",
                 JOptionPane.YES_NO_OPTION);
         
-        int cargo = 0;
+        int familia = 0;
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet rs = sentencia.executeQuery("SELECT id_cargo FROM cargo WHERE nombre = '" + nom + "'");
+            ResultSet rs = sentencia.executeQuery("SELECT id_familia FROM familia WHERE nombre = '" + nom + "'");
             while (rs.next()) {
-                cargo = rs.getInt("id_cargo");
+                familia = rs.getInt("id_familia");
             }
         } catch (SQLException e) {
-            msj = "Error al buscar item en tabla?";
+            msj = "Error al buscar FAMILIA en tabla?";
             LBL_estado.setText(msj);
         }
 
         
         if (verificar() == 0 && i== 0) {
-            String sql = "DELETE FROM cargo WHERE id_cargo =" + cargo + "";
+            String sql = "DELETE FROM familia WHERE id_familia =" + familia + "";
             try {
                 sentencia.executeUpdate(sql);
-                LBL_estado.setText("Item borrado con exito");
+                LBL_estado.setText("FAMILIA Borrada Con Éxito");
             } catch (SQLException ee) {
-                msj = "Error al borrar";
+                msj = "Error Al Borrar";
                 LBL_estado.setText(msj);
             }
         }
@@ -296,14 +296,38 @@ public class Eliminar_cargo extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Eliminar_cargo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Eliminar_familia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Eliminar_cargo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Eliminar_familia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Eliminar_cargo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Eliminar_familia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Eliminar_cargo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Eliminar_familia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -316,7 +340,7 @@ public class Eliminar_cargo extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Eliminar_cargo().setVisible(true);
+                new Eliminar_familia().setVisible(true);
             }
         });
     }

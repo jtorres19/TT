@@ -17,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author falco
  */
-public class Ingresar_ciudad extends javax.swing.JFrame {
+public class Ingresar_familia extends javax.swing.JFrame {
 
     private Statement sentencia;
     private Connection conexion;
@@ -25,9 +25,9 @@ public class Ingresar_ciudad extends javax.swing.JFrame {
     private String usuario = "root";
     private String password = "";
     private String msj;
-    DefaultTableModel modeloTabla;
+    DefaultTableModel modeloTabla; 
     
-    public Ingresar_ciudad() {
+    public Ingresar_familia() {
         conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
@@ -48,7 +48,7 @@ public class Ingresar_ciudad extends javax.swing.JFrame {
     
     private String[] getColumnas() {
 
-        String columna[] = new String[]{"COD CIUDAD", "NOMBRE"};
+        String columna[] = new String[]{"ID FAMILIA", "NOMBRE"};
 
         return columna;
     }
@@ -56,8 +56,8 @@ public class Ingresar_ciudad extends javax.swing.JFrame {
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT cod_ciudad,nombre "
-                                                     + " FROM ciudad");
+            ResultSet lista = sentencia.executeQuery("SELECT id_familia,nombre "
+                                                     + " FROM familia");
             Object datos[] = new Object[7];
             while (lista.next()) {
                 for (int i = 0; i < 2; i++) {
@@ -85,12 +85,12 @@ public class Ingresar_ciudad extends javax.swing.JFrame {
 
         try {
             sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
-            ResultSet rs = sentencia.executeQuery("SELECT nombre FROM ciudad");
+            ResultSet rs = sentencia.executeQuery("SELECT nombre FROM familia");
             while (rs.next()) {
                 nom = rs.getString("nombre").toUpperCase();
                 if (nombre.equals(nom)) {
                     JOptionPane.showMessageDialog(null,
-                    "Error, Ya Existe Esta Ciudad!", "ERROR",
+                    "Error, Ya Existe Esta FAMILIA!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
                     cont++;
                 } 
@@ -108,11 +108,11 @@ public class Ingresar_ciudad extends javax.swing.JFrame {
         }
         
         else if (nombre.matches("[-+]?\\d*\\.?\\d+")) {
-            JOptionPane.showMessageDialog(null, "Error, Ciudad No Tiene Que Ser Númerico", "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error, FAMILIA No Tiene Que Ser Númerico", "ERROR", JOptionPane.ERROR_MESSAGE);
             cont++;
         } else if (JT_nom.getText().length() > 30) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Cargo maximo 30 letras", "ERROR",
+                    "Error, FAMILIA maximo 30 letras", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
@@ -151,12 +151,11 @@ public class Ingresar_ciudad extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(300, 300));
-        setResizable(false);
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel9.setText("RACAD AUTOMOTRIZ - INGRESAR CIUDAD");
+        jLabel9.setText("RACAD AUTOMOTRIZ - INGRESAR FAMILIA");
 
-        jLabel4.setText("Nombre Ciudad :");
+        jLabel4.setText("Nombre Familia :");
 
         JB_volver.setText("Volver");
         JB_volver.addActionListener(new java.awt.event.ActionListener() {
@@ -181,23 +180,21 @@ public class Ingresar_ciudad extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(LBL_estado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(JB_volver))
-                        .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(JB_volver)))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -205,18 +202,17 @@ public class Ingresar_ciudad extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel9)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(JT_nom, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(JB_OK)
-                            .addComponent(LBL_estado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(JB_volver))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(JB_volver, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(JB_OK))
+                    .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -238,28 +234,28 @@ public class Ingresar_ciudad extends javax.swing.JFrame {
             int dis;
             int est = 1;
             nom = JT_nom.getText().toUpperCase();
-            int cod = 0;
+            int familia = 0;
             
             
             try {
                 sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
-                ResultSet rs = sentencia.executeQuery("SELECT MAX(cod_ciudad) as cod_ciudad FROM ciudad");
+                ResultSet rs = sentencia.executeQuery("SELECT MAX(id_familia) as id_familia FROM familia");
                 while (rs.next()) {
-                    cod = rs.getInt("cod_ciudad");
+                    familia = rs.getInt("id_familia");
                 }
-                cod ++;
+                familia ++;
             } catch (SQLException f) {
-                msj = "Error con Codigo";
+                msj = "Error con FAMILIA";
             }
 
-            String sql = "INSERT INTO ciudad(cod_ciudad,nombre) VALUES(" + cod + ",'" + nom + "')";
+            String sql = "INSERT INTO familia(id_familia,nombre) VALUES(" + familia + ",'" + nom + "')";
             try {
                 sentencia.executeUpdate(sql);
                 msj = "Datos Guardados";
                 LBL_estado.setText(msj);
                 dis = 1;
             } catch (SQLException e) {
-                msj = "Ciudad no Ingresado, problemas en base de datos";
+                msj = "FAMILIA No Ingresada, Problemas en Base de Datos";
                 LBL_estado.setText(msj);
                 dis = 0;
             }
@@ -267,7 +263,7 @@ public class Ingresar_ciudad extends javax.swing.JFrame {
                 JT_nom.setText("");
             }
         } else {
-            msj = "Ciudad no Ingresado";
+            msj = "FAMILIA no Ingresada";
             LBL_estado.setText(msj);
         }
         
@@ -293,14 +289,18 @@ public class Ingresar_ciudad extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Ingresar_ciudad.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ingresar_familia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Ingresar_ciudad.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ingresar_familia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Ingresar_ciudad.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ingresar_familia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Ingresar_ciudad.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ingresar_familia.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -309,7 +309,7 @@ public class Ingresar_ciudad extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Ingresar_ciudad().setVisible(true);
+                new Ingresar_familia().setVisible(true);
             }
         });
     }

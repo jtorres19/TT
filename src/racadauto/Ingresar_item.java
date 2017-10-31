@@ -62,6 +62,13 @@ public class Ingresar_item extends javax.swing.JFrame {
             msj = "No se pudo llenar tabla";
         }
     }
+    
+    void limpiaTabla() {
+        do {
+            modeloTabla.getRowCount();
+            modeloTabla.removeRow(0);
+        } while (modeloTabla.getRowCount() != 0);
+    }
 
     public void clean() {
         JT_nom.setText("");
@@ -385,10 +392,11 @@ public class Ingresar_item extends javax.swing.JFrame {
                     .addComponent(jLabel8)
                     .addComponent(cmb_fam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(JB_cancel)
-                    .addComponent(LBL_estado)
-                    .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(JB_OK, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(JB_cancel)
+                        .addComponent(LBL_estado)))
                 .addContainerGap())
         );
 
@@ -466,6 +474,9 @@ public class Ingresar_item extends javax.swing.JFrame {
             msj = "Item no Ingresado";
             LBL_estado.setText(msj);
         }
+        
+        limpiaTabla();
+        setFilas();
         
     }//GEN-LAST:event_JB_OKActionPerformed
 

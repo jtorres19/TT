@@ -75,6 +75,13 @@ public class Ingresar_empleado extends javax.swing.JFrame {
             msj = "No se pudo llenar tabla";
         }
     }
+    
+    void limpiaTabla() {
+        do {
+            modeloTabla.getRowCount();
+            modeloTabla.removeRow(0);
+        } while (modeloTabla.getRowCount() != 0);
+    }
 
     public void llenarCombo() {
         cmb_cargo.removeAllItems();
@@ -451,6 +458,10 @@ public class Ingresar_empleado extends javax.swing.JFrame {
             msj = "Trabajador no Ingresado";
             LBL_estado.setText(msj);
         }
+        
+        limpiaTabla();
+        setFilas();
+        
     }//GEN-LAST:event_JB_OKActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked

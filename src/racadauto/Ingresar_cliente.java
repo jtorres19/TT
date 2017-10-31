@@ -71,6 +71,13 @@ public class Ingresar_cliente extends javax.swing.JFrame {
         }
     }
     
+    void limpiaTabla() {
+        do {
+            modeloTabla.getRowCount();
+            modeloTabla.removeRow(0);
+        } while (modeloTabla.getRowCount() != 0);
+    }
+    
     public void llenarCombo() {
         CMB_ciudad.removeAllItems();
         try {
@@ -405,6 +412,10 @@ public class Ingresar_cliente extends javax.swing.JFrame {
             msj = "Cliente no Ingresado";
             LBL_estado.setText(msj);
         }
+        
+        limpiaTabla();
+        setFilas();
+        
     }//GEN-LAST:event_JB_OKActionPerformed
 
     /**

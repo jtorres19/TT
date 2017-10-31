@@ -70,6 +70,13 @@ public class Ingresar_cargo extends javax.swing.JFrame {
         }
     }
     
+    void limpiaTabla() {
+        do {
+            modeloTabla.getRowCount();
+            modeloTabla.removeRow(0);
+        } while (modeloTabla.getRowCount() != 0);
+    }
+    
     public int verificar() {
 
         int cont = 0;
@@ -261,6 +268,9 @@ public class Ingresar_cargo extends javax.swing.JFrame {
             msj = "Item no Ingresado";
             LBL_estado.setText(msj);
         }
+        
+        limpiaTabla();
+        setFilas();
     }//GEN-LAST:event_JB_OKActionPerformed
 
     /**

@@ -71,6 +71,13 @@ public class Ingresar_contacto extends javax.swing.JFrame {
             msj = "No se pudo llenar tabla";
         }
     }
+    
+    void limpiaTabla() {
+        do {
+            modeloTabla.getRowCount();
+            modeloTabla.removeRow(0);
+        } while (modeloTabla.getRowCount() != 0);
+    }
 
     public int verificar() {
 
@@ -302,6 +309,9 @@ public class Ingresar_contacto extends javax.swing.JFrame {
             msj = "Datos mal escritos";
             LBL_estado.setText(msj);
         }
+        
+        limpiaTabla();
+        setFilas();
 
     }//GEN-LAST:event_JB_OKActionPerformed
 
