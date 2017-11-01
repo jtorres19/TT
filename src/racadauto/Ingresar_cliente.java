@@ -25,16 +25,16 @@ public class Ingresar_cliente extends javax.swing.JFrame {
     private String usuario = "root";
     private String password = "";
     private String msj;
-    DefaultTableModel modeloTabla;  
-    
+    DefaultTableModel modeloTabla;
+
     public Ingresar_cliente() {
         conectar();
-        modeloTabla = new DefaultTableModel(null,getColumnas());
+        modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
         llenarCombo();
     }
-    
+
     public void conectar() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -52,7 +52,7 @@ public class Ingresar_cliente extends javax.swing.JFrame {
 
         return columna;
     }
-    
+
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
@@ -70,14 +70,16 @@ public class Ingresar_cliente extends javax.swing.JFrame {
             msj = "No se pudo llenar tabla";
         }
     }
-    
+
     void limpiaTabla() {
-        do {
-            modeloTabla.getRowCount();
-            modeloTabla.removeRow(0);
-        } while (modeloTabla.getRowCount() != 0);
+        if (modeloTabla.getRowCount() > 0){ 
+            do {
+                modeloTabla.getRowCount();
+                modeloTabla.removeRow(0);
+            } while (modeloTabla.getRowCount() != 0);
+        }
     }
-    
+
     public void llenarCombo() {
         CMB_ciudad.removeAllItems();
         try {
@@ -99,7 +101,6 @@ public class Ingresar_cliente extends javax.swing.JFrame {
         JT_paterno.setText("");
         JT_direccion.setText("");
         
-
     }
 
     public int verificar() {
@@ -113,12 +114,12 @@ public class Ingresar_cliente extends javax.swing.JFrame {
         String ciudad = (String) CMB_ciudad.getSelectedItem();
         String rut2 = "";
 
-        try { 
+        try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT rut_cliente FROM cliente");
             while (rs.next()) {
                 rut2 = rs.getString("rut_cliente");
-                if (JT_rut.getText().equals(rut2)) { 
+                if (JT_rut.getText().equals(rut2)) {
                     JOptionPane.showMessageDialog(null,
                             "Error, Ya Existe Cliente!", "ERROR",
                             JOptionPane.ERROR_MESSAGE);
@@ -140,7 +141,7 @@ public class Ingresar_cliente extends javax.swing.JFrame {
             cont++;
         }
 
-        if (!rut.matches("^([0-9]*\\d{8}[0-9k])$")) {
+        if (!(rut.matches("^([0-9]*\\d{8}[0-9k])$"))) {
             JOptionPane.showMessageDialog(null, "Error, Rut mal escrito", "ERROR", JOptionPane.ERROR_MESSAGE);
             cont++;
         } else if (JT_rut.getText().length() > 9) {
@@ -366,12 +367,12 @@ public class Ingresar_cliente extends javax.swing.JFrame {
     }//GEN-LAST:event_JB_cancelActionPerformed
 
     private void JB_contactoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_contactoActionPerformed
-        Ingresar_contacto t=new Ingresar_contacto();
-        t.setVisible(true); 
+        Ingresar_contacto t = new Ingresar_contacto();
+        t.setVisible(true);
     }//GEN-LAST:event_JB_contactoActionPerformed
 
     private void JB_OKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_OKActionPerformed
-           
+
         if (verificar() == 0) {
             String rut, nombre, paterno, materno, direccion, ciudad;
             int dis;
@@ -412,10 +413,10 @@ public class Ingresar_cliente extends javax.swing.JFrame {
             msj = "Cliente no Ingresado";
             LBL_estado.setText(msj);
         }
-        
+
         limpiaTabla();
         setFilas();
-        
+
     }//GEN-LAST:event_JB_OKActionPerformed
 
     /**

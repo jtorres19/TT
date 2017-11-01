@@ -64,10 +64,12 @@ public class Ingresar_item extends javax.swing.JFrame {
     }
     
     void limpiaTabla() {
-        do {
-            modeloTabla.getRowCount();
-            modeloTabla.removeRow(0);
-        } while (modeloTabla.getRowCount() != 0);
+        if (modeloTabla.getRowCount() > 0){ 
+            do {
+                modeloTabla.getRowCount();
+                modeloTabla.removeRow(0);
+            } while (modeloTabla.getRowCount() != 0);
+        }
     }
 
     public void clean() {

@@ -42,10 +42,9 @@ public class Ajustar_item extends javax.swing.JFrame {
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM inventario"
-            /*"SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre " +
-                            "FROM inventario i,unidad_medida m,familia f" + 
-                            "WHERE i.id_familia = f.id_familia AND m.id_medida = i.id_medida"*/);
+            ResultSet lista = sentencia.executeQuery("SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre "
+                    + "                                 FROM inventario i,unidad_medida m,familia f "
+                    + "                                 WHERE i.id_familia = f.id_familia AND m.id_medida = i.id_medida");
             Object datos[] = new Object[9];
             while (lista.next()) {
                 for (int i = 0; i < 9; i++) {
@@ -97,14 +96,14 @@ public class Ajustar_item extends javax.swing.JFrame {
         }
         if(txtCant.getText().length()>=2) {  
             JOptionPane.showMessageDialog(null,
-                "Error, cantidad <100 y >0","ERROR",
+                "Error, CANTIDAD <100 y >0","ERROR",
                 JOptionPane.ERROR_MESSAGE);
                 val+=1;
         }
         String cant = txtCant.getText();
         if(!cant.matches("[-+]?\\d*\\.?\\d+")){ 
             JOptionPane.showMessageDialog(null,
-                "Error, stock tiene que ser numerico","ERROR",
+                "Error, STOCK tiene que ser numerico","ERROR",
                 JOptionPane.ERROR_MESSAGE);
                 val+=1;
         }
@@ -121,7 +120,7 @@ public class Ajustar_item extends javax.swing.JFrame {
             while(rs.next()){
                 can = rs.getInt("stock_actual");}
             }catch(SQLException f){
-                msj="Error con Codigo";
+                msj="Error con CODIGO";
         }
         if ((txtDesc.getText().equals(""))||
             (txtCant.getText().equals(""))){
@@ -134,7 +133,7 @@ public class Ajustar_item extends javax.swing.JFrame {
         }
         if (can == 0){
             JOptionPane.showMessageDialog(null,
-                "Error, item no puede ser negativo","ERROR",
+                "Error, ITEM no puede ser negativo","ERROR",
                 JOptionPane.ERROR_MESSAGE);
                 val+=1;
         }else{
@@ -276,10 +275,11 @@ public class Ajustar_item extends javax.swing.JFrame {
                     .addComponent(lblEstado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(lblFecha)
-                    .addComponent(btnRehab))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnRehab, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5)
+                        .addComponent(lblFecha)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(18, 18, 18)
@@ -327,7 +327,7 @@ public class Ajustar_item extends javax.swing.JFrame {
             while(rs.next()){
                 cod = rs.getInt("cod_item");}
             }catch(SQLException f){
-                msj="Error con Codigo";
+                msj="Error con CODIGO";
         }
         //se obtiene numero folio
         try{
@@ -338,7 +338,7 @@ public class Ajustar_item extends javax.swing.JFrame {
                 }
                 fol+=1;
             }catch(SQLException f){
-            msj="Error con Codigo";
+            msj="Error con CODIGO";
         }
         //se obtiene rut trabajador
         try{
@@ -348,7 +348,7 @@ public class Ajustar_item extends javax.swing.JFrame {
                     rut = rs.getString("rut_trabajador");
                 }
             }catch(SQLException f){
-            msj="Error con Codigo";
+            msj="Error con CODIGO";
         }
         
             String sql="UPDATE inventario SET stock_actual =stock_actual+"+ sto +" WHERE  cod_item =" + cod + "";
@@ -359,7 +359,7 @@ public class Ajustar_item extends javax.swing.JFrame {
                 dis += 1;
             }
             catch(SQLException e){
-                msj="Item no Ingresado stock";
+                msj="ITEM no Ingresado stock";
                 txtDesc.setText(msj);
                 dis = 0;
             }
@@ -373,7 +373,7 @@ public class Ajustar_item extends javax.swing.JFrame {
                 dis += 1;
             }
             catch(SQLException e){
-                msj="Item no Ingresado ajuste";
+                msj="ITEM no Ingresado ajuste";
                 txtDesc.setText(msj);
                 dis = 0;
             }
@@ -421,7 +421,7 @@ public class Ajustar_item extends javax.swing.JFrame {
         while(rs.next()){
             cod = rs.getInt("cod_item");}
         }catch(SQLException f){
-            msj="Error con Codigo";
+            msj="Error con CODIGO";
         }
         try{
                 sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
@@ -431,7 +431,7 @@ public class Ajustar_item extends javax.swing.JFrame {
                 }
                 fol+=1;
             }catch(SQLException f){
-            msj="Error con Codigo";
+            msj="Error con CODIGO";
         }
         try{
                 sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
@@ -440,7 +440,7 @@ public class Ajustar_item extends javax.swing.JFrame {
                     rut = rs.getString("rut_trabajador");
                 }
             }catch(SQLException f){
-            msj="Error con Codigo";
+            msj="Error con CODIGO";
         }
             String sql="UPDATE inventario SET stock_actual = stock_actual - "+ sto +" WHERE  cod_item =" + cod + "";
             try{
@@ -450,7 +450,7 @@ public class Ajustar_item extends javax.swing.JFrame {
                 dis += 1;
             }
             catch(SQLException e){
-                msj="Item no Ingresado Stock";
+                msj="ITEM no Ingresado Stock";
                 txtDesc.setText(msj);
                 dis = 0;
             }
@@ -462,7 +462,7 @@ public class Ajustar_item extends javax.swing.JFrame {
                 dis += 1;
             }
             catch(SQLException e){
-                msj="Item no Ingresado Ajuste";
+                msj="ITEM no Ingresado Ajuste";
                 txtDesc.setText(msj);
                 dis = 0;
             }

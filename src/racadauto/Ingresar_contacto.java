@@ -56,10 +56,7 @@ public class Ingresar_contacto extends javax.swing.JFrame {
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM trabajador"
-            /*"SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre " +
-                            "FROM inventario i,unidad_medida m,familia f" + 
-                            "WHERE i.id_familia = f.id_familia AND m.id_medida = i.id_medida"*/);
+            ResultSet lista = sentencia.executeQuery("SELECT * FROM cliente");
             Object datos[] = new Object[7];
             while (lista.next()) {
                 for (int i = 0; i < 4; i++) {
@@ -73,18 +70,33 @@ public class Ingresar_contacto extends javax.swing.JFrame {
     }
     
     void limpiaTabla() {
-        do {
-            modeloTabla.getRowCount();
-            modeloTabla.removeRow(0);
-        } while (modeloTabla.getRowCount() != 0);
+        if (modeloTabla.getRowCount() > 0){ 
+            do {
+                modeloTabla.getRowCount();
+                modeloTabla.removeRow(0);
+            } while (modeloTabla.getRowCount() != 0);
+        }
     }
 
     public int verificar() {
 
         int cont = 0;
-        String rut = "", contacto = "";
+        String rut = "", contacto = "",contacto2 = "";
         contacto = JT_contacto.getText();
         String tipo = (String) CMB_contacto.getSelectedItem();
+        
+        try {
+                sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+                ResultSet rs = sentencia.executeQuery("SELECT contacto FROM contacto");
+                while (rs.next()) {
+                    contacto2 = rs.getString("contacto");
+                    if (contacto == contacto2){
+                        cont++;
+                    }
+                }
+            } catch (SQLException f) {
+                msj = "Error con Numero Correlativo";
+            }
         
         if(jTable1.getSelectedRow() == -1){ 
            JOptionPane.showMessageDialog(null, 

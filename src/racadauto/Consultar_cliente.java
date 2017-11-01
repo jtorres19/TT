@@ -9,7 +9,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
 
-public class Consultar_cargo extends javax.swing.JFrame /*implements ActionListener*/ {
+public class Consultar_cliente extends javax.swing.JFrame /*implements ActionListener*/ {
 
     private Statement sentencia;
     private Connection conexion;
@@ -21,7 +21,7 @@ public class Consultar_cargo extends javax.swing.JFrame /*implements ActionListe
     private TableRowSorter trsfiltro;
     String filtro;
 
-    public Consultar_cargo() {
+    public Consultar_cliente() {
 
         conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
@@ -31,7 +31,7 @@ public class Consultar_cargo extends javax.swing.JFrame /*implements ActionListe
 
     private String[] getColumnas() {
 
-        String columna[] = new String[]{"ID CARGO", "NOMBRE"};
+        String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO", "DIRECCIÓN", "CIUDAD"};
 
         return columna;
     }
@@ -39,10 +39,12 @@ public class Consultar_cargo extends javax.swing.JFrame /*implements ActionListe
     private void setFilas() {
         try {
             sentencia = (Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM cargo");
+            ResultSet lista = sentencia.executeQuery("SELECT c.rut_cliente,c.nombre,c.ape_paterno,c.ape_materno,c.direccion,ci.nombre "
+                                                   +    "FROM cliente c, ciudad ci "
+                                                   +    "WHERE c.cod_ciudad = ci.cod_ciudad");
             Object datos[] = new Object[9];
             while (lista.next()) {
-                for (int i = 0; i < 2; i++) {
+                for (int i = 0; i < 6; i++) {
                     datos[i] = lista.getObject(i + 1);
                 }
                 modeloTabla.addRow(datos);
@@ -98,7 +100,7 @@ public class Consultar_cargo extends javax.swing.JFrame /*implements ActionListe
         setMinimumSize(new java.awt.Dimension(670, 450));
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel9.setText("RACAD AUTOMOTRIZ - CONSULTAR CARGO");
+        jLabel9.setText("RACAD AUTOMOTRIZ - CONSULTAR EMPLEADO");
 
         JB_cancel.setText("Volver");
         JB_cancel.addActionListener(new java.awt.event.ActionListener() {
@@ -143,36 +145,31 @@ public class Consultar_cargo extends javax.swing.JFrame /*implements ActionListe
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtbuscarxnom, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(JB_cancel)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(txtbuscarxnom, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(37, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel9)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 361, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtbuscarxnom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
-                        .addComponent(JB_cancel)
-                        .addContainerGap())))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtbuscarxnom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
+                .addComponent(JB_cancel)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1))
         );
 
         pack();
@@ -219,24 +216,32 @@ public static void main(String args[]) {
 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Consultar_cargo.class
+            java.util.logging.Logger.getLogger(Consultar_cliente.class
 .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         
 
 } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Consultar_cargo.class
+            java.util.logging.Logger.getLogger(Consultar_cliente.class
 .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         
 
 } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Consultar_cargo.class
+            java.util.logging.Logger.getLogger(Consultar_cliente.class
 .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         
 
 } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Consultar_cargo.class
+            java.util.logging.Logger.getLogger(Consultar_cliente.class
 .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -249,7 +254,7 @@ public static void main(String args[]) {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Consultar_cargo().setVisible(true);
+                new Consultar_cliente().setVisible(true);
             }
         });
     }

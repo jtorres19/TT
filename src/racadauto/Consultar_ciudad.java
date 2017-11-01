@@ -39,10 +39,7 @@ public class Consultar_ciudad extends javax.swing.JFrame /*implements ActionList
     private void setFilas() {
         try {
             sentencia = (Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM ciudad"
-            /*"SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre " +
-                            "FROM inventario i,unidad_medida m,familia f" + 
-                            "WHERE i.id_familia = f.id_familia AND m.id_medida = i.id_medida"*/);
+            ResultSet lista = sentencia.executeQuery("SELECT * FROM ciudad");
             Object datos[] = new Object[9];
             while (lista.next()) {
                 for (int i = 0; i < 2; i++) {
