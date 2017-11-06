@@ -77,12 +77,10 @@ public class Ingresar_empleado extends javax.swing.JFrame {
     }
     
     void limpiaTabla() {
-        if (modeloTabla.getRowCount() > 0){ 
-            do {
-                modeloTabla.getRowCount();
-                modeloTabla.removeRow(0);
-            } while (modeloTabla.getRowCount() != 0);
-        }
+        do {
+            modeloTabla.getRowCount();
+            modeloTabla.removeRow(0);
+        } while (modeloTabla.getRowCount() != 0);
     }
 
     public void llenarCombo() {
@@ -150,7 +148,7 @@ public class Ingresar_empleado extends javax.swing.JFrame {
             cont++;
         }
 
-        if (!rut.matches("^([0-9]*\\d{8}[0-9k])$")) {
+        if (!rut.matches("^([0-9]*\\d{7,8}[0-9k])$")) {
             JOptionPane.showMessageDialog(null, "Error, Rut mal escrito", "ERROR", JOptionPane.ERROR_MESSAGE);
             cont++;
         } else if (JT_rut.getText().length() > 9) {

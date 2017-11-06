@@ -86,8 +86,8 @@ public class Modificar_cargo extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null,
                     "Error, Nombre no ha Cambiado", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
-                    cont ++;
-                }
+            cont ++;
+        }
             }
         } catch (SQLException eg) {
             msj = "Error con su Solicitud";

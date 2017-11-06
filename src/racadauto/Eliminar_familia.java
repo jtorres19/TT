@@ -58,12 +58,10 @@ public class Eliminar_familia extends javax.swing.JFrame {
     }
 
     void limpiaTabla() {
-        if (modeloTabla.getRowCount() > 0){ 
-            do {
-                modeloTabla.getRowCount();
-                modeloTabla.removeRow(0);
-            } while (modeloTabla.getRowCount() != 0);
-        }
+        do {
+            modeloTabla.getRowCount();
+            modeloTabla.removeRow(0);
+        } while (modeloTabla.getRowCount() != 0);
     }
     
     public void filtro() {
