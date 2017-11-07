@@ -194,6 +194,11 @@ public class Principal extends javax.swing.JFrame {
         jMenu15.setText("Servicios");
 
         jMenuItem23.setText("Nuevo Servicio");
+        jMenuItem23.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem23ActionPerformed(evt);
+            }
+        });
         jMenu15.add(jMenuItem23);
 
         jMenuItem24.setText("Modificar Servicio");
@@ -584,7 +589,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_new_carActionPerformed
 
     private void log_ingreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_log_ingreActionPerformed
-        r1_1 v=new r1_1();
+        Ingreso_sistema v=new Ingreso_sistema();
         v.setVisible(true); 
     }//GEN-LAST:event_log_ingreActionPerformed
 
@@ -756,6 +761,11 @@ public class Principal extends javax.swing.JFrame {
         Consultar_cliente i = new Consultar_cliente();
         i.setVisible(true);
     }//GEN-LAST:event_jMenuItem20ActionPerformed
+
+    private void jMenuItem23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem23ActionPerformed
+        Ingresar_servicio ii = new Ingresar_servicio();
+        ii.setVisible(true);
+    }//GEN-LAST:event_jMenuItem23ActionPerformed
 
     /**
      * @param args the command line arguments
