@@ -32,6 +32,7 @@ public class Ingresar_servicio extends javax.swing.JFrame {
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
+        llenarCombo();
     }
 
     
@@ -80,6 +81,19 @@ public class Ingresar_servicio extends javax.swing.JFrame {
         }
     }
     
+    public void llenarCombo() {
+        CMB_categoria.removeAllItems();
+        try {
+            sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+            ResultSet lista = sentencia.executeQuery("SELECT * FROM categoria");
+            while (lista.next()) {
+                CMB_categoria.addItem(lista.getString("nombre"));
+            }
+        } catch (SQLException ed) {
+            msj = "no se pudo seleccionar";
+        }
+    }
+    
     public int verificar() {
 
         int cont = 0;
@@ -88,12 +102,12 @@ public class Ingresar_servicio extends javax.swing.JFrame {
 
         try {
             sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
-            ResultSet rs = sentencia.executeQuery("SELECT nombre FROM unidad_medida");
+            ResultSet rs = sentencia.executeQuery("SELECT nombre FROM servicio");
             while (rs.next()) {
                 nom = rs.getString("nombre").toUpperCase();
                 if (nombre.equals(nom)) {
                     JOptionPane.showMessageDialog(null,
-                    "Error, Ya Existe Esta UNIDAD DE MEDIDA!", "ERROR",
+                    "Error, Ya Existe Este SERVICIO!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
                     cont++;
                 } 
@@ -111,11 +125,11 @@ public class Ingresar_servicio extends javax.swing.JFrame {
         }
         
         else if (nombre.matches("[-+]?\\d*\\.?\\d+")) {
-            JOptionPane.showMessageDialog(null, "Error, UNIDAD DE MEDIDA No Tiene Que Ser Númerico", "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error, SERVICIO No Tiene Que Ser Númerico", "ERROR", JOptionPane.ERROR_MESSAGE);
             cont++;
         } else if (JT_nom.getText().length() > 30) {
             JOptionPane.showMessageDialog(null,
-                    "Error, UNIDAD DE MEDIDA maximo 30 letras", "ERROR",
+                    "Error, SERVICIO maximo 30 letras", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
@@ -142,6 +156,12 @@ public class Ingresar_servicio extends javax.swing.JFrame {
         LBL_estado = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
+        JT_componente = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        JT_precio = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        CMB_categoria = new javax.swing.JComboBox<>();
 
         jLabel1.setText("jLabel1");
 
@@ -158,7 +178,7 @@ public class Ingresar_servicio extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel9.setText("RACAD AUTOMOTRIZ - INGRESAR SERVICIO");
 
-        jLabel4.setText("Nombre Servicio :");
+        jLabel4.setText("Categoría: ");
 
         JB_volver.setText("Volver");
         JB_volver.addActionListener(new java.awt.event.ActionListener() {
@@ -177,28 +197,51 @@ public class Ingresar_servicio extends javax.swing.JFrame {
         jTable1.setModel(modeloTabla);
         jScrollPane1.setViewportView(jTable1);
 
+        jLabel2.setText("Componente: ");
+
+        jLabel3.setText("Precio: ");
+
+        jLabel6.setText("Nombre Servicio :");
+
+        CMB_categoria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(149, 149, 149))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(JB_volver)))
-                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel9)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(JT_componente, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel4)))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(CMB_categoria, 0, 91, Short.MAX_VALUE)
+                                    .addComponent(JT_precio))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addComponent(JB_volver)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -208,10 +251,19 @@ public class Ingresar_servicio extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(JT_nom, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 82, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(JT_precio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_componente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CMB_categoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(JB_volver, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -232,7 +284,6 @@ public class Ingresar_servicio extends javax.swing.JFrame {
     }//GEN-LAST:event_JB_volverActionPerformed
 
     private void JB_OKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_OKActionPerformed
-        // TODO add your handling code here:
         if (verificar() == 0) {
             String nom;
             int dis;
@@ -243,7 +294,7 @@ public class Ingresar_servicio extends javax.swing.JFrame {
             
             try {
                 sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
-                ResultSet rs = sentencia.executeQuery("SELECT MAX(id_medida) as id_medida FROM unidad_medida");
+                ResultSet rs = sentencia.executeQuery("SELECT MAX(id_servicio) as id_servicio FROM servicio");
                 while (rs.next()) {
                     medida = rs.getInt("id_medida");
                 }
@@ -319,13 +370,19 @@ public class Ingresar_servicio extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> CMB_categoria;
     private javax.swing.JButton JB_OK;
     private javax.swing.JButton JB_cancel;
     private javax.swing.JButton JB_volver;
+    private javax.swing.JTextField JT_componente;
     private javax.swing.JTextField JT_nom;
+    private javax.swing.JTextField JT_precio;
     private javax.swing.JLabel LBL_estado;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
