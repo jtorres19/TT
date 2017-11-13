@@ -172,16 +172,25 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Modificar Servicio"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem24ActionPerformed"/>
+                  </Events>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem26">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Consultar Servicio"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem26ActionPerformed"/>
+                  </Events>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem27">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Eliminar Servicio"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem27ActionPerformed"/>
+                  </Events>
                 </MenuItem>
               </SubComponents>
             </Menu>
@@ -192,23 +201,35 @@
               <SubComponents>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem33">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="jMenuItem33"/>
+                    <Property name="text" type="java.lang.String" value="Nueva Categor&#xed;a"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem33ActionPerformed"/>
+                  </Events>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem34">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="jMenuItem34"/>
+                    <Property name="text" type="java.lang.String" value="Modificar Categor&#xed;a"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem34ActionPerformed"/>
+                  </Events>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem35">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="jMenuItem35"/>
+                    <Property name="text" type="java.lang.String" value="Consultar Categor&#xed;a"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem35ActionPerformed"/>
+                  </Events>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem36">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="jMenuItem36"/>
+                    <Property name="text" type="java.lang.String" value="Eliminar Categor&#xed;a"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem36ActionPerformed"/>
+                  </Events>
                 </MenuItem>
               </SubComponents>
             </Menu>

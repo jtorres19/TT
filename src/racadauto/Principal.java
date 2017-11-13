@@ -202,28 +202,63 @@ public class Principal extends javax.swing.JFrame {
         jMenu15.add(jMenuItem23);
 
         jMenuItem24.setText("Modificar Servicio");
+        jMenuItem24.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem24ActionPerformed(evt);
+            }
+        });
         jMenu15.add(jMenuItem24);
 
         jMenuItem26.setText("Consultar Servicio");
+        jMenuItem26.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem26ActionPerformed(evt);
+            }
+        });
         jMenu15.add(jMenuItem26);
 
         jMenuItem27.setText("Eliminar Servicio");
+        jMenuItem27.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem27ActionPerformed(evt);
+            }
+        });
         jMenu15.add(jMenuItem27);
 
         init_work.add(jMenu15);
 
         jMenu16.setText("Categoría");
 
-        jMenuItem33.setText("jMenuItem33");
+        jMenuItem33.setText("Nueva Categoría");
+        jMenuItem33.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem33ActionPerformed(evt);
+            }
+        });
         jMenu16.add(jMenuItem33);
 
-        jMenuItem34.setText("jMenuItem34");
+        jMenuItem34.setText("Modificar Categoría");
+        jMenuItem34.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem34ActionPerformed(evt);
+            }
+        });
         jMenu16.add(jMenuItem34);
 
-        jMenuItem35.setText("jMenuItem35");
+        jMenuItem35.setText("Consultar Categoría");
+        jMenuItem35.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem35ActionPerformed(evt);
+            }
+        });
         jMenu16.add(jMenuItem35);
 
-        jMenuItem36.setText("jMenuItem36");
+        jMenuItem36.setText("Eliminar Categoría");
+        jMenuItem36.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem36ActionPerformed(evt);
+            }
+        });
         jMenu16.add(jMenuItem36);
 
         init_work.add(jMenu16);
@@ -766,6 +801,41 @@ public class Principal extends javax.swing.JFrame {
         Ingresar_servicio ii = new Ingresar_servicio();
         ii.setVisible(true);
     }//GEN-LAST:event_jMenuItem23ActionPerformed
+
+    private void jMenuItem33ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem33ActionPerformed
+        Ingresar_categoria j = new Ingresar_categoria();
+        j.setVisible(true);
+    }//GEN-LAST:event_jMenuItem33ActionPerformed
+
+    private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem24ActionPerformed
+        Modificar_servicio jj = new Modificar_servicio();
+        jj.setVisible(true);
+    }//GEN-LAST:event_jMenuItem24ActionPerformed
+
+    private void jMenuItem26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem26ActionPerformed
+        Consultar_servicio k = new Consultar_servicio();
+        k.setVisible(true);
+    }//GEN-LAST:event_jMenuItem26ActionPerformed
+
+    private void jMenuItem27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem27ActionPerformed
+        Eliminar_servicio kk = new Eliminar_servicio();
+        kk.setVisible(true);
+    }//GEN-LAST:event_jMenuItem27ActionPerformed
+
+    private void jMenuItem34ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem34ActionPerformed
+        Modificar_categoria l = new Modificar_categoria();
+        l.setVisible(true);
+    }//GEN-LAST:event_jMenuItem34ActionPerformed
+
+    private void jMenuItem35ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem35ActionPerformed
+        Consultar_categoria ll = new Consultar_categoria();
+        ll.setVisible(true);
+    }//GEN-LAST:event_jMenuItem35ActionPerformed
+
+    private void jMenuItem36ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem36ActionPerformed
+        Eliminar_categoria m = new Eliminar_categoria();
+        m.setVisible(true);
+    }//GEN-LAST:event_jMenuItem36ActionPerformed
 
     /**
      * @param args the command line arguments

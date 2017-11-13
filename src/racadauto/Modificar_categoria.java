@@ -9,7 +9,7 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-public class Modificar_medida extends javax.swing.JFrame {
+public class Modificar_categoria extends javax.swing.JFrame {
 
     private Statement sentencia;
     private Connection conexion;
@@ -19,7 +19,7 @@ public class Modificar_medida extends javax.swing.JFrame {
     private String msj;
     DefaultTableModel modeloTabla;
 
-    public Modificar_medida() {
+    public Modificar_categoria() {
 
         conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
@@ -29,7 +29,7 @@ public class Modificar_medida extends javax.swing.JFrame {
 
     private String[] getColumnas() {
 
-        String columna[] = new String[]{"ID MEDIDA", "NOMBRE"};
+        String columna[] = new String[]{"ID CATEGORIA","NOMBRE"};
 
         return columna;
     }
@@ -37,7 +37,7 @@ public class Modificar_medida extends javax.swing.JFrame {
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM unidad_medida");
+            ResultSet lista = sentencia.executeQuery("SELECT * FROM categoria");
             Object datos[] = new Object[9];
             while (lista.next()) {
                 for (int i = 0; i < 2; i++) {
@@ -51,10 +51,16 @@ public class Modificar_medida extends javax.swing.JFrame {
     }
 
     void limpiaTabla() {
-        do {
-            modeloTabla.getRowCount();
-            modeloTabla.removeRow(0);
-        } while (modeloTabla.getRowCount() != 0);
+        if (modeloTabla.getRowCount() > 0) {
+            do {
+                modeloTabla.getRowCount();
+                modeloTabla.removeRow(0);
+            } while (modeloTabla.getRowCount() != 0);
+        }
+    }
+    
+    public void clean() {
+        JT_nombre.setText("");
     }
 
     public void conectar() {
@@ -71,40 +77,43 @@ public class Modificar_medida extends javax.swing.JFrame {
     public int verificar() {
 
         int cont = 0;
+        String nombre = JT_nombre.getText().toUpperCase().trim();
         String nom = "";
-        String nom2 = JT_nom.getText().toUpperCase();
 
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet rs = sentencia.executeQuery("SELECT nombre FROM unidad_medida");
+            ResultSet rs = sentencia.executeQuery("SELECT nombre FROM categoria");
             while (rs.next()) {
-                nom = rs.getString("nombre");
-                if (nom2.equals(nom)) {
-                    JOptionPane.showMessageDialog(null,
-                    "Error, NOMBRE no ha Cambiado", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont ++;
-        }
+                nom = rs.getString("nombre").toUpperCase().trim();
             }
         } catch (SQLException eg) {
             msj = "Error con su Solicitud";
         }
-
-        if (JT_nom.getText().equals("")) {
+        
+        if (jTable1.getSelectedRow() == -1 ){
             JOptionPane.showMessageDialog(null,
-                    "Error, dejó una casilla vacía", "ERROR",
+                    "ERROR, No se ha seleccionado ninguna fila", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        }
+        
+        if ((nombre.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString()))){
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, No se ha MODIFICADO nada", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        }   
+
+        if ((JT_nombre.getText().equals(""))) {
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, Dejó una casilla vacía", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
 
-        if (JT_nom.getText().length() > 30) {
+        if (nombre.length() > 30) {
             JOptionPane.showMessageDialog(null,
-                    "Error, NOMBRE maximo 30 letras", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont++;
-        } else if (nom2.matches("[-+]?\\d*\\.?\\d+")) {
-            JOptionPane.showMessageDialog(null,
-                    "Error, NOMBRE No Tiene Que Ser Númerico", "ERROR",
+                    "ERROR, COMPONENTE máximo 30 letras", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
@@ -120,12 +129,12 @@ public class Modificar_medida extends javax.swing.JFrame {
         JB_cancel = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         LBL_estado = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        JT_nom = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
+        JT_nombre = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         JB_OK.setText("OK");
         JB_OK.addActionListener(new java.awt.event.ActionListener() {
@@ -142,9 +151,7 @@ public class Modificar_medida extends javax.swing.JFrame {
         });
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel9.setText("RACAD AUTOMOTRIZ - MODIFICAR MEDIDA");
-
-        jLabel2.setText("Nombre :");
+        jLabel9.setText("RACAD AUTOMOTRIZ - MODIFICAR CATEGORIA");
 
         jTable1.setModel(modeloTabla);
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -154,6 +161,14 @@ public class Modificar_medida extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTable1);
 
+        jLabel2.setText("Nombre:");
+
+        JT_nombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_nombreKeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -161,19 +176,22 @@ public class Modificar_medida extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(JB_cancel))
-                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(JB_cancel))
+                            .addComponent(jLabel9)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(JT_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -182,15 +200,15 @@ public class Modificar_medida extends javax.swing.JFrame {
                 .addComponent(jLabel9)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(JB_cancel, javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(JB_OK))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(JB_OK)
+                        .addComponent(JB_cancel))
                     .addComponent(LBL_estado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -200,37 +218,38 @@ public class Modificar_medida extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void JB_OKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_OKActionPerformed
-
         if (verificar() == 0) {
-            String nom = "";
-            nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString().toUpperCase();
-            String nom2 = JT_nom.getText().toUpperCase();
-            int medida = 0;
+            String nombre = "";
+            int dis, cat = 0;
+            nombre = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString().trim();
+            String nom = JT_nombre.getText().toUpperCase().trim();
 
             try {
                 sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-                ResultSet rs = sentencia.executeQuery("SELECT id_medida FROM unidad_medida WHERE nombre = '" + nom + "'");
+                ResultSet rs = sentencia.executeQuery("SELECT id_categoria FROM categoria WHERE  nombre = '" + nombre + "'");
                 while (rs.next()) {
-                    medida = rs.getInt("id_medida");
+                    cat = rs.getInt("id_categoria");
                 }
-
-            } catch (SQLException f) {
-                msj = "Error con UNIDAD DE MEDIDA";
+            } catch (SQLException s) {
+                msj = "Error con CATEGORIA";
             }
 
-            String sql = "UPDATE unidad_medida "
-                    + "SET nombre ='" + nom2 + "'"
-                    + "WHERE id_medida = '" + medida + "'";
+            String sql = "UPDATE categoria "
+                    + "SET nombre = '" + nom + "'"
+                    + "WHERE id_categoria = '" + cat + "'";
             try {
                 sentencia.executeUpdate(sql);
                 msj = "Datos Modificados";
                 LBL_estado.setText(msj);
-                JT_nom.setText("");
+                dis = 1;
             } catch (SQLException e) {
-                msj = "UNIDAD DE MEDIDA No Modificado";
+                msj = "SERVICIO no modificado";
                 LBL_estado.setText(msj);
+                dis = 0;
             }
-
+            if (dis == 1) {
+                clean();
+            }
         } else {
             msj = "Datos mal escritos";
             LBL_estado.setText(msj);
@@ -245,11 +264,24 @@ public class Modificar_medida extends javax.swing.JFrame {
     }//GEN-LAST:event_JB_cancelActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        // TODO add your handling code here:
-        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString().toUpperCase();
-        JT_nom.setText(nom);
-
+        
+        String nombre = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString().toUpperCase();
+        JT_nombre.setText(nombre);
+        
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void JT_nombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_nombreKeyTyped
+        char validar = evt.getKeyChar();
+
+        if (!Character.isLetter(validar) && validar != evt.VK_SPACE && validar != evt.VK_BACK_SPACE) {
+            getToolkit().beep();
+            evt.consume();
+
+            JOptionPane.showMessageDialog(null,
+                    "Error, COMPONENTE solo pueden ser letras", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_JT_nombreKeyTyped
 
     /**
      * @param args the command line arguments
@@ -268,14 +300,62 @@ public class Modificar_medida extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Modificar_medida.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Modificar_categoria.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Modificar_medida.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Modificar_categoria.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Modificar_medida.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Modificar_categoria.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Modificar_medida.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Modificar_categoria.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -296,7 +376,7 @@ public class Modificar_medida extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Modificar_medida().setVisible(true);
+                new Modificar_categoria().setVisible(true);
             }
         });
     }
@@ -304,7 +384,7 @@ public class Modificar_medida extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton JB_OK;
     private javax.swing.JButton JB_cancel;
-    private javax.swing.JTextField JT_nom;
+    private javax.swing.JTextField JT_nombre;
     private javax.swing.JLabel LBL_estado;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel9;

@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package racadauto;
 
+import com.mysql.jdbc.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -13,11 +9,7 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author falco
- */
-public class Ingresar_servicio extends javax.swing.JFrame {
+public class Modificar_servicio extends javax.swing.JFrame {
 
     private Statement sentencia;
     private Connection conexion;
@@ -27,7 +19,8 @@ public class Ingresar_servicio extends javax.swing.JFrame {
     private String msj;
     DefaultTableModel modeloTabla;
 
-    public Ingresar_servicio() {
+    public Modificar_servicio() {
+
         conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
@@ -35,20 +28,9 @@ public class Ingresar_servicio extends javax.swing.JFrame {
         llenarCombo();
     }
 
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (Exception e) {
-            msj = "ERROR AL CONECTAR";
-        }
-    }
-
     private String[] getColumnas() {
 
-        String columna[] = new String[]{"ID SERVICIO", "COMPONENTE", "PRECIO", "CATEGORIA"};
+        String columna[] = new String[]{"ID SERVICIO","COMPONENTE", "PRECIO", "CATEGORÍA"};
 
         return columna;
     }
@@ -59,7 +41,7 @@ public class Ingresar_servicio extends javax.swing.JFrame {
             ResultSet lista = sentencia.executeQuery("SELECT s.id_servicio,s.componente,s.precio,c.nombre"
                     + " FROM servicio s, categoria c"
                     + " WHERE s.id_categoria = c.id_categoria");
-            Object datos[] = new Object[7];
+            Object datos[] = new Object[9];
             while (lista.next()) {
                 for (int i = 0; i < 4; i++) {
                     datos[i] = lista.getObject(i + 1);
@@ -70,21 +52,7 @@ public class Ingresar_servicio extends javax.swing.JFrame {
             msj = "No se pudo llenar tabla";
         }
     }
-
-    void limpiaTabla() {
-        if (modeloTabla.getRowCount() > 0) {
-            do {
-                modeloTabla.getRowCount();
-                modeloTabla.removeRow(0);
-            } while (modeloTabla.getRowCount() != 0);
-        }
-    }
-
-    public void clean() {
-        JT_componente.setText("");
-        JT_precio.setText("");
-    }
-
+    
     public void llenarCombo() {
         CMB_categoria.removeAllItems();
         try {
@@ -98,36 +66,64 @@ public class Ingresar_servicio extends javax.swing.JFrame {
         }
     }
 
+    void limpiaTabla() {
+        if (modeloTabla.getRowCount() > 0) {
+            do {
+                modeloTabla.getRowCount();
+                modeloTabla.removeRow(0);
+            } while (modeloTabla.getRowCount() != 0);
+        }
+    }
+    
+    public void clean() {
+        JT_componente.setText("");
+        JT_precio.setText("");
+    }
+
+    public void conectar() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
+            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
+            this.sentencia = (Statement) this.conexion.createStatement();
+        } catch (ClassNotFoundException | SQLException e) {
+            msj = "ERROR AL CONECTAR";
+        }
+    }
+
     public int verificar() {
 
-        int cont = 0, cat = 0, cat2 = 0;
+        int cont = 0;
         String componente = JT_componente.getText().toUpperCase().trim();
-        String categoria = CMB_categoria.getSelectedItem().toString().trim();
         String precio = JT_precio.getText().trim();
-        String comp = "";
+        String cat = CMB_categoria.getSelectedItem().toString().trim();
+        String nom = "", comp = "";
 
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            
-            ResultSet es = sentencia.executeQuery("SELECT id_categoria FROM categoria WHERE nombre = '" + categoria + "'");
-            while (es.next()) {
-                cat2 = es.getInt("id_categoria");
-            }
-            ResultSet rs = sentencia.executeQuery("SELECT componente,id_categoria FROM servicio");
+            ResultSet rs = sentencia.executeQuery("SELECT componente FROM servicio");
             while (rs.next()) {
-                comp = rs.getString("componente").trim();
-                cat = rs.getInt("id_categoria");
-
-                if (componente.equals(comp) && cat == cat2) {
-                    JOptionPane.showMessageDialog(null,
-                            "ERROR, Ya existe este SERVICIO!", "ERROR",
-                            JOptionPane.ERROR_MESSAGE);
-                    cont++;
-                }
+                comp = rs.getString("componente").toUpperCase().trim();
             }
         } catch (SQLException eg) {
             msj = "Error con su Solicitud";
         }
+        
+        if (jTable1.getSelectedRow() == -1 ){
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, No se ha seleccionado ninguna fila", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        }
+        
+        if ((componente.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString()))
+                && (precio.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 2).toString())) 
+                && (cat.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 3)))){
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, No se ha MODIFICADO nada", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        }   
 
         if ((JT_componente.getText().equals(""))
                 || (JT_precio.getText().equals(""))) {
@@ -144,16 +140,16 @@ public class Ingresar_servicio extends javax.swing.JFrame {
             cont++;
         }
 
-        if (precio.length() > 6) {
+       if (precio.length() > 6) {
             JOptionPane.showMessageDialog(null,
                     "ERROR, PRECIO máximo 6 números", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
-        
-        if (Integer.parseInt(JT_precio.getText()) < 1){
+       
+       if (Integer.parseInt(JT_precio.getText()) < 1){
             JOptionPane.showMessageDialog(null,
-                    "Error, PRECIO debe ser mayor que 0", "ERROR",
+                    "ERROR, PRECIO debe ser mayor que 0", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
@@ -161,21 +157,13 @@ public class Ingresar_servicio extends javax.swing.JFrame {
         return cont;
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        JB_OK = new javax.swing.JButton();
         JB_cancel = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        JB_volver = new javax.swing.JButton();
-        JB_OK = new javax.swing.JButton();
         LBL_estado = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -183,31 +171,10 @@ public class Ingresar_servicio extends javax.swing.JFrame {
         JT_componente = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         JT_precio = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
         CMB_categoria = new javax.swing.JComboBox<>();
 
-        jLabel1.setText("jLabel1");
-
-        JB_cancel.setText("Cancelar");
-        JB_cancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JB_cancelActionPerformed(evt);
-            }
-        });
-
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(300, 300));
-
-        jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel9.setText("RACAD AUTOMOTRIZ - INGRESAR SERVICIO");
-
-        jLabel4.setText("Categoría: ");
-
-        JB_volver.setText("Volver");
-        JB_volver.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JB_volverActionPerformed(evt);
-            }
-        });
 
         JB_OK.setText("OK");
         JB_OK.addActionListener(new java.awt.event.ActionListener() {
@@ -216,16 +183,26 @@ public class Ingresar_servicio extends javax.swing.JFrame {
             }
         });
 
+        JB_cancel.setText("Volver");
+        JB_cancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JB_cancelActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        jLabel9.setText("RACAD AUTOMOTRIZ - MODIFICAR SERVICIO");
+
         jTable1.setModel(modeloTabla);
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         jLabel2.setText("Componente: ");
 
-        JT_componente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JT_componenteActionPerformed(evt);
-            }
-        });
         JT_componente.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 JT_componenteKeyTyped(evt);
@@ -240,6 +217,8 @@ public class Ingresar_servicio extends javax.swing.JFrame {
             }
         });
 
+        jLabel4.setText("Categoría: ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -247,21 +226,13 @@ public class Ingresar_servicio extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(LBL_estado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
-                        .addComponent(JB_volver))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(JT_componente, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(JT_precio, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(JB_cancel))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel9)
@@ -269,8 +240,16 @@ public class Ingresar_servicio extends javax.swing.JFrame {
                                 .addComponent(jLabel4)
                                 .addGap(18, 18, 18)
                                 .addComponent(CMB_categoria, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(133, 133, 133)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addGap(173, 173, 173)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(JT_componente)
+                        .addGap(125, 125, 125)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(JT_precio, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -279,23 +258,25 @@ public class Ingresar_servicio extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel9)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(JT_precio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(JT_componente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(CMB_categoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(JT_componente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(JT_precio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CMB_categoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(JB_volver, javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(JB_OK))
-                    .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(JB_OK)
+                        .addComponent(JB_cancel))
+                    .addComponent(LBL_estado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -303,54 +284,50 @@ public class Ingresar_servicio extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void JB_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_cancelActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_JB_cancelActionPerformed
-
-    private void JB_volverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_volverActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_JB_volverActionPerformed
-
     private void JB_OKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_OKActionPerformed
         if (verificar() == 0) {
-            int dis;
-            int est = 1;
-            String componente = JT_componente.getText().toUpperCase().trim();
+            String componente = "",categoria = "";
+            int cod = 0,dis, cat = 0;
+            componente = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString().trim();
+            String componente2 = JT_componente.getText().toUpperCase().trim();
             int precio = Integer.parseInt(JT_precio.getText().trim());
-            String categoria = (String) CMB_categoria.getSelectedItem();
-
-            int categoria2 = 0;
-            int servicio = 0;
+            categoria = (String) CMB_categoria.getSelectedItem();
 
             try {
                 sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-                ResultSet rs = sentencia.executeQuery("SELECT MAX(id_servicio) as id_servicio FROM servicio");
+                ResultSet rs = sentencia.executeQuery("SELECT id_categoria FROM categoria WHERE  nombre = '" + categoria + "'");
                 while (rs.next()) {
-                    servicio = rs.getInt("id_servicio");
+                    cat = rs.getInt("id_categoria");
                 }
-                servicio++;
-            } catch (SQLException f) {
-                msj = "Error con SERVICIO";
-            }
-
-            try {
-                sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-                ResultSet rs = sentencia.executeQuery("SELECT id_categoria FROM categoria WHERE nombre = '" + categoria + "'");
-                while (rs.next()) {
-                    categoria2 = rs.getInt("id_categoria");
-                }
-            } catch (SQLException f) {
+            } catch (SQLException s) {
                 msj = "Error con CATEGORIA";
             }
+            
+            
+            try {
+                sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+                ResultSet rs = sentencia.executeQuery("SELECT id_servicio FROM servicio WHERE componente = '" + componente + "'");
+                while (rs.next()) {
+                    cod = rs.getInt("id_servicio");
+                }
+                
 
-            String sql = "INSERT INTO servicio(id_servicio,componente,precio,id_categoria) VALUES(" + servicio + ",'" + componente + "'," + precio + "," + categoria2 + ")";
+            } catch (SQLException f) {
+                msj = "Error con Codigo";
+            }
+
+            String sql = "UPDATE servicio "
+                    + "SET componente = '" + componente2 + "',"
+                    + "precio = '" + precio + "',"
+                    + "id_categoria = '" + cat + "'"
+                    + "WHERE id_servicio = '" + cod + "'";
             try {
                 sentencia.executeUpdate(sql);
-                msj = "Datos Guardados";
+                msj = "Datos Modificados";
                 LBL_estado.setText(msj);
                 dis = 1;
             } catch (SQLException e) {
-                msj = "SERVICIO no ingresado, problemas en base de datos";
+                msj = "SERVICIO no modificado";
                 LBL_estado.setText(msj);
                 dis = 0;
             }
@@ -358,14 +335,29 @@ public class Ingresar_servicio extends javax.swing.JFrame {
                 clean();
             }
         } else {
-            msj = "SERVICIO no ingresado";
+            msj = "Datos mal escritos";
             LBL_estado.setText(msj);
         }
 
         limpiaTabla();
         setFilas();
-
     }//GEN-LAST:event_JB_OKActionPerformed
+
+    private void JB_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_cancelActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_JB_cancelActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        
+        String componente = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString().toUpperCase();
+        JT_componente.setText(componente);
+        
+        String precio = jTable1.getValueAt(jTable1.getSelectedRow(), 2).toString().toUpperCase();
+        JT_precio.setText(precio);
+        
+        String cat = jTable1.getValueAt(jTable1.getSelectedRow(), 3).toString();
+        CMB_categoria.setSelectedItem(cat);
+    }//GEN-LAST:event_jTable1MouseClicked
 
     private void JT_componenteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_componenteKeyTyped
         char validar = evt.getKeyChar();
@@ -375,7 +367,7 @@ public class Ingresar_servicio extends javax.swing.JFrame {
             evt.consume();
 
             JOptionPane.showMessageDialog(null,
-                    "ERROR, COMPONENTE solo pueden ser letras", "ERROR",
+                    "Error, COMPONENTE solo pueden ser letras", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_JT_componenteKeyTyped
@@ -388,14 +380,10 @@ public class Ingresar_servicio extends javax.swing.JFrame {
             evt.consume();
 
             JOptionPane.showMessageDialog(null,
-                    "ERROR, PRECIO solo pueden ser números", "ERROR",
+                    "Error, PRECIO solo pueden ser números", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_JT_precioKeyTyped
-
-    private void JT_componenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JT_componenteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_JT_componenteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -414,14 +402,38 @@ public class Ingresar_servicio extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Ingresar_servicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Modificar_servicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Ingresar_servicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Modificar_servicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Ingresar_servicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Modificar_servicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Ingresar_servicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Modificar_servicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -434,7 +446,7 @@ public class Ingresar_servicio extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Ingresar_servicio().setVisible(true);
+                new Modificar_servicio().setVisible(true);
             }
         });
     }
@@ -443,11 +455,9 @@ public class Ingresar_servicio extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> CMB_categoria;
     private javax.swing.JButton JB_OK;
     private javax.swing.JButton JB_cancel;
-    private javax.swing.JButton JB_volver;
     private javax.swing.JTextField JT_componente;
     private javax.swing.JTextField JT_precio;
     private javax.swing.JLabel LBL_estado;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

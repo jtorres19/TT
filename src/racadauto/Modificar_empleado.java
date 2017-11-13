@@ -25,8 +25,8 @@ public class Modificar_empleado extends javax.swing.JFrame {
     private String usuario = "root";
     private String password = "";
     private String msj;
-    DefaultTableModel modeloTabla;    
-     
+    DefaultTableModel modeloTabla;
+
     public Modificar_empleado() {
         conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
@@ -34,7 +34,7 @@ public class Modificar_empleado extends javax.swing.JFrame {
         initComponents();
         llenarCombo();
     }
-    
+
     public void conectar() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -45,14 +45,14 @@ public class Modificar_empleado extends javax.swing.JFrame {
             msj = "ERROR AL CONECTAR";
         }
     }
-    
+
     private String[] getColumnas() {
 
         String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO", "FONO", "MAIL", "CARGO"};
 
         return columna;
     }
-    
+
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
@@ -70,21 +70,23 @@ public class Modificar_empleado extends javax.swing.JFrame {
             msj = "No se pudo llenar tabla";
         }
     }
-    
-     void limpiaTabla() {
-        do {
-            modeloTabla.getRowCount();
-            modeloTabla.removeRow(0);
-        } while (modeloTabla.getRowCount() != 0);
+
+    void limpiaTabla() {
+        if (modeloTabla.getRowCount() > 0) {
+            do {
+                modeloTabla.getRowCount();
+                modeloTabla.removeRow(0);
+            } while (modeloTabla.getRowCount() != 0);
+        }
     }
-     
-     public void clean() {
+
+    public void clean() {
         JT_nom.setText("");
         JT_paterno.setText("");
         JT_materno.setText("");
         JT_fono.setText("");
         JT_mail.setText("");
-    } 
+    }
 
     public void llenarCombo() {
         cmb_cargo.removeAllItems();
@@ -97,119 +99,103 @@ public class Modificar_empleado extends javax.swing.JFrame {
         } catch (SQLException ed) {
             msj = "no se pudo seleccionar";
         }
-    } 
-    
+    }
+
     public int verificar() {
 
         int cont = 0;
-        
-        String nombre = JT_nom.getText().toUpperCase();
-        String paterno = JT_paterno.getText().toUpperCase();
-        String materno = JT_materno.getText().toUpperCase();
-        String fono = String.valueOf(JT_fono.getText());
-        String mail = JT_mail.getText();
+
+        String nombre = JT_nom.getText().toUpperCase().trim();
+        String paterno = JT_paterno.getText().toUpperCase().trim();
+        String materno = JT_materno.getText().toUpperCase().trim();
+        String fono = String.valueOf(JT_fono.getText().trim());
+        String mail = JT_mail.getText().trim();
         String cargo = (String) cmb_cargo.getSelectedItem();
         String rut2 = "";
 
         try {
-            sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT rut_trabajador FROM trabajador");
             while (rs.next()) {
-                rut2 = rs.getString("rut_trabajador");
+                rut2 = rs.getString("rut_trabajador").trim();
             }
         } catch (SQLException eg) {
             msj = "Error con su Solicitud";
         }
         
-        
-        if ((JT_nom.getText().equals(""))
-                || (JT_paterno.getText().equals(""))
-                || (JT_materno.getText().equals("")) 
-                || (JT_fono.getText().equals(""))
-                || (JT_mail.getText().equals(""))){
+        if (jTable1.getSelectedRow() == -1 ){
             JOptionPane.showMessageDialog(null,
-                    "Error, dejó una casilla vacía", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont++;
-        }
-        
-        if ((nombre.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString()))
-                && (paterno.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 2).toString()))
-                && (materno.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 3).toString())) 
-                && (fono.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 4).toString()))
-                && (mail.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 5).toString()))
-                && (cargo.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 6)))){
-            JOptionPane.showMessageDialog(null,
-                    "Error, No Se Ha Modificado Nada", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont++;
-        }   
-        
-        
-        if (nombre.matches("[-+]?\\d*\\.?\\d+")) {
-            JOptionPane.showMessageDialog(null, "Error, nombre no tiene que ser númerico", "ERROR", JOptionPane.ERROR_MESSAGE);
-            cont++;
-        } else if (JT_nom.getText().length() >= 40) {
-            JOptionPane.showMessageDialog(null,
-                    "Error, nombre maximo 40 letras", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont++;
-        }
-        
-        
-        if (JT_paterno.getText().length() > 30) {
-            JOptionPane.showMessageDialog(null,
-                    "Error, apellido paterno maximo 30 letras", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont++;
-        } else if (paterno.matches("[-+]?\\d*\\.?\\d+")) {
-            JOptionPane.showMessageDialog(null,
-                    "Error, apellido paterno no deben ser numeros", "ERROR",
+                    "ERROR, No se ha seleccionado ninguna fila", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
 
-        
-        if (JT_materno.getText().length() > 30) {
+        if ((JT_nom.getText().equals(""))
+                || (JT_paterno.getText().equals(""))
+                || (JT_materno.getText().equals(""))
+                || (JT_fono.getText().equals(""))
+                || (JT_mail.getText().equals(""))) {
             JOptionPane.showMessageDialog(null,
-                    "Error, apellido materno maximo 30 letras", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont++;
-        } else if (materno.matches("[-+]?\\d*\\.?\\d+")) {
-            JOptionPane.showMessageDialog(null,
-                    "Error, apellido materno no deben ser numeros", "ERROR",
+                    "ERROR, dejó una casilla vacía", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
+
+        if ((nombre.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString()))
+                && (paterno.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 2).toString()))
+                && (materno.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 3).toString()))
+                && (fono.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 4).toString()))
+                && (mail.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 5).toString()))
+                && (cargo.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 6)))) {
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, no se ha MODIFICADO nada", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        }
+
+        if (JT_nom.getText().length() >= 40) {
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, NOMBRE maximo 40 letras", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        }
+
+        if (JT_paterno.getText().length() > 30) {
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, APELLIDO PATERNO maximo 30 letras", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        } 
+
+        if (JT_materno.getText().length() > 30) {
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, APELLIDO MATERNO maximo 30 letras", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        } 
 
         if (JT_fono.getText().length() > 15) {
             JOptionPane.showMessageDialog(null,
-                    "Error, fono no puede exceder los 15 numeros", "ERROR",
+                    "ERROR, FONO no puede exceder los 15 numeros", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
-        } else if (!fono.matches("[-+]?\\d*\\.?\\d+")) {
-            JOptionPane.showMessageDialog(null,
-                    "Error, fono tiene que ser numerico", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont++;
-        }
-        
+        } 
 
         if (JT_mail.getText().length() > 30) {
             JOptionPane.showMessageDialog(null,
                     "Error, mail no puede exceder los 30 caracteres", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
-        } else if (!mail.matches("^([0-9a-zA-Z]([_.w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-w]*[0-9a-zA-Z].)+([a-zA-Z]{2,9}.)+[a-zA-Z]{2,3})$") ) {
+        } else if (!mail.matches("^([0-9a-zA-Z]([_.w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-w]*[0-9a-zA-Z].)+([a-zA-Z]{2,9}.)+[a-zA-Z]{2,3})$")) {
             JOptionPane.showMessageDialog(null,
                     "Error, mail mal escrito", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
- 
+
         return cont;
     }
-     
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -238,7 +224,7 @@ public class Modificar_empleado extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         LBL_estado = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel9.setText("RACAD AUTOMOTRIZ - MODIFICAR EMPLEADO");
@@ -256,11 +242,35 @@ public class Modificar_empleado extends javax.swing.JFrame {
 
         jLabel4.setText("Apellido Materno :");
 
+        JT_nom.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_nomKeyTyped(evt);
+            }
+        });
+
+        JT_paterno.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_paternoKeyTyped(evt);
+            }
+        });
+
+        JT_materno.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_maternoKeyTyped(evt);
+            }
+        });
+
         jLabel5.setText("Fono :");
 
         jLabel6.setText("Cargo :");
 
         jLabel7.setText("E-Mail :");
+
+        JT_fono.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_fonoKeyTyped(evt);
+            }
+        });
 
         JT_mail.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -292,39 +302,37 @@ public class Modificar_empleado extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel9)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(JT_materno))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(JT_paterno)))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel9)
+                        .addGap(0, 183, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(cmb_cargo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(JT_fono, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-                                    .addComponent(JT_mail))))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(JT_materno))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(JT_paterno)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(cmb_cargo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(JT_fono)
+                            .addComponent(JT_mail, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(LBL_estado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
                         .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -335,34 +343,43 @@ public class Modificar_empleado extends javax.swing.JFrame {
                 .addComponent(jLabel9)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5)
-                    .addComponent(JT_fono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(JT_paterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7)
-                    .addComponent(JT_mail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(JT_materno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6)
-                    .addComponent(cmb_cargo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(27, 27, 27)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(JT_fono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(JT_mail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(cmb_cargo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(JT_paterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(JT_materno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(JB_cancel)
-                        .addComponent(JB_OK))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(JB_cancel, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(JB_OK, javax.swing.GroupLayout.Alignment.TRAILING))
                     .addComponent(LBL_estado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void JB_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_cancelActionPerformed
@@ -386,31 +403,31 @@ public class Modificar_empleado extends javax.swing.JFrame {
 
         String fono = jTable1.getValueAt(jTable1.getSelectedRow(), 4).toString();
         JT_fono.setText(fono);
-        
+
         String mail = jTable1.getValueAt(jTable1.getSelectedRow(), 5).toString();
         JT_mail.setText(mail);
-        
+
         String cargo = jTable1.getValueAt(jTable1.getSelectedRow(), 6).toString();
         cmb_cargo.setSelectedItem(cargo);
 
-        
+
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void JB_OKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_OKActionPerformed
         // TODO add your handling code here:
         if (verificar() == 0) {
-            String rut = "", cargo,rut2 = "";
-            rut = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
+            String rut = "", cargo, rut2 = "";
+            rut = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString().trim();
             int dis;
-            String nombre= JT_nom.getText().toUpperCase();
-            String paterno = JT_paterno.getText().toUpperCase();
-            String materno = JT_materno.getText().toUpperCase();
-            String mail = JT_mail.getText();
-            int fono = Integer.parseInt(JT_fono.getText());
+            String nombre = JT_nom.getText().toUpperCase().trim();
+            String paterno = JT_paterno.getText().toUpperCase().trim();
+            String materno = JT_materno.getText().toUpperCase().trim();
+            String mail = JT_mail.getText().trim();
+            int fono = Integer.parseInt(JT_fono.getText().trim());
             cargo = (String) cmb_cargo.getSelectedItem();
-            
+
             int cargo2 = 0;
-            
+
             try {
                 sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT id_cargo FROM cargo WHERE  nombre = '" + cargo + "'");
@@ -420,12 +437,12 @@ public class Modificar_empleado extends javax.swing.JFrame {
             } catch (SQLException s) {
                 msj = "Error con Cargo";
             }
-            
+
             try {
                 sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT rut_trabajador FROM trabajador WHERE rut_trabajador = '" + rut + "'");
                 while (rs.next()) {
-                    rut2 = rs.getString("rut_trabajador");
+                    rut2 = rs.getString("rut_trabajador").trim();
                 }
 
             } catch (SQLException f) {
@@ -459,8 +476,60 @@ public class Modificar_empleado extends javax.swing.JFrame {
         }
 
         limpiaTabla();
-        setFilas();                
+        setFilas();
     }//GEN-LAST:event_JB_OKActionPerformed
+
+    private void JT_nomKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_nomKeyTyped
+        char validar = evt.getKeyChar();
+
+        if (!Character.isLetter(validar) && validar != evt.VK_BACK_SPACE && validar != evt.VK_SPACE) {
+            getToolkit().beep();
+            evt.consume();
+
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, NOMBRE solo pueden ser letras", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_JT_nomKeyTyped
+
+    private void JT_paternoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_paternoKeyTyped
+        char validar = evt.getKeyChar();
+
+        if (!Character.isLetter(validar) && validar != evt.VK_BACK_SPACE && validar != evt.VK_SPACE) {
+            getToolkit().beep();
+            evt.consume();
+
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, APELLIDO PATERNO solo pueden ser letras", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_JT_paternoKeyTyped
+
+    private void JT_maternoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_maternoKeyTyped
+        char validar = evt.getKeyChar();
+
+        if (!Character.isLetter(validar) && validar != evt.VK_BACK_SPACE && validar != evt.VK_SPACE) {
+            getToolkit().beep();
+            evt.consume();
+
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, APELLIDO MATERNO solo pueden ser letras", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_JT_maternoKeyTyped
+
+    private void JT_fonoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_fonoKeyTyped
+        char validar = evt.getKeyChar();
+
+        if (!Character.isDigit(validar) && validar != evt.VK_BACK_SPACE) {
+            getToolkit().beep();
+            evt.consume();
+
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, FONO solo pueden ser números", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_JT_fonoKeyTyped
 
     /**
      * @param args the command line arguments

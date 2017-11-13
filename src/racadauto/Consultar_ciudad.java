@@ -101,7 +101,7 @@ public class Consultar_ciudad extends javax.swing.JFrame /*implements ActionList
         setMinimumSize(new java.awt.Dimension(670, 450));
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel9.setText("RACAD AUTOMOTRIZ - CONSULTAR CARGO");
+        jLabel9.setText("RACAD AUTOMOTRIZ - CONSULTAR CIUDAD");
 
         JB_cancel.setText("Volver");
         JB_cancel.addActionListener(new java.awt.event.ActionListener() {
@@ -138,9 +138,7 @@ public class Consultar_ciudad extends javax.swing.JFrame /*implements ActionList
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE)))
@@ -177,6 +175,8 @@ public class Consultar_ciudad extends javax.swing.JFrame /*implements ActionList
                         .addComponent(JB_cancel)
                         .addContainerGap())))
         );
+
+        jLabel9.getAccessibleContext().setAccessibleName("RACAD AUTOMOTRIZ - CONSULTAR CIUDAD");
 
         pack();
         setLocationRelativeTo(null);

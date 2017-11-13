@@ -15,7 +15,8 @@ import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-public class Eliminar_empleado extends javax.swing.JFrame {
+public class Eliminar_categoria extends javax.swing.JFrame {
+
     private Statement sentencia;
     private Connection conexion;
     private String nomBD = "racad";
@@ -26,46 +27,27 @@ public class Eliminar_empleado extends javax.swing.JFrame {
     String filtro;
     private TableRowSorter trsfiltro;
 
-
-    public Eliminar_empleado() {
+    public Eliminar_categoria() {
         conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
-        
     }
-     
-    
-    public void conectar(){
-        try{
-            Class.forName("com.mysql.jdbc.Driver");
-            String url="jdbc:mysql://localhost:3306/"+this.nomBD;
-            this.conexion=(Connection)DriverManager.getConnection(url,this.usuario,this.password);
-            this.sentencia=(Statement)this.conexion.createStatement();
-        }
-        catch(Exception e){
-            msj="error al conectar";
-        }
-    }    
-    
-    
+
     private String[] getColumnas() {
 
-        String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO", "FONO", "MAIL", "CARGO"};
+        String columna[] = new String[]{"ID CATEGORIA", "NOMBRE"};
 
         return columna;
     }
-    
-    
+
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT t.rut_trabajador,t.nombre,t.ape_paterno,t.ape_materno,t.fono,t.email,c.nombre "
-                    + "                                 FROM trabajador t, cargo c "
-                    + "                                 WHERE t.id_cargo = c.id_cargo");
-            Object datos[] = new Object[7];
+            ResultSet lista = sentencia.executeQuery("SELECT * FROM categoria");
+            Object datos[] = new Object[9];
             while (lista.next()) {
-                for (int i = 0; i < 7; i++) {
+                for (int i = 0; i < 2; i++) {
                     datos[i] = lista.getObject(i + 1);
                 }
                 modeloTabla.addRow(datos);
@@ -74,17 +56,15 @@ public class Eliminar_empleado extends javax.swing.JFrame {
             msj = "No se pudo llenar tabla";
         }
     }
-    
-    
+
     void limpiaTabla() {
-        if (modeloTabla.getRowCount() > 0) {
+        if (modeloTabla.getRowCount() > 0){
             do {
                 modeloTabla.getRowCount();
                 modeloTabla.removeRow(0);
             } while (modeloTabla.getRowCount() != 0);
         }
     }
-      
     
     public void filtro() {
 
@@ -93,52 +73,53 @@ public class Eliminar_empleado extends javax.swing.JFrame {
         trsfiltro.setRowFilter(RowFilter.regexFilter(txtbuscarxnom.getText().toUpperCase(), columna));
     }
     
-    
+    //verifica si los items están en otras tablas
     public int verificar() {
         int yes = 0;
-        String rut2 = "";
-        String rut= jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
+        int id = 0;
+        int id2 = 0;
+        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString();
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet rs = sentencia.executeQuery("SELECT rut_trabajador FROM trabajador WHERE rut_trabajador = '" + rut + "'");
+            ResultSet rs = sentencia.executeQuery("SELECT id_categoria FROM categoria WHERE nombre = '" + nom + "'");
             while (rs.next()) {
-                rut = rs.getString("rut_trabajador").trim();
+                id = rs.getInt("id_categoria");
             }
         } catch (SQLException eg) {
             msj = "Error con su Solicitud";
         }
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet rs = sentencia.executeQuery("SELECT * FROM detalle_solicitud");
+            ResultSet rs = sentencia.executeQuery("SELECT * FROM servicio");
             while (rs.next()) {
-                rut2 = rs.getString("rut_trabajador").trim();
-                if (rut == rut2) {
-                    yes += rs.getInt("cod_solicitud");
+                id2 = rs.getInt("id_servicio");
+                if (id == id2) {
+                    yes += rs.getInt("id_servicio");
                 }
             }
 
         } catch (SQLException t) {
-            msj = "No se puede Eliminar, trabajador referenciado en otra tabla";
-        }
-        try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet rs = sentencia.executeQuery("SELECT * FROM solicitud_servicio");
-            while (rs.next()) {
-                rut2 = rs.getString("rut_trabajador").trim();
-                if (rut == rut2) {
-                    yes += rs.getInt("cod_solicitud");
-                }
-            }
-        } catch (SQLException t) {
-            msj = "No se puede Eliminar, trabajador referenciado en otra tabla";
+            msj = "Error con su Solicitud";
         }
         
         if (yes > 0){
             JOptionPane.showMessageDialog(null,
-                    "ERROR, TRABAJADOR referenciado en otras tablas no se puede eliminar", "ERROR",
+                    "ERROR, CATEGORIA referenciado en otras tablas no se puede eliminar", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
         }
+        
         return yes;
+    }
+
+    public void conectar() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
+            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
+            this.sentencia = (Statement) this.conexion.createStatement();
+        } catch (Exception e) {
+            msj = "error al conectar";
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -153,7 +134,7 @@ public class Eliminar_empleado extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         txtbuscarxnom = new javax.swing.JTextField();
-        jl_Event = new javax.swing.JLabel();
+        LBL_estado = new javax.swing.JLabel();
 
         cmbCod.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -162,12 +143,12 @@ public class Eliminar_empleado extends javax.swing.JFrame {
         });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("ELIMINAR EMPLEADO");
+        setTitle("ELIMINAR ITEM");
         setMinimumSize(new java.awt.Dimension(420, 210));
         setResizable(false);
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel9.setText("RACAD AUTOMOTRIZ - ELIMINAR EMPLEADO");
+        jLabel9.setText("RACAD AUTOMOTRIZ - ELIMINAR CATEGORIA");
 
         JB_cancel.setText("Volver");
         JB_cancel.setPreferredSize(new java.awt.Dimension(100, 35));
@@ -207,23 +188,21 @@ public class Eliminar_empleado extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(BTN_Del, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jl_Event, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtbuscarxnom, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(BTN_Del, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(txtbuscarxnom, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)))
+                .addGap(0, 10, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -241,7 +220,7 @@ public class Eliminar_empleado extends javax.swing.JFrame {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(BTN_Del, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jl_Event, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(LBL_estado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -258,41 +237,45 @@ public class Eliminar_empleado extends javax.swing.JFrame {
     }//GEN-LAST:event_JB_cancelActionPerformed
 
     private void BTN_DelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_DelActionPerformed
+        if (jTable1.getSelectedRow() == -1){
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, No se ha seleccionado ninguna fila", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+        }
         
-        String rut = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString().trim();
-        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString().trim();
+        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString();
         
-        int i =JOptionPane.showConfirmDialog(this,
-                "¿Realmente Desea Eliminar al Trabajador" + nom + " ?","Confirmar Eliminación",
+        int i = JOptionPane.showConfirmDialog(this,
+                "¿Realmente desea eliminar " + nom + " de las CATEGORIAS?","Confirmar Eliminación",
                 JOptionPane.YES_NO_OPTION);
         
-        String rut2 = "";
+        int id = 0;
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet rs = sentencia.executeQuery("SELECT rut_trabajador FROM trabajador WHERE rut_trabajador = '" + rut + "'");
+            ResultSet rs = sentencia.executeQuery("SELECT id_categoria FROM categoria WHERE nombre = '" + nom + "'");
             while (rs.next()) {
-                rut2 = rs.getString("rut_trabajador").trim();
+                id = rs.getInt("id_categoria");
             }
         } catch (SQLException e) {
-            msj = "Error al buscar TRABAJADOR en tabla?";
-            jl_Event.setText(msj);
+            msj = "Error al buscar CATEGORIA en tabla?";
+            LBL_estado.setText(msj);
         }
 
         
         if (verificar() == 0 && i== 0) {
-            String sql = "DELETE FROM trabajador WHERE rut_trabajador =" + rut + "";
+            String sql = "DELETE FROM categoria WHERE id_categoria =" + id + "";
             try {
                 sentencia.executeUpdate(sql);
-                jl_Event.setText("TRABAJADOR borrado con exito");
+                LBL_estado.setText("CATEGORIA borrada con éxito");
             } catch (SQLException ee) {
-                msj = "Error al borrar";
-                jl_Event.setText(msj);
+                msj = "Error Al Borrar";
+                LBL_estado.setText(msj);
             }
         }
         
         limpiaTabla();
         setFilas();
-
+        
     }//GEN-LAST:event_BTN_DelActionPerformed
 
     private void txtbuscarxnomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtbuscarxnomActionPerformed
@@ -327,21 +310,83 @@ public class Eliminar_empleado extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Eliminar_item.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Eliminar_categoria.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Eliminar_item.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Eliminar_categoria.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Eliminar_item.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Eliminar_categoria.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Eliminar_item.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Eliminar_categoria.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Eliminar_empleado().setVisible(true);
+                new Eliminar_categoria().setVisible(true);
             }
         });
     }
@@ -349,12 +394,12 @@ public class Eliminar_empleado extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BTN_Del;
     private javax.swing.JButton JB_cancel;
+    private javax.swing.JLabel LBL_estado;
     private javax.swing.JComboBox<String> cmbCod;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JLabel jl_Event;
     private javax.swing.JTextField txtbuscarxnom;
     // End of variables declaration//GEN-END:variables
 }

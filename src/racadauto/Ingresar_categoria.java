@@ -17,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author falco
  */
-public class Ingresar_cargo extends javax.swing.JFrame {
+public class Ingresar_categoria extends javax.swing.JFrame {
 
     private Statement sentencia;
     private Connection conexion;
@@ -27,7 +27,7 @@ public class Ingresar_cargo extends javax.swing.JFrame {
     private String msj;
     DefaultTableModel modeloTabla; 
     
-    public Ingresar_cargo() {
+    public Ingresar_categoria() {
         conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
@@ -48,7 +48,7 @@ public class Ingresar_cargo extends javax.swing.JFrame {
     
     private String[] getColumnas() {
 
-        String columna[] = new String[]{"ID CARGO", "NOMBRE"};
+        String columna[] = new String[]{"ID CATEGORÍA", "NOMBRE"};
 
         return columna;
     }
@@ -56,8 +56,8 @@ public class Ingresar_cargo extends javax.swing.JFrame {
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT id_cargo,nombre "
-                                                     + " FROM cargo");
+            ResultSet lista = sentencia.executeQuery("SELECT id_categoria,nombre "
+                                                     + " FROM categoria");
             Object datos[] = new Object[7];
             while (lista.next()) {
                 for (int i = 0; i < 2; i++) {
@@ -71,10 +71,12 @@ public class Ingresar_cargo extends javax.swing.JFrame {
     }
     
     void limpiaTabla() {
-        do {
-            modeloTabla.getRowCount();
-            modeloTabla.removeRow(0);
-        } while (modeloTabla.getRowCount() != 0);
+        if (modeloTabla.getRowCount() > 0){
+            do {
+                modeloTabla.getRowCount();
+                modeloTabla.removeRow(0);
+            } while (modeloTabla.getRowCount() != 0);
+        }
     }
     
     public int verificar() {
@@ -85,12 +87,12 @@ public class Ingresar_cargo extends javax.swing.JFrame {
 
         try {
             sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
-            ResultSet rs = sentencia.executeQuery("SELECT nombre FROM cargo");
+            ResultSet rs = sentencia.executeQuery("SELECT nombre FROM categoria");
             while (rs.next()) {
                 nom = rs.getString("nombre").toUpperCase().trim();
                 if (nombre.equals(nom)) {
                     JOptionPane.showMessageDialog(null,
-                    "ERROR, ya existe este CARGO!", "ERROR",
+                    "ERROR, Ya existe esta CATEGORIA!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
                     cont++;
                 } 
@@ -102,12 +104,14 @@ public class Ingresar_cargo extends javax.swing.JFrame {
         
         if (JT_nom.getText().equals("")) {
             JOptionPane.showMessageDialog(null,
-                    "ERROR, dejó una casilla vacía", "ERROR",
+                    "EROR, Dejó una casilla vacía", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont ++;
-        } else if (JT_nom.getText().length() > 30) {
+        }
+        
+        else if (JT_nom.getText().length() > 30) {
             JOptionPane.showMessageDialog(null,
-                    "ERROR, CARGO maximo 30 letras", "ERROR",
+                    "Error, CATEGORIA maximo 30 letras", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
@@ -145,14 +149,12 @@ public class Ingresar_cargo extends javax.swing.JFrame {
         });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setMaximumSize(new java.awt.Dimension(300, 300));
         setMinimumSize(new java.awt.Dimension(300, 300));
-        setPreferredSize(new java.awt.Dimension(500, 500));
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel9.setText("RACAD AUTOMOTRIZ - INGRESAR CARGO");
+        jLabel9.setText("RACAD AUTOMOTRIZ - INGRESAR CATEGORÍA");
 
-        jLabel4.setText("Nombre Cargo :");
+        jLabel4.setText("Nombre Categoría :");
 
         JT_nom.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -183,42 +185,41 @@ public class Ingresar_cargo extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(LBL_estado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(JB_volver))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(149, 149, 149))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(LBL_estado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(18, 18, 18)
-                                .addComponent(JB_volver)))
-                        .addComponent(jLabel9)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel9)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(JT_nom, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(JB_volver, javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(JB_OK))
+                    .addComponent(JB_volver)
+                    .addComponent(JB_OK)
                     .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         pack();
@@ -239,29 +240,29 @@ public class Ingresar_cargo extends javax.swing.JFrame {
             String nom;
             int dis;
             int est = 1;
-            nom = JT_nom.getText().toUpperCase();
-            int cargo = 0;
+            nom = JT_nom.getText().toUpperCase().trim();
+            int categoria = 0;
             
             
             try {
                 sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
-                ResultSet rs = sentencia.executeQuery("SELECT MAX(id_cargo) as id_cargo FROM cargo");
+                ResultSet rs = sentencia.executeQuery("SELECT MAX(id_categoria) as id_categoria FROM categoria");
                 while (rs.next()) {
-                    cargo = rs.getInt("id_cargo");
+                    categoria = rs.getInt("id_categoria");
                 }
-                cargo ++;
+                categoria ++;
             } catch (SQLException f) {
-                msj = "Error con Codigo";
+                msj = "Error con CATEGORIA";
             }
 
-            String sql = "INSERT INTO cargo(id_cargo,nombre) VALUES(" + cargo + ",'" + nom + "')";
+            String sql = "INSERT INTO categoria(id_categoria,nombre) VALUES(" + categoria + ",'" + nom + "')";
             try {
                 sentencia.executeUpdate(sql);
                 msj = "Datos Guardados";
                 LBL_estado.setText(msj);
                 dis = 1;
             } catch (SQLException e) {
-                msj = "Cargo no Ingresado, Problemas en Base de Datos";
+                msj = "CATEGORIA no ingresada, Problemas en base de datos";
                 LBL_estado.setText(msj);
                 dis = 0;
             }
@@ -269,12 +270,13 @@ public class Ingresar_cargo extends javax.swing.JFrame {
                 JT_nom.setText("");
             }
         } else {
-            msj = "Item no Ingresado";
+            msj = "CATEGORIA no Ingresada";
             LBL_estado.setText(msj);
         }
         
         limpiaTabla();
         setFilas();
+        
     }//GEN-LAST:event_JB_OKActionPerformed
 
     private void JT_nomKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_nomKeyTyped
@@ -285,7 +287,7 @@ public class Ingresar_cargo extends javax.swing.JFrame {
             evt.consume();
 
             JOptionPane.showMessageDialog(null,
-                    "ERROR, CARGO solo pueden ser letras", "ERROR",
+                    "ERROR, CATEGORIA solo pueden ser letras", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_JT_nomKeyTyped
@@ -307,21 +309,35 @@ public class Ingresar_cargo extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Ingresar_cargo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ingresar_categoria.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Ingresar_cargo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ingresar_categoria.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Ingresar_cargo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ingresar_categoria.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Ingresar_cargo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ingresar_categoria.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Ingresar_cargo().setVisible(true);
+                new Ingresar_categoria().setVisible(true);
             }
         });
     }

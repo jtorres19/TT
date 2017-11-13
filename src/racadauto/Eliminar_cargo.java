@@ -58,10 +58,12 @@ public class Eliminar_cargo extends javax.swing.JFrame {
     }
 
     void limpiaTabla() {
-        do {
-            modeloTabla.getRowCount();
-            modeloTabla.removeRow(0);
-        } while (modeloTabla.getRowCount() != 0);
+        if (modeloTabla.getRowCount() > 0){
+            do {
+                modeloTabla.getRowCount();
+                modeloTabla.removeRow(0);
+            } while (modeloTabla.getRowCount() != 0);
+        }
     }
     
     public void filtro() {
@@ -76,7 +78,7 @@ public class Eliminar_cargo extends javax.swing.JFrame {
         int yes = 0;
         int cargo = 0;
         int cargo2 = 0;
-        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString();
+        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString().trim();
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT id_cargo FROM cargo WHERE nombre = '" + nom + "'");
@@ -92,12 +94,18 @@ public class Eliminar_cargo extends javax.swing.JFrame {
             while (rs.next()) {
                 cargo2 = rs.getInt("id_cargo");
                 if (cargo == cargo2) {
-                    yes += rs.getInt("rut_trabajador");
+                    yes += rs.getInt("id_cargo");
                 }
             }
 
         } catch (SQLException t) {
             msj = "Error con su Solicitud";
+        }
+        
+        if (yes > 0){
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, CARGO referenciado en otras tablas no se puede eliminar", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
         
         return yes;
@@ -134,7 +142,7 @@ public class Eliminar_cargo extends javax.swing.JFrame {
             }
         });
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("ELIMINAR ITEM");
         setMinimumSize(new java.awt.Dimension(420, 210));
         setResizable(false);
@@ -180,21 +188,20 @@ public class Eliminar_cargo extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(BTN_Del, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(34, 34, 34)
                         .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(txtbuscarxnom, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)))
-                .addGap(0, 90, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtbuscarxnom, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(0, 10, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -207,7 +214,7 @@ public class Eliminar_cargo extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtbuscarxnom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(BTN_Del, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -229,10 +236,10 @@ public class Eliminar_cargo extends javax.swing.JFrame {
     }//GEN-LAST:event_JB_cancelActionPerformed
 
     private void BTN_DelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_DelActionPerformed
-        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString();
+        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString().trim();
         
         int i = JOptionPane.showConfirmDialog(this,
-                "¿Realmente Desea Eliminar " + nom + " de los Cargos?","Confirmar Eliminación",
+                "¿Realmente desea eliminar " + nom + " de los cargos?","Confirmar Eliminación",
                 JOptionPane.YES_NO_OPTION);
         
         int cargo = 0;
@@ -243,7 +250,7 @@ public class Eliminar_cargo extends javax.swing.JFrame {
                 cargo = rs.getInt("id_cargo");
             }
         } catch (SQLException e) {
-            msj = "Error al buscar item en tabla?";
+            msj = "Error al buscar CARGO en tabla?";
             LBL_estado.setText(msj);
         }
 
@@ -252,7 +259,7 @@ public class Eliminar_cargo extends javax.swing.JFrame {
             String sql = "DELETE FROM cargo WHERE id_cargo =" + cargo + "";
             try {
                 sentencia.executeUpdate(sql);
-                LBL_estado.setText("Item borrado con exito");
+                LBL_estado.setText("CARGO borrado con exito");
             } catch (SQLException ee) {
                 msj = "Error al borrar";
                 LBL_estado.setText(msj);

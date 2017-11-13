@@ -37,10 +37,7 @@ public class Modificar_cargo extends javax.swing.JFrame {
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM cargo"
-            /*"SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre " +
-                            "FROM inventario i,unidad_medida m,familia f" + 
-                            "WHERE i.id_familia = f.id_familia AND m.id_medida = i.id_medida"*/);
+            ResultSet lista = sentencia.executeQuery("SELECT * FROM cargo");
             Object datos[] = new Object[9];
             while (lista.next()) {
                 for (int i = 0; i < 2; i++) {
@@ -75,16 +72,16 @@ public class Modificar_cargo extends javax.swing.JFrame {
 
         int cont = 0;
         String nom = "";
-        String nom2 = JT_nom.getText().toUpperCase();
+        String nom2 = JT_nom.getText().toUpperCase().trim();
 
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT nombre FROM cargo");
             while (rs.next()) {
-                nom = rs.getString("nombre");
+                nom = rs.getString("nombre").trim();
                 if (nom2.equals(nom)) {
                     JOptionPane.showMessageDialog(null,
-                    "Error, Nombre no ha Cambiado", "ERROR",
+                    "ERROR, NOMBRE no ha cambiado", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont ++;
         }
@@ -92,25 +89,27 @@ public class Modificar_cargo extends javax.swing.JFrame {
         } catch (SQLException eg) {
             msj = "Error con su Solicitud";
         }
+        
+        if (jTable1.getSelectedRow() == -1 ){
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, no se ha seleccionado ninguna fila", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        }
 
         if (JT_nom.getText().equals("")) {
             JOptionPane.showMessageDialog(null,
-                    "Error, dejó una casilla vacía", "ERROR",
+                    "ERROR, dejó una casilla vacía", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
 
         if (JT_nom.getText().length() > 30) {
             JOptionPane.showMessageDialog(null,
-                    "Error, nombre maximo 30 letras", "ERROR",
+                    "ERROR, nombre maximo 30 letras", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
-        } else if (nom2.matches("[-+]?\\d*\\.?\\d+")) {
-            JOptionPane.showMessageDialog(null,
-                    "Error, nombre no tiene que ser númerico", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont++;
-        }
+        } 
 
         return cont;
     }
@@ -128,7 +127,7 @@ public class Modificar_cargo extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         JB_OK.setText("OK");
         JB_OK.addActionListener(new java.awt.event.ActionListener() {
@@ -149,6 +148,12 @@ public class Modificar_cargo extends javax.swing.JFrame {
 
         jLabel2.setText("Nombre :");
 
+        JT_nom.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_nomKeyTyped(evt);
+            }
+        });
+
         jTable1.setModel(modeloTabla);
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -163,19 +168,19 @@ public class Modificar_cargo extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
                         .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGap(18, 18, Short.MAX_VALUE)
                         .addComponent(JB_cancel))
-                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -185,11 +190,11 @@ public class Modificar_cargo extends javax.swing.JFrame {
                 .addComponent(jLabel9)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(JB_cancel, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -206,8 +211,8 @@ public class Modificar_cargo extends javax.swing.JFrame {
 
         if (verificar() == 0) {
             String nom = "";
-            nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString().toUpperCase();
-            String nom2 = JT_nom.getText().toUpperCase();
+            nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString().toUpperCase().trim();
+            String nom2 = JT_nom.getText().toUpperCase().trim();
             int cargo = 0;
 
             try {
@@ -253,6 +258,19 @@ public class Modificar_cargo extends javax.swing.JFrame {
         JT_nom.setText(nom);
 
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void JT_nomKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_nomKeyTyped
+        char validar = evt.getKeyChar();
+
+        if (!Character.isLetter(validar) && validar != evt.VK_SPACE && validar != evt.VK_BACK_SPACE) {
+            getToolkit().beep();
+            evt.consume();
+
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, CARGO solo pueden ser letras", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_JT_nomKeyTyped
 
     /**
      * @param args the command line arguments
