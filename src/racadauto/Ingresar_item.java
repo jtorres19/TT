@@ -106,7 +106,6 @@ public class Ingresar_item extends javax.swing.JFrame {
         }
     }
 
-    //limite el nombre porque para funciones como eliminar se ocupa el nombre
     public int verificar() {
 
         int cont = 0;
