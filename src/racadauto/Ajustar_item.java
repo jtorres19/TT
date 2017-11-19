@@ -34,21 +34,27 @@ public class Ajustar_item extends javax.swing.JFrame {
     
     private String[] getColumnas() {
 
-        String columna[] = new String[]{"Código", "Nombre", "Stock actual", "Stock crítico", "Valor costo", "Valor venta", "Estado", "Medida", "Familia"};
+        String columna[] = new String[]{"Nombre", "Stock actual", "Stock crítico", "Valor costo", "Valor venta", "Medida", "Familia"};
 
         return columna;
     }
     
+    void limpiaTabla() {
+        do {
+            modeloTabla.getRowCount();
+            modeloTabla.removeRow(0);
+        } while (modeloTabla.getRowCount() != 0);
+    }
+    
+    
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM inventario"
-            /*"SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre " +
-                            "FROM inventario i,unidad_medida m,familia f" + 
-                            "WHERE i.id_familia = f.id_familia AND m.id_medida = i.id_medida"*/);
-            Object datos[] = new Object[9];
+            ResultSet lista = sentencia.executeQuery("SELECT i.nombre, i.stock_actual, i.stock_critico, i.valor_costo, i.valor_venta, um.nombre, f.nombre"
+                    + " FROM inventario i INNER JOIN unidad_medida um ON i.id_medida = um.id_medida LEFT JOIN familia f ON i.id_familia = f.id_familia ");
+            Object datos[] = new Object[7];
             while (lista.next()) {
-                for (int i = 0; i < 9; i++) {
+                for (int i = 0; i < 7; i++) {
                     datos[i] = lista.getObject(i + 1);
                 }
                 modeloTabla.addRow(datos);
@@ -72,10 +78,7 @@ public class Ajustar_item extends javax.swing.JFrame {
     
     
     public void fechaActual(){
-        
         Calendar fecha = new GregorianCalendar();
-        
-        
         lblFecha.setText(fecha.getTime().toString());
     }
        
@@ -114,7 +117,7 @@ public class Ajustar_item extends javax.swing.JFrame {
     
     public int validar2(){
         int val=0,can=0;
-        String nom = jTable1.getValueAt(jTable1.getSelectedRow(),1).toString();
+        String nom = jTable1.getValueAt(jTable1.getSelectedRow(),0).toString();
         try{
             sentencia=(Statement)conexion.createStatement();
             ResultSet rs=sentencia.executeQuery("SELECT stock_actual FROM inventario WHERE nombre = '" + nom + "'" );
@@ -232,37 +235,35 @@ public class Ajustar_item extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 89, Short.MAX_VALUE)
-                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnIncrease, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
+                        .addComponent(btnDecrease, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(67, 67, 67)
+                        .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtCant, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblFecha)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnRehab, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnIncrease, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnDecrease, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(67, 67, 67)
-                                .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel3)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtCant, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(lblEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(18, 18, 18)
-                                .addComponent(lblFecha)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnRehab, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())))
+                                .addComponent(lblEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -276,10 +277,11 @@ public class Ajustar_item extends javax.swing.JFrame {
                     .addComponent(lblEstado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(lblFecha)
-                    .addComponent(btnRehab))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnRehab, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5)
+                        .addComponent(lblFecha)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(18, 18, 18)
@@ -313,10 +315,10 @@ public class Ajustar_item extends javax.swing.JFrame {
         int sto=Integer.parseInt(txtCant.getText());
         int fol=0;
         String rut="185823393";
-        String nom = jTable1.getValueAt(jTable1.getSelectedRow(),1).toString();
+        String nom = jTable1.getValueAt(jTable1.getSelectedRow(),0).toString();
         int est = 0;
         int cod=0;
-        //String fech = "2017-10-05";
+        String fech = lblFecha.getText();
         String desc = txtDesc.getText();
         int cant = Integer.parseInt(txtCant.getText());
         
@@ -341,6 +343,7 @@ public class Ajustar_item extends javax.swing.JFrame {
             msj="Error con Codigo";
         }
         //se obtiene rut trabajador
+        /*
         try{
                 sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
                 ResultSet rs=sentencia.executeQuery("SELECT MAX(rut_trabajador) as rut_trabajador FROM trabajador");
@@ -350,7 +353,7 @@ public class Ajustar_item extends javax.swing.JFrame {
             }catch(SQLException f){
             msj="Error con Codigo";
         }
-        
+        */
             String sql="UPDATE inventario SET stock_actual =stock_actual+"+ sto +" WHERE  cod_item =" + cod + "";
             try{
                 sentencia.executeUpdate(sql);
@@ -365,7 +368,7 @@ public class Ajustar_item extends javax.swing.JFrame {
             }
             
             
-            String sql2="INSERT INTO ajuste(n_folio,rut_trabajador,cod_item,fecha,descrip_ajuste,cantidad) VALUES(" + fol + ",'" + rut +"'," + cod + ",'2017-10-05','" + desc + "'," + cant + ")";
+            String sql2="INSERT INTO ajuste(n_folio,rut_trabajador,cod_item,fecha,descrip_ajuste,cantidad) VALUES(" + fol + ",'" + rut +"'," + cod + ",'2017-11-17','" + desc + "'," + cant + ")";
             try{
                 sentencia.executeUpdate(sql2);
                 msj="Datos Guardados";
@@ -385,11 +388,15 @@ public class Ajustar_item extends javax.swing.JFrame {
         }else{
             lblEstado.setText("Llene todo!");
         }
+        
+        limpiaTabla();
+        setFilas();
+        
     }//GEN-LAST:event_btnIncreaseActionPerformed
 
     private void btnRehabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRehabActionPerformed
         String est = lblEstado.getText();
-        String nom = jTable1.getValueAt(jTable1.getSelectedRow(),1).toString();
+        String nom = jTable1.getValueAt(jTable1.getSelectedRow(),0).toString();
         if (est == "Des-Habilitado"){
             String sql="UPDATE inventario SET estado = 1 WHERE nombre ='" + nom + "'";
                 try{
@@ -401,6 +408,9 @@ public class Ajustar_item extends javax.swing.JFrame {
                     lblEstado.setText(msj);
                 }
         }
+        limpiaTabla();
+        setFilas();
+        
     }//GEN-LAST:event_btnRehabActionPerformed
 
     private void btnDecreaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDecreaseActionPerformed
@@ -409,7 +419,7 @@ public class Ajustar_item extends javax.swing.JFrame {
         int sto=Integer.parseInt(txtCant.getText());
         int fol=0;
         String rut="";
-        String nom = jTable1.getValueAt(jTable1.getSelectedRow(),1).toString();
+        String nom = jTable1.getValueAt(jTable1.getSelectedRow(),0).toString();
         int est = 0;
         int cod=0;
         String fech = "2017-10-05";
@@ -475,12 +485,16 @@ public class Ajustar_item extends javax.swing.JFrame {
         }else{
             lblEstado.setText("Llene todo!");
         }
+        
+        limpiaTabla();
+        setFilas();
+        
     }//GEN-LAST:event_btnDecreaseActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
         
-        String nom = jTable1.getValueAt(jTable1.getSelectedRow(),1).toString();
+        String nom = jTable1.getValueAt(jTable1.getSelectedRow(),0).toString();
         int est = 0;
         try{
         sentencia=(Statement)conexion.createStatement();

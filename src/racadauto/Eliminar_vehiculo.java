@@ -29,7 +29,7 @@ public class Eliminar_vehiculo extends javax.swing.JFrame {
     
     private String[] getColumnas() {
 
-        String columna[] = new String[]{"Patente", "Año", "Kilometraje", "V.I.N.", "Color", "Nombre Dueño", "Marca", "Modelo"};
+        String columna[] = new String[]{"Patente", "Año", "Kilometraje", "V.I.N.", "Color", "Nombre Dueño", "Apellido Paterno","Apellido Materno", "Marca", "Modelo"};
 
         return columna;
     }
@@ -37,10 +37,12 @@ public class Eliminar_vehiculo extends javax.swing.JFrame {
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM vehiculo");
-            Object datos[] = new Object[8];
+            ResultSet lista = sentencia.executeQuery("SELECT v.patente, v.año, v.kms, v.vin, v.color, c.nombre, c.ape_paterno, c.ape_materno, ma.nombre, mo.nombre "
+                    + "FROM vehiculo v INNER JOIN cliente c ON v.rut_cliente = c.rut_cliente "
+                    + "LEFT JOIN marca ma ON v.id_marca = ma.id_marca LEFT JOIN modelo mo ON v.id_modelo = mo.id_modelo");
+            Object datos[] = new Object[10];
             while (lista.next()) {
-                for (int i = 0; i < 8; i++) {
+                for (int i = 0; i < 10; i++) {
                     datos[i] = lista.getObject(i + 1);
                 }
                 modeloTabla.addRow(datos);
@@ -191,6 +193,7 @@ public class Eliminar_vehiculo extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmbCodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCodActionPerformed

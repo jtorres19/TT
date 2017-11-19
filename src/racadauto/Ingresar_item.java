@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 
 public class Ingresar_item extends javax.swing.JFrame {
 
@@ -16,13 +15,10 @@ public class Ingresar_item extends javax.swing.JFrame {
     private String usuario = "root";
     private String password = "";
     private String msj;
-    DefaultTableModel modeloTabla;
 
     public Ingresar_item() {
-        conectar();
-        modeloTabla = new DefaultTableModel(null, getColumnas());
-        setFilas();
         initComponents();
+        conectar();
         llenarCombo();
         llenarCombo2();
     }
@@ -33,42 +29,8 @@ public class Ingresar_item extends javax.swing.JFrame {
             String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
             this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
             this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (Exception e) {
             msj = "ERROR AL CONECTAR";
-        }
-    }
-    
-    private String[] getColumnas() {
-
-        String columna[] = new String[]{"CODIGO", "NOMBRE", "STOCK ACTUAL", "STOCK CRITICO", "VALOR COSTO", "VALOR VENTA", "ESTADO", "MEDIDA", "FAMILIA"};
-
-        return columna;
-    }
-
-    private void setFilas() {
-        try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre "
-                    + "                                 FROM inventario i,unidad_medida m,familia f "
-                    + "                                 WHERE i.id_familia = f.id_familia AND m.id_medida = i.id_medida");
-            Object datos[] = new Object[9];
-            while (lista.next()) {
-                for (int i = 0; i < 9; i++) {
-                    datos[i] = lista.getObject(i + 1);
-                }
-                modeloTabla.addRow(datos);
-            }
-        } catch (SQLException e) {
-            msj = "No se pudo llenar tabla";
-        }
-    }
-    
-    void limpiaTabla() {
-        if (modeloTabla.getRowCount() > 0){
-            do {
-                modeloTabla.getRowCount();
-                modeloTabla.removeRow(0);
-            } while (modeloTabla.getRowCount() != 0);
         }
     }
 
@@ -107,32 +69,22 @@ public class Ingresar_item extends javax.swing.JFrame {
     }
 
     public int verificar() {
-
         int cont = 0;
-        String nombre = JT_nom.getText().toUpperCase();
+        String nombre = JT_nom.getText();
         String cant = JT_cant.getText();
         String stock = JT_stock.getText();
         String vcosto = JT_vcosto.getText();
         String vventa = JT_vventa.getText();
         String nom = "";
-
         try {
             sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT nombre FROM inventario");
             while (rs.next()) {
                 nom = rs.getString("nombre");
-                if (nom.equals(nombre)) {
-                    JOptionPane.showMessageDialog(null,
-                            "Error, ya existe otro item con ese nombre!", "ERROR",
-                            JOptionPane.ERROR_MESSAGE);
-                    cont++;
-                }
             }
         } catch (SQLException eg) {
             msj = "Error con su Solicitud";
         }
-        
-        
         if ((JT_nom.getText().equals(""))
                 || (JT_cant.getText().equals(""))
                 || (JT_stock.getText().equals(""))
@@ -143,12 +95,15 @@ public class Ingresar_item extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
             cont += 1;
         }
-        
-      
-        if (nombre.matches("[-+]?\\d*\\.?\\d+")) {
+        if (JT_nom.getText().equals(nom)) {
+            JOptionPane.showMessageDialog(null,
+                    "Error, ya existe item!", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        } else if (nombre.matches("[-+]?\\d*\\.?\\d+")) {
             JOptionPane.showMessageDialog(null, "Error, nombre no tiene que ser númerico", "ERROR", JOptionPane.ERROR_MESSAGE);
             cont++;
-        } else if (JT_nom.getText().length() > 30) {
+        } else if (JT_nom.getText().length() >= 31) {
             JOptionPane.showMessageDialog(null,
                     "Error, nombre maximo 30 letras", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
@@ -156,7 +111,7 @@ public class Ingresar_item extends javax.swing.JFrame {
         }
 
         
-        if (JT_cant.getText().length() > 2) {
+        if (JT_cant.getText().length() >= 3) {
             JOptionPane.showMessageDialog(null,
                     "Error, stock actual <100 y >0", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
@@ -167,9 +122,7 @@ public class Ingresar_item extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
-
-        
-        if (JT_stock.getText().length() > 2) {
+        if (JT_stock.getText().length() >= 3) {
             JOptionPane.showMessageDialog(null,
                     "Error, stock critico <100 y >0", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
@@ -180,8 +133,7 @@ public class Ingresar_item extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
-
-        if (JT_vcosto.getText().length() > 6) {
+        if (JT_vcosto.getText().length() >= 7) {
             JOptionPane.showMessageDialog(null,
                     "Error, valor costo <1M y >0", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
@@ -192,9 +144,7 @@ public class Ingresar_item extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
-        
-
-        if (JT_vventa.getText().length() > 6) {
+        if (JT_vventa.getText().length() >= 6) {
             JOptionPane.showMessageDialog(null,
                     "Error, valor venta maximo <1M y >0", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
@@ -205,13 +155,11 @@ public class Ingresar_item extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
-        
-        
         if ((Integer.parseInt(JT_vcosto.getText())) > (Integer.parseInt(JT_vventa.getText()))) {
             JOptionPane.showMessageDialog(null,
                     "Error, Valor Venta no puede ser menor a Costo", "error message",
                     JOptionPane.ERROR_MESSAGE);
-            cont ++;
+            cont += 1;
         }
         return cont;
     }
@@ -238,8 +186,6 @@ public class Ingresar_item extends javax.swing.JFrame {
         JB_cancel = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         LBL_estado = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("INGRESO ITEM");
@@ -296,16 +242,6 @@ public class Ingresar_item extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel9.setText("RACAD AUTOMOTRIZ - INGRESAR ITEM");
 
-        jTable1.setAutoCreateRowSorter(true);
-        jTable1.setModel(modeloTabla);
-        jTable1.setName(""); // NOI18N
-        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable1MouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(jTable1);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -313,6 +249,11 @@ public class Ingresar_item extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(LBL_estado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -324,7 +265,7 @@ public class Ingresar_item extends javax.swing.JFrame {
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel7)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(cmb_med, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(cmb_med, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(layout.createSequentialGroup()
@@ -334,7 +275,8 @@ public class Ingresar_item extends javax.swing.JFrame {
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel8)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(cmb_fam, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addComponent(cmb_fam, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(JB_cancel)))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -348,29 +290,15 @@ public class Ingresar_item extends javax.swing.JFrame {
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 512, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 201, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(LBL_estado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(18, 18, 18)
-                                .addComponent(JB_cancel)))
-                        .addContainerGap())))
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(23, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel9)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
@@ -392,12 +320,11 @@ public class Ingresar_item extends javax.swing.JFrame {
                     .addComponent(cmb_med, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
                     .addComponent(cmb_fam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(JB_OK, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(JB_cancel)
-                        .addComponent(LBL_estado)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(JB_OK)
+                    .addComponent(JB_cancel)
+                    .addComponent(LBL_estado))
                 .addContainerGap())
         );
 
@@ -452,7 +379,7 @@ public class Ingresar_item extends javax.swing.JFrame {
                 while (rs.next()) {
                     cod = rs.getInt("cod_item");
                 }
-                cod ++;
+                cod += 1;
             } catch (SQLException f) {
                 msj = "Error con Codigo";
             }
@@ -476,9 +403,6 @@ public class Ingresar_item extends javax.swing.JFrame {
             LBL_estado.setText(msj);
         }
         
-        limpiaTabla();
-        setFilas();
-        
     }//GEN-LAST:event_JB_OKActionPerformed
 
     private void JT_nomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JT_nomActionPerformed
@@ -488,10 +412,6 @@ public class Ingresar_item extends javax.swing.JFrame {
     private void cmb_medActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_medActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cmb_medActionPerformed
-
-    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        
-    }//GEN-LAST:event_jTable1MouseClicked
 
     /**
      * @param args the command line arguments
@@ -554,7 +474,5 @@ public class Ingresar_item extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }

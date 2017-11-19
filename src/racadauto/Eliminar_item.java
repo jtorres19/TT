@@ -3,17 +3,13 @@ package racadauto;
 import com.mysql.jdbc.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.naming.spi.DirStateFactory.Result;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
-import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
 
 public class Eliminar_item extends javax.swing.JFrame {
 
@@ -24,8 +20,6 @@ public class Eliminar_item extends javax.swing.JFrame {
     private String password = "";
     private String msj;
     DefaultTableModel modeloTabla;
-    String filtro;
-    private TableRowSorter trsfiltro;
 
     public Eliminar_item() {
         conectar();
@@ -36,20 +30,30 @@ public class Eliminar_item extends javax.swing.JFrame {
 
     private String[] getColumnas() {
 
-        String columna[] = new String[]{"Código", "Nombre", "Stock actual", "Stock crítico", "Valor costo", "Valor venta", "Estado", "Medida", "Familia"};
-
+        String columna[] = new String[]{"Nombre", "Stock actual", "Stock crítico", "Valor costo", "Valor venta", "Medida", "Familia"};
+            //"Código", 
         return columna;
     }
 
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre "
-                    + "                                 FROM inventario i,unidad_medida m,familia f "
-                    + "                                 WHERE i.id_familia = f.id_familia AND m.id_medida = i.id_medida");
-            Object datos[] = new Object[9];
+            ResultSet lista = sentencia.executeQuery("SELECT i.nombre, i.stock_actual, i.stock_critico, i.valor_costo, i.valor_venta, um.nombre, f.nombre"
+                    + " FROM inventario i INNER JOIN unidad_medida um ON i.id_medida = um.id_medida LEFT JOIN familia f ON i.id_familia = f.id_familia "
+                    + "WHERE i.estado = 1"    //no se si poner esta condicion, si esta inactivo jamas se borraray se podra usar el espacio
+            
+                    /*"SELECT i.nombre, i.stock_actual, i.stock_critico, i.valor_costo, i.valor_venta, i.estado, um.nombre, f.nombre"
+                    + "FROM inventario i INNER JOIN unidad_medida um ON i.id_medida = um.id_medida"
+                    + "LEFT JOIN familia f ON i.id_familia = f.id_familia"*/
+            //"SELECT i.*, um.nombre, f.nombre FROM inventario i 
+                    //INNER JOIN unidad_medida um ON i.id_medida = um.id_medida LEFT JOIN familia f ON i.id_familia = f.id_familia "
+            //"SELECT * FROM inventario"
+            /*"SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre " +
+                            "FROM inventario i,unidad_medida m,familia f" + 
+                            "WHERE i.id_familia = f.id_familia AND m.id_medida = i.id_medida"*/);
+            Object datos[] = new Object[7];
             while (lista.next()) {
-                for (int i = 0; i < 9; i++) {
+                for (int i = 0; i < 7; i++) {
                     datos[i] = lista.getObject(i + 1);
                 }
                 modeloTabla.addRow(datos);
@@ -66,19 +70,12 @@ public class Eliminar_item extends javax.swing.JFrame {
         } while (modeloTabla.getRowCount() != 0);
     }
     
-    public void filtro() {
-
-        filtro = txtbuscarxnom.getText().toUpperCase();
-        int columna = 1;
-        trsfiltro.setRowFilter(RowFilter.regexFilter(txtbuscarxnom.getText().toUpperCase(), columna));
-    }
-    
     //verifica si los items están en otras tablas
     public int verificar() {
         int yes = 0;
         int cod = 0;
         int cod2 = 0;
-        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString();
+        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT cod_item FROM inventario WHERE nombre = '" + nom + "'");
@@ -97,7 +94,6 @@ public class Eliminar_item extends javax.swing.JFrame {
                     yes += rs.getInt("cod_solicitud");
                 }
             }
-
         } catch (SQLException t) {
             msj = "Error con su Solicitud";
         }
@@ -157,13 +153,11 @@ public class Eliminar_item extends javax.swing.JFrame {
 
         cmbCod = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
-        LBL_estado = new javax.swing.JLabel();
         JB_cancel = new javax.swing.JButton();
         BTN_Del = new javax.swing.JButton();
+        jl_Event = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
-        txtbuscarxnom = new javax.swing.JTextField();
 
         cmbCod.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -195,21 +189,10 @@ public class Eliminar_item extends javax.swing.JFrame {
             }
         });
 
+        jl_Event.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+
         jTable1.setModel(modeloTabla);
         jScrollPane1.setViewportView(jTable1);
-
-        jLabel1.setText("Filtrar por Nombre:");
-
-        txtbuscarxnom.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtbuscarxnomActionPerformed(evt);
-            }
-        });
-        txtbuscarxnom.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtbuscarxnomKeyTyped(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -218,42 +201,38 @@ public class Eliminar_item extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jScrollPane1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(BTN_Del, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(71, 71, 71)
-                                .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(48, 93, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtbuscarxnom, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                                .addComponent(BTN_Del, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap())))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(jl_Event, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel9)
                 .addGap(18, 18, 18)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addComponent(jl_Event, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtbuscarxnom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(BTN_Del, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(JB_cancel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(LBL_estado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(BTN_Del, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(83, 83, 83))
         );
 
         pack();
@@ -269,12 +248,12 @@ public class Eliminar_item extends javax.swing.JFrame {
     }//GEN-LAST:event_JB_cancelActionPerformed
 
     private void BTN_DelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_DelActionPerformed
-        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString();
+        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
         
         int i =JOptionPane.showConfirmDialog(this,
                 "¿Realmente Desea Eliminar " + nom + " del Inventario?","Confirmar Eliminación",
                 JOptionPane.YES_NO_OPTION);
-        
+        int estado = 0;
         int cod = 0;
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
@@ -284,7 +263,7 @@ public class Eliminar_item extends javax.swing.JFrame {
             }
         } catch (SQLException e) {
             msj = "Error al buscar item en tabla?";
-            LBL_estado.setText(msj);
+            jl_Event.setText(msj);
         }
 
         
@@ -292,10 +271,22 @@ public class Eliminar_item extends javax.swing.JFrame {
             String sql = "DELETE FROM inventario WHERE cod_item =" + cod + "";
             try {
                 sentencia.executeUpdate(sql);
-                LBL_estado.setText("Item borrado con exito");
+                jl_Event.setText("Item borrado con exito");
             } catch (SQLException ee) {
                 msj = "Error al borrar";
-                LBL_estado.setText(msj);
+                jl_Event.setText(msj);
+            }
+        }else{
+            if(i==0){
+                String sql="UPDATE inventario SET estado ="+ estado +" WHERE cod_item ="+ cod +"";
+                try{
+                    sentencia.executeUpdate(sql);
+                    jl_Event.setText("Item marcado como Inactivo");
+                }
+                catch(SQLException ee){
+                    msj="Error al inactivar";
+                    jl_Event.setText(msj);
+                }
             }
         }
         
@@ -303,21 +294,6 @@ public class Eliminar_item extends javax.swing.JFrame {
         setFilas();
         
     }//GEN-LAST:event_BTN_DelActionPerformed
-
-    private void txtbuscarxnomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtbuscarxnomActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtbuscarxnomActionPerformed
-
-    private void txtbuscarxnomKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtbuscarxnomKeyTyped
-        // TODO add your handling code here:
-        txtbuscarxnom.addKeyListener(new KeyAdapter() {
-            public void keyReleased(final KeyEvent e) {
-                filtro();
-            }
-        });
-        trsfiltro = new TableRowSorter(modeloTabla);
-        jTable1.setRowSorter(trsfiltro);
-    }//GEN-LAST:event_txtbuscarxnomKeyTyped
 
     /**
      * @param args the command line arguments
@@ -360,12 +336,10 @@ public class Eliminar_item extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BTN_Del;
     private javax.swing.JButton JB_cancel;
-    private javax.swing.JLabel LBL_estado;
     private javax.swing.JComboBox<String> cmbCod;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField txtbuscarxnom;
+    private javax.swing.JLabel jl_Event;
     // End of variables declaration//GEN-END:variables
 }

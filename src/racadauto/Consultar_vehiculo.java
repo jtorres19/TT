@@ -36,7 +36,7 @@ public class Consultar_vehiculo extends javax.swing.JFrame {
     
     private String[] getColumnas() {
 
-        String columna[] = new String[]{"Patente", "Año", "Kilometraje", "V.I.N.", "Color", "Nombre Dueño", "Marca", "Modelo"};
+        String columna[] = new String[]{"Patente", "Año", "Kilometraje", "V.I.N.", "Color", "Nombre Dueño", "Apellido Paterno","Apellido Materno","Marca", "Modelo"};
 
         return columna;
     }
@@ -44,10 +44,12 @@ public class Consultar_vehiculo extends javax.swing.JFrame {
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM vehiculo");
-            Object datos[] = new Object[8];
+            ResultSet lista = sentencia.executeQuery("SELECT v.patente, v.año, v.kms, v.vin, v.color, c.nombre, c.ape_paterno, c.ape_materno, ma.nombre, mo.nombre "
+                    + "FROM vehiculo v INNER JOIN cliente c ON v.rut_cliente = c.rut_cliente "
+                    + "LEFT JOIN marca ma ON v.id_marca = ma.id_marca LEFT JOIN modelo mo ON v.id_modelo = mo.id_modelo");
+            Object datos[] = new Object[10];
             while (lista.next()) {
-                for (int i = 0; i < 8; i++) {
+                for (int i = 0; i < 10; i++) {
                     datos[i] = lista.getObject(i + 1);
                 }
                 modeloTabla.addRow(datos);
@@ -70,6 +72,35 @@ public class Consultar_vehiculo extends javax.swing.JFrame {
         int columna = 5;
         trsfiltro.setRowFilter(RowFilter.regexFilter(txt_cliente.getText().toUpperCase(), columna));
     }
+    
+    public void filtro3() {
+
+        filtro = txt_apep.getText().toUpperCase();
+        int columna = 6;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(txt_apep.getText().toUpperCase(), columna));
+    }
+    
+    public void filtro4() {
+
+        filtro = txt_apem.getText().toUpperCase();
+        int columna = 7;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(txt_apem.getText().toUpperCase(), columna));
+    }
+    
+    public void filtro5() {
+
+        filtro = txt_marc.getText().toUpperCase();
+        int columna = 8;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(txt_marc.getText().toUpperCase(), columna));
+    }
+    
+    public void filtro6() {
+
+        filtro = txt_mod.getText().toUpperCase();
+        int columna = 9;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(txt_mod.getText().toUpperCase(), columna));
+    }
+    
     
     void limpiaTabla() {
         do {
@@ -103,6 +134,14 @@ public class Consultar_vehiculo extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         txt_patente = new javax.swing.JTextField();
         txt_cliente = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        txt_marc = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        txt_mod = new javax.swing.JTextField();
+        txt_apep = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txt_apem = new javax.swing.JTextField();
 
         cmbCod.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -155,6 +194,38 @@ public class Consultar_vehiculo extends javax.swing.JFrame {
             }
         });
 
+        jLabel3.setText("Marca :");
+
+        jLabel4.setText("Apellido Paterno :");
+
+        txt_marc.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_marcKeyTyped(evt);
+            }
+        });
+
+        jLabel5.setText("Modelo :");
+
+        txt_mod.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_modKeyTyped(evt);
+            }
+        });
+
+        txt_apep.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_apepKeyTyped(evt);
+            }
+        });
+
+        jLabel6.setText("Apellido Materno :");
+
+        txt_apem.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_apemKeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -163,42 +234,71 @@ public class Consultar_vehiculo extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(101, 101, 101))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jLabel1)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txt_patente, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(jLabel2)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(txt_cliente))))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txt_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4)
+                        .addGap(18, 18, 18)
+                        .addComponent(txt_apep, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txt_apem)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txt_patente, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txt_marc, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txt_mod, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                        .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txt_patente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
                     .addComponent(jLabel2)
-                    .addComponent(txt_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
-                .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_apep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(txt_apem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(txt_patente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3)
+                        .addComponent(txt_marc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel5)
+                        .addComponent(txt_mod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmbCodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCodActionPerformed
@@ -238,6 +338,46 @@ public class Consultar_vehiculo extends javax.swing.JFrame {
         jTable1.setRowSorter(trsfiltro);
     
     }//GEN-LAST:event_txt_clienteKeyTyped
+
+    private void txt_apepKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_apepKeyTyped
+        txt_apep.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtro3();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTabla);
+        jTable1.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_txt_apepKeyTyped
+
+    private void txt_apemKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_apemKeyTyped
+        txt_apem.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtro4();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTabla);
+        jTable1.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_txt_apemKeyTyped
+
+    private void txt_marcKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_marcKeyTyped
+        txt_marc.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtro5();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTabla);
+        jTable1.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_txt_marcKeyTyped
+
+    private void txt_modKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_modKeyTyped
+        txt_mod.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtro6();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTabla);
+        jTable1.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_txt_modKeyTyped
 
     /**
      * @param args the command line arguments
@@ -280,10 +420,18 @@ public class Consultar_vehiculo extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cmbCod;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextField txt_apem;
+    private javax.swing.JTextField txt_apep;
     private javax.swing.JTextField txt_cliente;
+    private javax.swing.JTextField txt_marc;
+    private javax.swing.JTextField txt_mod;
     private javax.swing.JTextField txt_patente;
     // End of variables declaration//GEN-END:variables
 }
