@@ -5,8 +5,8 @@
  */
 package racadauto;
 
+import Conexion.Conexion;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,44 +20,30 @@ import javax.swing.table.DefaultTableModel;
 public class Modificar_contacto extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
-    
+
     public Modificar_contacto() {
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
     }
 
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (ClassNotFoundException | SQLException e) {
-            msj = "ERROR AL CONECTAR";
-        }
-    }
-    
     private String[] getColumnas() {
 
-        String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO", "NUMERO", "TIPO CONTACTO","CONTACTO","CONTACTO PRINCIPAL"};
+        String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO", "NUMERO", "TIPO CONTACTO", "CONTACTO", "CONTACTO PRINCIPAL"};
 
         return columna;
     }
-    
+
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT c.rut_cliente,c.nombre,c.ape_paterno,c.ape_materno,co.num_correlativo,co.tipo_contacto,co.contacto,co.contacto_ppal "
                     + "                                 FROM cliente c, contacto co "
-                    + "                                 WHERE c.rut_cliente = co.rut_cliente group by c.rut_cliente");
+                    + "                                 WHERE c.rut_cliente = co.rut_cliente");
             Object datos[] = new Object[8];
             while (lista.next()) {
                 for (int i = 0; i < 8; i++) {
@@ -69,69 +55,80 @@ public class Modificar_contacto extends javax.swing.JFrame {
             msj = "No se pudo llenar tabla";
         }
     }
-    
-     void limpiaTabla() {
+
+    void limpiaTabla() {
         do {
             modeloTabla.getRowCount();
             modeloTabla.removeRow(0);
         } while (modeloTabla.getRowCount() != 0);
     }
-     
+
     public int verificar() {
 
         int cont = 0;
-        String rut = "", contacto = "";
-        contacto = JT_contacto.getText();
+        String rut = "", contacto = "",ppal = "";
+        contacto = JT_contacto.getText().trim();
         String tipo = (String) CMB_contacto.getSelectedItem();
         
-        if(jTable1.getSelectedRow() == -1){ 
-           JOptionPane.showMessageDialog(null, 
-                   "Error, No Se Ha Seleccionado Ningún Contacto De Cliente","ERROR",
-                   JOptionPane.ERROR_MESSAGE);
-           cont++;
-         }
+        if (RB_principal.isSelected() == true){
+            ppal = "true";
+        }
 
-        if (tipo.equals("TELEFONO")) {
-            if (contacto.equals("")) {
+        if (jTable1.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Dejó Una Casilla Vacía", "ERROR",
+                    "ERROR, No se ha seleccionado ningún contacto de cliente", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
-            
-            }else if (!contacto.matches("[-+]?\\d*\\.?\\d+")) {
+        }else if ((tipo.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 5).toString()))
+                && (contacto.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 6).toString()))
+                && (ppal.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 7).toString()))){
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, No se ha MODIFICADO nada", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        }
+        
+        if (tipo.equals("TELEFONO")) {
+            if (contacto.equals("")) {
                 JOptionPane.showMessageDialog(null,
-                        "Error, FONO Tiene Que Ser Numérico", "ERROR",
+                        "ERROR, dejó una casilla vacía", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                cont++;
+
+            } else if (!contacto.matches("[-+]?\\d*\\.?\\d+")) {
+                JOptionPane.showMessageDialog(null,
+                        "ERROR, FONO tiene que ser numérico", "ERROR",
                         JOptionPane.ERROR_MESSAGE);
                 cont++;
 
             } else if (contacto.length() > 30) {
                 JOptionPane.showMessageDialog(null,
-                        "Error, FONO No Puede Exceder Los 30 Numeros", "ERROR",
+                        "ERROR, FONO no puede exceder los 30 numeros", "ERROR",
                         JOptionPane.ERROR_MESSAGE);
                 cont++;
             }
 
         } else if (contacto.equals("")) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Dejó Una Casilla Vacía", "ERROR",
+                    "ERROR, Dejó nna casilla vacía", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         } else if (!contacto.matches("^([0-9a-zA-Z]([_.w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-w]*[0-9a-zA-Z].)+([a-zA-Z]{2,9}.)+[a-zA-Z]{2,3})$")) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Formato de MAIL incorrecto", "ERROR",
+                    "ERROR, Formato de MAIL incorrecto", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
 
         } else if (contacto.length() > 30) {
             JOptionPane.showMessageDialog(null,
-                    "Error, MAIL No Puede Exceder Los 30 Caracteres", "ERROR",
+                    "ERROR, MAIL no puede exceder los 30 caracteres", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
 
         return cont;
-    } 
-    
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -154,6 +151,7 @@ public class Modificar_contacto extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         RB_principal = new javax.swing.JRadioButton();
+        LBL_estado = new javax.swing.JLabel();
 
         jLabel10.setText("Contacto (Correo o Numero) :");
 
@@ -161,7 +159,7 @@ public class Modificar_contacto extends javax.swing.JFrame {
 
         jLabel1.setText("jLabel1");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel8.setText("Tipo Contacto :");
 
@@ -205,10 +203,17 @@ public class Modificar_contacto extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(LBL_estado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(JB_cancel))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9)
                             .addGroup(layout.createSequentialGroup()
@@ -219,15 +224,9 @@ public class Modificar_contacto extends javax.swing.JFrame {
                                 .addComponent(jLabel11)
                                 .addGap(18, 18, 18)
                                 .addComponent(JT_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(RB_principal)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 424, Short.MAX_VALUE)
-                                .addComponent(JB_cancel)))
-                        .addGap(0, 62, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 572, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                            .addComponent(RB_principal))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -240,20 +239,22 @@ public class Modificar_contacto extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(CMB_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(JT_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11))
                 .addGap(18, 18, 18)
                 .addComponent(RB_principal)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(JB_OK)
-                    .addComponent(JB_cancel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(JB_OK, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(JB_cancel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(LBL_estado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void JB_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_cancelActionPerformed
@@ -269,67 +270,62 @@ public class Modificar_contacto extends javax.swing.JFrame {
         JT_contacto.setText(contacto);
 
         String principal = jTable1.getValueAt(jTable1.getSelectedRow(), 7).toString();
-        if (principal.equals("true")){
+        if (principal.equals("true")) {
             RB_principal.setSelected(true);
-        }
-        
-        String tipo = jTable1.getValueAt(jTable1.getSelectedRow(), 5).toString();    
+        }else{
+            RB_principal.setSelected(false);
+        } 
+
+        String tipo = jTable1.getValueAt(jTable1.getSelectedRow(), 5).toString();
         CMB_contacto.setSelectedItem(tipo);
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void JB_OKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_OKActionPerformed
+
         if (verificar() == 0) {
+
             String rut = "", rut2 = "";
             rut = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
-            int dis,num = 0;
-            String nombre= JT_nombre.getText().toUpperCase();
-            String paterno = JT_paterno.getText().toUpperCase();
-            String materno = JT_materno.getText().toUpperCase();
-            String direccion = JT_direccion.getText().toUpperCase();
-            ciudad = (String) CMB_ciudad.getSelectedItem();
-            
-            int ciudad2 = 0;
-            
-            try {
-                sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-                ResultSet rs = sentencia.executeQuery("SELECT cod_ciudad FROM ciudad WHERE  nombre = '" + ciudad + "'");
-                while (rs.next()) {
-                    ciudad2 = rs.getInt("cod_ciudad");
-                }
-            } catch (SQLException s) {
-                msj = "Error con Ciudad";
+            int num = Integer.parseInt(jTable1.getValueAt(jTable1.getSelectedRow(), 4).toString());
+            int num2 = 0, dis, ppal = 0;
+            String contacto = JT_contacto.getText().trim();
+            String tipo = CMB_contacto.getSelectedItem().toString().toUpperCase().trim();
+
+            if (RB_principal.isSelected() == true) {
+                ppal = 1;
             }
-            
+
             try {
-                sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-                ResultSet rs = sentencia.executeQuery("SELECT rut_cliente FROM cliente WHERE rut_cliente = '" + rut + "'");
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+                ResultSet rs = sentencia.executeQuery("SELECT rut_cliente,num_correlativo "
+                        + "FROM contacto "
+                        + "WHERE rut_cliente = '" + rut + "' AND num_correlativo = '" + num + "'");
                 while (rs.next()) {
                     rut2 = rs.getString("rut_cliente");
+                    num2 = rs.getInt("num_correlativo");
                 }
 
             } catch (SQLException f) {
                 msj = "Error con Codigo";
             }
 
-            String sql = "UPDATE cliente "
-                    + "SET nombre ='" + nombre + "',"
-                    + "ape_paterno = '" + paterno + "',"
-                    + "ape_materno = '" + materno + "',"
-                    + "direccion = '" + direccion + "',"
-                    + "cod_ciudad = '" + ciudad2 + "'"
-                    + "WHERE rut_cliente = '" + rut2 + "'";
+            String sql = "UPDATE contacto "
+                    + "SET tipo_contacto ='" + tipo + "',"
+                    + "contacto = '" + contacto + "',"
+                    + "contacto_ppal = '" + ppal + "'"
+                    + "WHERE rut_cliente = '" + rut2 + "' AND num_correlativo = '" + num2 + "'";
             try {
                 sentencia.executeUpdate(sql);
                 msj = "Datos Modificados";
                 LBL_estado.setText(msj);
                 dis = 1;
             } catch (SQLException e) {
-                msj = "Cliente no Modificado";
+                msj = "CONTACTO no Modificado";
                 LBL_estado.setText(msj);
                 dis = 0;
             }
             if (dis == 1) {
-                clean();
+                JT_contacto.setText("");
             }
         } else {
             msj = "Datos mal escritos";
@@ -337,7 +333,7 @@ public class Modificar_contacto extends javax.swing.JFrame {
         }
 
         limpiaTabla();
-        setFilas();      
+        setFilas();
     }//GEN-LAST:event_JB_OKActionPerformed
 
     /**
@@ -381,6 +377,7 @@ public class Modificar_contacto extends javax.swing.JFrame {
     private javax.swing.JButton JB_OK;
     private javax.swing.JButton JB_cancel;
     private javax.swing.JTextField JT_contacto;
+    private javax.swing.JLabel LBL_estado;
     private javax.swing.JRadioButton RB_principal;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;

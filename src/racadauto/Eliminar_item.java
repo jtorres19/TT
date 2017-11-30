@@ -1,5 +1,6 @@
 package racadauto;
 
+import Conexion.Conexion;
 import com.mysql.jdbc.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,15 +15,12 @@ import javax.swing.table.DefaultTableModel;
 public class Eliminar_item extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+   Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
 
     public Eliminar_item() {
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
@@ -37,7 +35,7 @@ public class Eliminar_item extends javax.swing.JFrame {
 
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT i.nombre, i.stock_actual, i.stock_critico, i.valor_costo, i.valor_venta, um.nombre, f.nombre"
                     + " FROM inventario i INNER JOIN unidad_medida um ON i.id_medida = um.id_medida LEFT JOIN familia f ON i.id_familia = f.id_familia "
                     + "WHERE i.estado = 1"    //no se si poner esta condicion, si esta inactivo jamas se borraray se podra usar el espacio
@@ -77,7 +75,7 @@ public class Eliminar_item extends javax.swing.JFrame {
         int cod2 = 0;
         String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT cod_item FROM inventario WHERE nombre = '" + nom + "'");
             while (rs.next()) {
                 cod = rs.getInt("cod_item");
@@ -86,7 +84,7 @@ public class Eliminar_item extends javax.swing.JFrame {
             msj = "Error con su Solicitud";
         }
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT * FROM detalle_insumo");
             while (rs.next()) {
                 cod2 = rs.getInt("cod_item");
@@ -98,7 +96,7 @@ public class Eliminar_item extends javax.swing.JFrame {
             msj = "Error con su Solicitud";
         }
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT * FROM detalle_solicitud");
             while (rs.next()) {
                 cod2 = rs.getInt("cod_item");
@@ -110,7 +108,7 @@ public class Eliminar_item extends javax.swing.JFrame {
             msj = "Error con su Solicitud";
         }
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT * FROM repuestos");
             while (rs.next()) {
                 cod2 = rs.getInt("cod_item");
@@ -122,7 +120,7 @@ public class Eliminar_item extends javax.swing.JFrame {
             msj = "Error con su Solicitud";
         }
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT * FROM ajuste");
             while (rs.next()) {
                 cod2 = rs.getInt("cod_item");
@@ -136,16 +134,7 @@ public class Eliminar_item extends javax.swing.JFrame {
         return yes;
     }
 
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (Exception e) {
-            msj = "error al conectar";
-        }
-    }
+   
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -201,38 +190,31 @@ public class Eliminar_item extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(BTN_Del, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(jl_Event, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(BTN_Del, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(jl_Event, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGap(18, 18, 18)
+                            .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel9))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
+                .addContainerGap()
                 .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jl_Event, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(BTN_Del, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(83, 83, 83))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(JB_cancel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(BTN_Del, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jl_Event, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         pack();
@@ -256,7 +238,7 @@ public class Eliminar_item extends javax.swing.JFrame {
         int estado = 0;
         int cod = 0;
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT cod_item FROM inventario WHERE nombre = '" + nom + "'");
             while (rs.next()) {
                 cod = rs.getInt("cod_item");

@@ -1,36 +1,61 @@
 package racadauto;
 
+import Conexion.Conexion;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 public class Ingresar_item extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
+    DefaultTableModel modeloTabla;
+
 
     public Ingresar_item() {
+        modeloTabla = new DefaultTableModel(null, getColumnas());
+        setFilas();
         initComponents();
-        conectar();
         llenarCombo();
         llenarCombo2();
     }
+    
+    private String[] getColumnas() {
 
-    public void conectar() {
+        String columna[] = new String[]{"Nombre", "Stock actual", "Stock crítico", "Valor costo", "Valor venta", "Medida", "Familia"};
+
+        return columna;
+    }
+
+    private void setFilas() {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+            ResultSet lista = sentencia.executeQuery("SELECT i.nombre, i.stock_actual, i.stock_critico, i.valor_costo, i.valor_venta, um.nombre, f.nombre"
+                    + " FROM inventario i INNER JOIN unidad_medida um ON i.id_medida = um.id_medida LEFT JOIN familia f ON i.id_familia = f.id_familia"
+                    + " WHERE i.estado = 1");
+            Object datos[] = new Object[7];
+            while (lista.next()) {
+                for (int i = 0; i < 7; i++) {
+                    datos[i] = lista.getObject(i + 1);
+                }
+                modeloTabla.addRow(datos);
+            }
         } catch (Exception e) {
-            msj = "ERROR AL CONECTAR";
+            msj = "No se pudo llenar tabla";
+        }
+    }
+
+    void limpiaTabla() {
+        if (modeloTabla.getRowCount() > 0){
+            do {
+                modeloTabla.getRowCount();
+                modeloTabla.removeRow(0);
+            } while (modeloTabla.getRowCount() != 0);
         }
     }
 
@@ -45,7 +70,7 @@ public class Ingresar_item extends javax.swing.JFrame {
     public void llenarCombo() {
         cmb_med.removeAllItems();
         try {
-            sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+            sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT * FROM unidad_medida");
             while (lista.next()) {
                 cmb_med.addItem(lista.getString("nombre"));
@@ -58,7 +83,7 @@ public class Ingresar_item extends javax.swing.JFrame {
     public void llenarCombo2() {
         cmb_fam.removeAllItems();
         try {
-            sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+            sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT * FROM familia");
             while (lista.next()) {
                 cmb_fam.addItem(lista.getString("nombre"));
@@ -70,14 +95,14 @@ public class Ingresar_item extends javax.swing.JFrame {
 
     public int verificar() {
         int cont = 0;
-        String nombre = JT_nom.getText();
-        String cant = JT_cant.getText();
-        String stock = JT_stock.getText();
-        String vcosto = JT_vcosto.getText();
-        String vventa = JT_vventa.getText();
+        String nombre = JT_nom.getText().toUpperCase().trim();
+        String cant = JT_cant.getText().trim();
+        String stock = JT_stock.getText().trim();
+        String vcosto = JT_vcosto.getText().trim();
+        String vventa = JT_vventa.getText().trim();
         String nom = "";
         try {
-            sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+            sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT nombre FROM inventario");
             while (rs.next()) {
                 nom = rs.getString("nombre");
@@ -85,79 +110,60 @@ public class Ingresar_item extends javax.swing.JFrame {
         } catch (SQLException eg) {
             msj = "Error con su Solicitud";
         }
-        if ((JT_nom.getText().equals(""))
-                || (JT_cant.getText().equals(""))
-                || (JT_stock.getText().equals(""))
-                || (JT_vcosto.getText().equals(""))
-                || (JT_vventa.getText().equals(""))) {
+        if ((nombre.equals(""))
+                || (cant.equals(""))
+                || (stock.equals(""))
+                || (vcosto.equals(""))
+                || (vventa.equals(""))) {
             JOptionPane.showMessageDialog(null,
-                    "Error, dejó una casilla vacía", "ERROR",
+                    "ERROR, dejó una casilla vacía", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont += 1;
         }
-        if (JT_nom.getText().equals(nom)) {
+        if (nombre.equals(nom)) {
             JOptionPane.showMessageDialog(null,
-                    "Error, ya existe item!", "ERROR",
+                    "ERROR, ya existe ITEM!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
-            cont++;
-        } else if (nombre.matches("[-+]?\\d*\\.?\\d+")) {
-            JOptionPane.showMessageDialog(null, "Error, nombre no tiene que ser númerico", "ERROR", JOptionPane.ERROR_MESSAGE);
-            cont++;
-        } else if (JT_nom.getText().length() >= 31) {
+            cont++;        
+        } else if (nombre.length() >= 31) {
             JOptionPane.showMessageDialog(null,
-                    "Error, nombre maximo 30 letras", "ERROR",
+                    "ERROR, NOMBRE maximo 30 letras", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
 
         
-        if (JT_cant.getText().length() >= 3) {
+        if (cant.length() >= 3) {
             JOptionPane.showMessageDialog(null,
-                    "Error, stock actual <100 y >0", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont++;
-        } else if (!cant.matches("[-+]?\\d*\\.?\\d+")) {
-            JOptionPane.showMessageDialog(null,
-                    "Error, cantidad de articulos ingresados tiene que ser numerico", "ERROR",
+                    "error, STOCK ACTUAL <100 y >0", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
-        if (JT_stock.getText().length() >= 3) {
+        
+        if (stock.length() >= 3) {
             JOptionPane.showMessageDialog(null,
-                    "Error, stock critico <100 y >0", "ERROR",
+                    "ERROR, STOCK CRITICO <100 y >0", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
-        } else if (!stock.matches("[-+]?\\d*\\.?\\d+")) {
+        } 
+        
+        if (vcosto.length() >= 7) {
             JOptionPane.showMessageDialog(null,
-                    "Error, stock critico tiene que ser numerico", "ERROR",
+                    "ERROR, VALOR COSTO <1M y >0", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
-        }
-        if (JT_vcosto.getText().length() >= 7) {
+        } 
+        
+        if (vventa.length() >= 6) {
             JOptionPane.showMessageDialog(null,
-                    "Error, valor costo <1M y >0", "ERROR",
+                    "ERROR, VALOR VENTA maximo <1M y >0", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
-        } else if (!vcosto.matches("[-+]?\\d*\\.?\\d+")) {
+        } 
+        
+        if ((Integer.parseInt(vcosto)) > (Integer.parseInt(vventa))) {
             JOptionPane.showMessageDialog(null,
-                    "Error, valor costo tiene que ser numerico", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont++;
-        }
-        if (JT_vventa.getText().length() >= 6) {
-            JOptionPane.showMessageDialog(null,
-                    "Error, valor venta maximo <1M y >0", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont++;
-        } else if (!vventa.matches("[-+]?\\d*\\.?\\d+")) {
-            JOptionPane.showMessageDialog(null,
-                    "Error, valor venta tiene que ser numerico", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont++;
-        }
-        if ((Integer.parseInt(JT_vcosto.getText())) > (Integer.parseInt(JT_vventa.getText()))) {
-            JOptionPane.showMessageDialog(null,
-                    "Error, Valor Venta no puede ser menor a Costo", "error message",
+                    "ERROR, VALOR VENTA no puede ser menor a VALOR COSTO", "error message",
                     JOptionPane.ERROR_MESSAGE);
             cont += 1;
         }
@@ -186,8 +192,10 @@ public class Ingresar_item extends javax.swing.JFrame {
         JB_cancel = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         LBL_estado = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("INGRESO ITEM");
         setMinimumSize(new java.awt.Dimension(386, 220));
         setResizable(false);
@@ -212,10 +220,38 @@ public class Ingresar_item extends javax.swing.JFrame {
                 JT_cantActionPerformed(evt);
             }
         });
+        JT_cant.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_cantKeyTyped(evt);
+            }
+        });
 
         JT_nom.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 JT_nomActionPerformed(evt);
+            }
+        });
+        JT_nom.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_nomKeyTyped(evt);
+            }
+        });
+
+        JT_stock.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_stockKeyTyped(evt);
+            }
+        });
+
+        JT_vcosto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_vcostoKeyTyped(evt);
+            }
+        });
+
+        JT_vventa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_vventaKeyTyped(evt);
             }
         });
 
@@ -242,6 +278,9 @@ public class Ingresar_item extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel9.setText("RACAD AUTOMOTRIZ - INGRESAR ITEM");
 
+        jTable1.setModel(modeloTabla);
+        jScrollPane1.setViewportView(jTable1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -249,82 +288,80 @@ public class Ingresar_item extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(LBL_estado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(LBL_estado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(JB_cancel))
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel4)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(JT_vcosto, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel7)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(cmb_med, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel7))
                                 .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(JT_stock, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(JT_vcosto, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cmb_med, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(JT_vventa, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel3)
+                                            .addComponent(jLabel5))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(JT_vventa, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(JT_cant, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(0, 0, Short.MAX_VALUE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel8)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(cmb_fam, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(JB_cancel)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(JT_cant, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(28, 28, 28)
-                                .addComponent(jLabel6)
-                                .addGap(18, 18, 18)
-                                .addComponent(JT_stock, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(4, 4, 4)
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(23, Short.MAX_VALUE))))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(cmb_fam, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel9)
-                .addGap(22, 22, 22)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3)
+                        .addComponent(JT_cant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(JT_cant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
-                    .addComponent(JT_stock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(11, 11, 11)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(JT_vcosto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4)
+                    .addComponent(JT_stock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
                     .addComponent(JT_vventa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(cmb_med, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(JT_vcosto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
                     .addComponent(cmb_fam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(JB_OK)
-                    .addComponent(JB_cancel)
-                    .addComponent(LBL_estado))
+                    .addComponent(jLabel7)
+                    .addComponent(cmb_med, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(JB_cancel)
+                        .addComponent(JB_OK))
+                    .addComponent(LBL_estado, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
 
@@ -345,18 +382,18 @@ public class Ingresar_item extends javax.swing.JFrame {
             String nom, fam, med;
             int dis;
             int est = 1;
-            nom = JT_nom.getText().toUpperCase();
+            nom = JT_nom.getText().toUpperCase().trim();
             int cod = 0;
-            int cant = Integer.parseInt(JT_cant.getText());
-            int stock = Integer.parseInt(JT_stock.getText());
-            int vcost = Integer.parseInt(JT_vcosto.getText());
-            int vvent = Integer.parseInt(JT_vventa.getText());
+            int cant = Integer.parseInt(JT_cant.getText().trim());
+            int stock = Integer.parseInt(JT_stock.getText().trim());
+            int vcost = Integer.parseInt(JT_vcosto.getText().trim());
+            int vvent = Integer.parseInt(JT_vventa.getText().trim());
             fam = (String) cmb_fam.getSelectedItem();
             med = (String) cmb_med.getSelectedItem();
             int fam2 = 0;
             int med2 = 0;
             try {
-                sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+                sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT id_medida FROM unidad_medida WHERE  nombre = '" + med + "'");
                 while (rs.next()) {
                     med2 = rs.getInt("id_medida");
@@ -365,7 +402,7 @@ public class Ingresar_item extends javax.swing.JFrame {
                 msj = "Error con Medida";
             }
             try {
-                sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT id_familia FROM familia WHERE nombre = '" + fam + "'");
                 while (rs.next()) {
                     fam2 = rs.getInt("id_familia");
@@ -374,7 +411,7 @@ public class Ingresar_item extends javax.swing.JFrame {
                 msj = "Error con Familia";
             }
             try {
-                sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+                sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT MAX(cod_item) as cod_item FROM inventario");
                 while (rs.next()) {
                     cod = rs.getInt("cod_item");
@@ -403,6 +440,9 @@ public class Ingresar_item extends javax.swing.JFrame {
             LBL_estado.setText(msj);
         }
         
+        limpiaTabla();
+        setFilas();
+        
     }//GEN-LAST:event_JB_OKActionPerformed
 
     private void JT_nomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JT_nomActionPerformed
@@ -412,6 +452,71 @@ public class Ingresar_item extends javax.swing.JFrame {
     private void cmb_medActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_medActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cmb_medActionPerformed
+
+    private void JT_nomKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_nomKeyTyped
+        char validar = evt.getKeyChar();
+
+        if (!Character.isLetter(validar) && validar != evt.VK_BACK_SPACE && validar != evt.VK_SPACE ) {
+            getToolkit().beep();
+            evt.consume();
+
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, NOMBRE solo pueden ser letras", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_JT_nomKeyTyped
+
+    private void JT_cantKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_cantKeyTyped
+        char validar = evt.getKeyChar();
+
+        if (!Character.isDigit(validar) && validar != evt.VK_BACK_SPACE) {
+            getToolkit().beep();
+            evt.consume();
+
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, CANTIDAD solo pueden ser números", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_JT_cantKeyTyped
+
+    private void JT_stockKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_stockKeyTyped
+        char validar = evt.getKeyChar();
+
+        if (!Character.isDigit(validar) && validar != evt.VK_BACK_SPACE) {
+            getToolkit().beep();
+            evt.consume();
+
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, STOCK CRITICO solo pueden ser números", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_JT_stockKeyTyped
+
+    private void JT_vventaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_vventaKeyTyped
+        char validar = evt.getKeyChar();
+
+        if (!Character.isDigit(validar) && validar != evt.VK_BACK_SPACE) {
+            getToolkit().beep();
+            evt.consume();
+
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, VALOR VENTA solo pueden ser números", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_JT_vventaKeyTyped
+
+    private void JT_vcostoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_vcostoKeyTyped
+        char validar = evt.getKeyChar();
+
+        if (!Character.isDigit(validar) && validar != evt.VK_BACK_SPACE) {
+            getToolkit().beep();
+            evt.consume();
+
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, VALOR COSTO solo pueden ser números", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_JT_vcostoKeyTyped
 
     /**
      * @param args the command line arguments
@@ -474,5 +579,7 @@ public class Ingresar_item extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }

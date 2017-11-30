@@ -1,5 +1,6 @@
 package racadauto;
 
+import Conexion.Conexion;
 import com.mysql.jdbc.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,17 +19,14 @@ import javax.swing.table.TableRowSorter;
 public class Eliminar_servicio extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
     String filtro;
     private TableRowSorter trsfiltro;
 
     public Eliminar_servicio() {
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
@@ -43,7 +41,7 @@ public class Eliminar_servicio extends javax.swing.JFrame {
 
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT s.id_servicio,s.componente,s.precio,c.nombre "
                     + "FROM servicio s,categoria c "
                     + "WHERE s.id_categoria = c.id_categoria");
@@ -82,7 +80,7 @@ public class Eliminar_servicio extends javax.swing.JFrame {
         int id2 = 0;
         String comp = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString();
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT id_servicio FROM servicio WHERE componente = '" + comp + "'");
             while (rs.next()) {
                 id = rs.getInt("id_servicio");
@@ -91,7 +89,7 @@ public class Eliminar_servicio extends javax.swing.JFrame {
             msj = "Error con su Solicitud";
         }
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT * FROM detalle_insumo");
             while (rs.next()) {
                 id2 = rs.getInt("id_servicio");
@@ -104,7 +102,7 @@ public class Eliminar_servicio extends javax.swing.JFrame {
             msj = "Error con su Solicitud";
         }
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT * FROM detalle_solicitud");
             while (rs.next()) {
                 id2 = rs.getInt("id_servicio");
@@ -126,16 +124,6 @@ public class Eliminar_servicio extends javax.swing.JFrame {
         return yes;
     }
 
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (Exception e) {
-            msj = "error al conectar";
-        }
-    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -158,7 +146,7 @@ public class Eliminar_servicio extends javax.swing.JFrame {
         });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("ELIMINAR ITEM");
+        setTitle("ELIMINAR SERVICIO");
         setMinimumSize(new java.awt.Dimension(420, 210));
         setResizable(false);
 
@@ -262,7 +250,7 @@ public class Eliminar_servicio extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
         }
         
-        String comp = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString();
+        String comp = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString().trim();
         
         int i = JOptionPane.showConfirmDialog(this,
                 "¿Realmente desea eliminar " + comp + " de los SERVICIOS?","Confirmar Eliminación",
@@ -270,7 +258,7 @@ public class Eliminar_servicio extends javax.swing.JFrame {
         
         int id = 0;
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT id_servicio FROM servicio WHERE componente = '" + comp + "'");
             while (rs.next()) {
                 id = rs.getInt("id_servicio");

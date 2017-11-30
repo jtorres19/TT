@@ -5,9 +5,8 @@
  */
 package racadauto;
 
-import java.awt.event.KeyAdapter;
+import Conexion.Conexion;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -21,48 +20,35 @@ import javax.swing.table.DefaultTableModel;
 public class Ingresar_contacto extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
 
     public Ingresar_contacto() {
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
     }
 
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (ClassNotFoundException | SQLException e) {
-            msj = "ERROR AL CONECTAR";
-        }
-    }
-
+    
     private String[] getColumnas() {
 
-        String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO"};
+        String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO","TIPO CONTACTO","CONTACTO"};
 
         return columna;
     }
 
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM trabajador"
-            /*"SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre " +
-                            "FROM inventario i,unidad_medida m,familia f" + 
-                            "WHERE i.id_familia = f.id_familia AND m.id_medida = i.id_medida"*/);
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+            ResultSet lista = sentencia.executeQuery("SELECT c.rut_cliente,c.nombre,c.ape_paterno,c.ape_materno,o.tipo_contacto,o.contacto "
+                    + "FROM cliente c,contacto o "
+                    + "WHERE c.rut_cliente = o.rut_cliente "
+                    /*+ "GROUP BY rut_cliente"*/);
             Object datos[] = new Object[7];
             while (lista.next()) {
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i < 6; i++) {
                     datos[i] = lista.getObject(i + 1);
                 }
                 modeloTabla.addRow(datos);
@@ -82,13 +68,29 @@ public class Ingresar_contacto extends javax.swing.JFrame {
     public int verificar() {
 
         int cont = 0;
-        String rut = "", contacto = "";
-        contacto = JT_contacto.getText();
+        String rut = "", contacto2 = "";
+        String contacto = JT_contacto.getText().trim();
         String tipo = (String) CMB_contacto.getSelectedItem();
+        
+        try { 
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+            ResultSet rs = sentencia.executeQuery("SELECT contacto FROM contacto");
+            while (rs.next()) {
+                contacto2 = rs.getString("contacto");
+                if (contacto.equals(contacto2)) { 
+                    JOptionPane.showMessageDialog(null,
+                            "ERROR, Ya existe este contacto!", "ERROR",
+                            JOptionPane.ERROR_MESSAGE);
+                    cont++;
+                }
+            }
+        } catch (SQLException eg) {
+            msj = "Error con su Solicitud";
+        }
         
         if(jTable1.getSelectedRow() == -1){ 
            JOptionPane.showMessageDialog(null, 
-                   "Error, No Se Ha Seleccionado Ningún Cliente","ERROR",
+                   "ERROR, No se ha seleccionado ningún cliente","ERROR",
                    JOptionPane.ERROR_MESSAGE);
            cont++;
          }
@@ -96,37 +98,37 @@ public class Ingresar_contacto extends javax.swing.JFrame {
         if (tipo.equals("TELEFONO")) {
             if (contacto.equals("")) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Dejó Una Casilla Vacía", "ERROR",
+                    "ERROR, Dejó una casilla vacía", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
             
             }else if (!contacto.matches("[-+]?\\d*\\.?\\d+")) {
                 JOptionPane.showMessageDialog(null,
-                        "Error, Fono Tiene Que Ser Numérico", "ERROR",
+                        "ERROR, FONO tiene que ser numérico", "ERROR",
                         JOptionPane.ERROR_MESSAGE);
                 cont++;
 
             } else if (contacto.length() > 30) {
                 JOptionPane.showMessageDialog(null,
-                        "Error, Fono No Puede Exceder Los 30 Numeros", "ERROR",
+                        "ERROR, FONO no puede exceder los 30 numeros", "ERROR",
                         JOptionPane.ERROR_MESSAGE);
                 cont++;
             }
 
         } else if (contacto.equals("")) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Dejó Una Casilla Vacía", "ERROR",
+                    "ERROR, Dejó una casilla vacía", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         } else if (!contacto.matches("^([0-9a-zA-Z]([_.w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-w]*[0-9a-zA-Z].)+([a-zA-Z]{2,9}.)+[a-zA-Z]{2,3})$")) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Formato de Mail incorrecto", "ERROR",
+                    "ERROR, Formato de MAIL incorrecto", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
 
         } else if (contacto.length() > 30) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Mail No Puede Exceder Los 30 Numeros", "ERROR",
+                    "ERROR, MAIL no puede exceder los 30 caracteres", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
@@ -164,7 +166,7 @@ public class Ingresar_contacto extends javax.swing.JFrame {
 
         jLabel1.setText("jLabel1");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel8.setText("Tipo Contacto :");
 
@@ -203,30 +205,30 @@ public class Ingresar_contacto extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel11)
+                                    .addComponent(jLabel8))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(CMB_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(JT_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabel9)
+                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(JB_cancel))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(CMB_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(jLabel11)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(JT_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(RB_principal, javax.swing.GroupLayout.Alignment.LEADING))
+                            .addComponent(RB_principal))
                         .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(48, 48, 48))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -234,27 +236,31 @@ public class Ingresar_contacto extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel9)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(CMB_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel11)
-                    .addComponent(JT_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(RB_principal)
-                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(LBL_estado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(JB_OK)
-                        .addComponent(JB_cancel)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(JB_cancel))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(CMB_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel11)
+                            .addComponent(JT_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(RB_principal)
+                        .addGap(18, 22, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(JB_OK, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(LBL_estado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void JB_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_cancelActionPerformed
@@ -272,15 +278,15 @@ public class Ingresar_contacto extends javax.swing.JFrame {
             String rut = "", tipo = "";
             rut = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
             int dis, num = 0, ppal = 0;
-            String contacto = JT_contacto.getText();
-            tipo = (String) CMB_contacto.getSelectedItem().toString().toUpperCase();
+            String contacto = JT_contacto.getText().trim();
+            tipo = (String) CMB_contacto.getSelectedItem().toString().toUpperCase().trim();
 
             if (RB_principal.isSelected() == true) {
                 ppal = 1;
             }
 
             try {
-                sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT MAX(num_correlativo) as num_correlativo FROM contacto");
                 while (rs.next()) {
                     num = rs.getInt("num_correlativo");

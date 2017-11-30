@@ -5,6 +5,7 @@
  */
 package racadauto;
 
+import Conexion.Conexion;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -20,31 +21,19 @@ import javax.swing.table.DefaultTableModel;
 public class Ingresar_ciudad extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
     
     public Ingresar_ciudad() {
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
     }
 
     
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (Exception e) {
-            msj = "ERROR AL CONECTAR";
-        }
-    }
+    
     
     private String[] getColumnas() {
 
@@ -55,7 +44,7 @@ public class Ingresar_ciudad extends javax.swing.JFrame {
     
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT cod_ciudad,nombre "
                                                      + " FROM ciudad");
             Object datos[] = new Object[7];
@@ -84,7 +73,7 @@ public class Ingresar_ciudad extends javax.swing.JFrame {
         String nom = "";
 
         try {
-            sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+            sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT nombre FROM ciudad");
             while (rs.next()) {
                 nom = rs.getString("nombre").toUpperCase();
@@ -242,7 +231,7 @@ public class Ingresar_ciudad extends javax.swing.JFrame {
             
             
             try {
-                sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+                sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT MAX(cod_ciudad) as cod_ciudad FROM ciudad");
                 while (rs.next()) {
                     cod = rs.getInt("cod_ciudad");

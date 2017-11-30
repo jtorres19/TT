@@ -1,5 +1,6 @@
 package racadauto;
 
+import Conexion.Conexion;
 import com.mysql.jdbc.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,16 +13,13 @@ import javax.swing.table.DefaultTableModel;
 public class Modificar_cargo extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
 
     public Modificar_cargo() {
 
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
@@ -36,7 +34,7 @@ public class Modificar_cargo extends javax.swing.JFrame {
 
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT * FROM cargo");
             Object datos[] = new Object[9];
             while (lista.next()) {
@@ -51,22 +49,14 @@ public class Modificar_cargo extends javax.swing.JFrame {
     }
 
     void limpiaTabla() {
-        do {
-            modeloTabla.getRowCount();
-            modeloTabla.removeRow(0);
-        } while (modeloTabla.getRowCount() != 0);
-    }
-
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (ClassNotFoundException | SQLException e) {
-            msj = "ERROR AL CONECTAR";
+        if (modeloTabla.getRowCount() > 0) {
+            do {
+                modeloTabla.getRowCount();
+                modeloTabla.removeRow(0);
+            } while (modeloTabla.getRowCount() != 0);
         }
     }
+
 
     public int verificar() {
 
@@ -75,7 +65,7 @@ public class Modificar_cargo extends javax.swing.JFrame {
         String nom2 = JT_nom.getText().toUpperCase().trim();
 
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT nombre FROM cargo");
             while (rs.next()) {
                 nom = rs.getString("nombre").trim();
@@ -97,14 +87,14 @@ public class Modificar_cargo extends javax.swing.JFrame {
             cont++;
         }
 
-        if (JT_nom.getText().equals("")) {
+        if (nom2.equals("")) {
             JOptionPane.showMessageDialog(null,
                     "ERROR, dejó una casilla vacía", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
 
-        if (JT_nom.getText().length() > 30) {
+        if (nom2.length() > 30) {
             JOptionPane.showMessageDialog(null,
                     "ERROR, nombre maximo 30 letras", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
@@ -180,7 +170,7 @@ public class Modificar_cargo extends javax.swing.JFrame {
                         .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, Short.MAX_VALUE)
                         .addComponent(JB_cancel))
-                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel9))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -216,14 +206,14 @@ public class Modificar_cargo extends javax.swing.JFrame {
             int cargo = 0;
 
             try {
-                sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT id_cargo FROM cargo WHERE nombre = '" + nom + "'");
                 while (rs.next()) {
                     cargo = rs.getInt("id_cargo");
                 }
 
             } catch (SQLException f) {
-                msj = "Error con Codigo";
+                msj = "Error con CODIGO";
             }
 
             String sql = "UPDATE cargo "
@@ -231,11 +221,11 @@ public class Modificar_cargo extends javax.swing.JFrame {
                     + "WHERE id_cargo = '" + cargo + "'";
             try {
                 sentencia.executeUpdate(sql);
-                msj = "Datos Modificados";
+                msj = "Datos modificados";
                 LBL_estado.setText(msj);
                 JT_nom.setText("");
             } catch (SQLException e) {
-                msj = "Cargo no Modificado";
+                msj = "CARGO no modificado";
                 LBL_estado.setText(msj);
             }
 

@@ -1,8 +1,7 @@
 package racadauto;
 
-import com.mysql.jdbc.*;
+import Conexion.Conexion;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -12,16 +11,13 @@ import javax.swing.table.DefaultTableModel;
 public class Modificar_categoria extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
 
     public Modificar_categoria() {
 
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
@@ -36,7 +32,7 @@ public class Modificar_categoria extends javax.swing.JFrame {
 
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT * FROM categoria");
             Object datos[] = new Object[9];
             while (lista.next()) {
@@ -63,16 +59,7 @@ public class Modificar_categoria extends javax.swing.JFrame {
         JT_nombre.setText("");
     }
 
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (ClassNotFoundException | SQLException e) {
-            msj = "ERROR AL CONECTAR";
-        }
-    }
+  
 
     public int verificar() {
 
@@ -81,7 +68,7 @@ public class Modificar_categoria extends javax.swing.JFrame {
         String nom = "";
 
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT nombre FROM categoria");
             while (rs.next()) {
                 nom = rs.getString("nombre").toUpperCase().trim();
@@ -104,7 +91,7 @@ public class Modificar_categoria extends javax.swing.JFrame {
             cont++;
         }   
 
-        if ((JT_nombre.getText().equals(""))) {
+        if ((nombre.equals(""))) {
             JOptionPane.showMessageDialog(null,
                     "ERROR, Dejó una casilla vacía", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
@@ -135,6 +122,7 @@ public class Modificar_categoria extends javax.swing.JFrame {
         JT_nombre = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("MODIFICAR CATEGORIA");
 
         JB_OK.setText("OK");
         JB_OK.addActionListener(new java.awt.event.ActionListener() {
@@ -225,7 +213,7 @@ public class Modificar_categoria extends javax.swing.JFrame {
             String nom = JT_nombre.getText().toUpperCase().trim();
 
             try {
-                sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT id_categoria FROM categoria WHERE  nombre = '" + nombre + "'");
                 while (rs.next()) {
                     cat = rs.getInt("id_categoria");

@@ -1,15 +1,11 @@
 package racadauto;
 
+import Conexion.Conexion;
 import com.mysql.jdbc.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.naming.spi.DirStateFactory.Result;
-import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
@@ -17,10 +13,8 @@ import javax.swing.table.TableRowSorter;
 
 public class Eliminar_cliente extends javax.swing.JFrame {
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
     String filtro;
@@ -28,27 +22,13 @@ public class Eliminar_cliente extends javax.swing.JFrame {
 
 
     public Eliminar_cliente() {
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
         
     }
      
-    
-    public void conectar(){
-        try{
-            Class.forName("com.mysql.jdbc.Driver");
-            String url="jdbc:mysql://localhost:3306/"+this.nomBD;
-            this.conexion=(Connection)DriverManager.getConnection(url,this.usuario,this.password);
-            this.sentencia=(Statement)this.conexion.createStatement();
-        }
-        catch(Exception e){
-            msj="error al conectar";
-        }
-    }    
-    
-    
+       
     private String[] getColumnas() {
 
         String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO", "DIRECCION", "CIUDAD"};
@@ -59,8 +39,10 @@ public class Eliminar_cliente extends javax.swing.JFrame {
     
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM cliente");
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+            ResultSet lista = sentencia.executeQuery("SELECT c.rut_cliente,c.nombre,c.ape_paterno,c.ape_materno,c.direccion,i.nombre "
+                    + "FROM cliente c, ciudad i "
+                    + "WHERE i.cod_ciudad = c.cod_ciudad");
             Object datos[] = new Object[7];
             while (lista.next()) {
                 for (int i = 0; i < 6; i++) {
@@ -97,7 +79,7 @@ public class Eliminar_cliente extends javax.swing.JFrame {
         String rut2 = "",rut3 = "";
         String rut= jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT rut_cliente FROM cliente WHERE rut_cliente = '" + rut + "'");
             while (rs.next()) {
                 rut = rs.getString("rut_cliente");
@@ -106,11 +88,12 @@ public class Eliminar_cliente extends javax.swing.JFrame {
             msj = "Error con su Solicitud";
         }
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet rs = sentencia.executeQuery("SELECT * FROM vehiculo");
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+            ResultSet rs = sentencia.executeQuery("SELECT * FROM vehiculo "
+                    + "WHERE rut_cliente = '" + rut + "'");
             while (rs.next()) {
                 rut2 = rs.getString("rut_cliente");
-                if (rut == rut2) {
+                if (rut.equals(rut2)) {
                     //yes += rs.getInt("patente");
                     yes++;
                 }
@@ -121,11 +104,12 @@ public class Eliminar_cliente extends javax.swing.JFrame {
         }
         
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet rs = sentencia.executeQuery("SELECT * FROM contacto");
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+            ResultSet rs = sentencia.executeQuery("SELECT * FROM contacto "
+                    + "WHERE rut_cliente = '" + rut + "'");
             while (rs.next()) {
                 rut3 = rs.getString("rut_cliente");
-                if (rut == rut3) {
+                if (rut.equals(rut3)) {
                     //yes += rs.getInt("rut_cliente");
                     yes++;
                 }
@@ -133,6 +117,12 @@ public class Eliminar_cliente extends javax.swing.JFrame {
 
         } catch (SQLException t) {
             msj = "No se puede Eliminar, CLIENTE referenciado en otra tabla";
+        }
+        
+        if (yes > 0){
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, CLIENTE referenciado en otras tablas no se puede eliminar", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         return yes;
@@ -271,7 +261,7 @@ public class Eliminar_cliente extends javax.swing.JFrame {
         
         String rut2 = "";
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT rut_cliente FROM cliente WHERE rut_cliente = '" + rut + "'");
             while (rs.next()) {
                 rut2 = rs.getString("rut_cliente");

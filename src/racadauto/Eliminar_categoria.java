@@ -1,5 +1,6 @@
 package racadauto;
 
+import Conexion.Conexion;
 import com.mysql.jdbc.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,17 +19,14 @@ import javax.swing.table.TableRowSorter;
 public class Eliminar_categoria extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
     String filtro;
     private TableRowSorter trsfiltro;
 
     public Eliminar_categoria() {
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
@@ -43,7 +41,7 @@ public class Eliminar_categoria extends javax.swing.JFrame {
 
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT * FROM categoria");
             Object datos[] = new Object[9];
             while (lista.next()) {
@@ -78,9 +76,9 @@ public class Eliminar_categoria extends javax.swing.JFrame {
         int yes = 0;
         int id = 0;
         int id2 = 0;
-        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString();
+        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString().trim();
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT id_categoria FROM categoria WHERE nombre = '" + nom + "'");
             while (rs.next()) {
                 id = rs.getInt("id_categoria");
@@ -89,7 +87,7 @@ public class Eliminar_categoria extends javax.swing.JFrame {
             msj = "Error con su Solicitud";
         }
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT * FROM servicio");
             while (rs.next()) {
                 id2 = rs.getInt("id_servicio");
@@ -111,16 +109,7 @@ public class Eliminar_categoria extends javax.swing.JFrame {
         return yes;
     }
 
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (Exception e) {
-            msj = "error al conectar";
-        }
-    }
+    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -143,7 +132,7 @@ public class Eliminar_categoria extends javax.swing.JFrame {
         });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("ELIMINAR ITEM");
+        setTitle("ELIMINAR CATEGORIA");
         setMinimumSize(new java.awt.Dimension(420, 210));
         setResizable(false);
 
@@ -217,9 +206,9 @@ public class Eliminar_categoria extends javax.swing.JFrame {
                     .addComponent(txtbuscarxnom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(BTN_Del, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(JB_cancel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(BTN_Del, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(LBL_estado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -243,7 +232,7 @@ public class Eliminar_categoria extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
         }
         
-        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString();
+        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString().trim();
         
         int i = JOptionPane.showConfirmDialog(this,
                 "¿Realmente desea eliminar " + nom + " de las CATEGORIAS?","Confirmar Eliminación",
@@ -251,7 +240,7 @@ public class Eliminar_categoria extends javax.swing.JFrame {
         
         int id = 0;
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT id_categoria FROM categoria WHERE nombre = '" + nom + "'");
             while (rs.next()) {
                 id = rs.getInt("id_categoria");

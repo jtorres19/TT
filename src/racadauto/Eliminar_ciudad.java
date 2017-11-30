@@ -1,5 +1,6 @@
 package racadauto;
 
+import Conexion.Conexion;
 import com.mysql.jdbc.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,17 +19,14 @@ import javax.swing.table.TableRowSorter;
 public class Eliminar_ciudad extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
     String filtro;
     private TableRowSorter trsfiltro;
 
     public Eliminar_ciudad() {
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
@@ -43,7 +41,7 @@ public class Eliminar_ciudad extends javax.swing.JFrame {
 
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT * FROM ciudad"
             /*"SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre " +
                             "FROM inventario i,unidad_medida m,familia f" + 
@@ -81,7 +79,7 @@ public class Eliminar_ciudad extends javax.swing.JFrame {
         int cod2 = 0;
         String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString();
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT cod_ciudad FROM ciudad WHERE nombre = '" + nom + "'");
             while (rs.next()) {
                 cod = rs.getInt("cod_ciudad");
@@ -90,7 +88,7 @@ public class Eliminar_ciudad extends javax.swing.JFrame {
             msj = "Error con su Solicitud";
         }
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT * FROM cliente");
             while (rs.next()) {
                 cod2 = rs.getInt("cod_ciudad");
@@ -106,17 +104,7 @@ public class Eliminar_ciudad extends javax.swing.JFrame {
         return yes;
     }
 
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (Exception e) {
-            msj = "error al conectar";
-        }
-    }
-
+   
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -240,7 +228,7 @@ public class Eliminar_ciudad extends javax.swing.JFrame {
         
         int cod = 0;
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT cod_ciudad FROM ciudad WHERE nombre = '" + nom + "'");
             while (rs.next()) {
                 cod = rs.getInt("cod_ciudad");

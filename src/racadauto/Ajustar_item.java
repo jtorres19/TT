@@ -1,31 +1,23 @@
 package racadauto;
 
+import Conexion.Conexion;
 import com.mysql.jdbc.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Date;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import javax.naming.spi.DirStateFactory.Result;
-import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class Ajustar_item extends javax.swing.JFrame {
+    
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD="racad";
-    private String usuario="root";
-    private String password="";
-    private String msj;
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     DefaultTableModel modeloTabla;
+    String msj = "";
 
     public Ajustar_item() {
-        conectar(); 
+         
         modeloTabla = new DefaultTableModel(null,getColumnas());
         setFilas();
         initComponents();
@@ -34,7 +26,7 @@ public class Ajustar_item extends javax.swing.JFrame {
     
     private String[] getColumnas() {
 
-        String columna[] = new String[]{"Nombre", "Stock actual", "Stock crítico", "Valor costo", "Valor venta", "Medida", "Familia"};
+        String columna[] = new String[]{"NOMBRE", "STOCK ACTUAL", "STOCK CRITICO", "VALOR COSTO", "VALOR VENTA", "MEDIDA", "FAMILIA"};
 
         return columna;
     }
@@ -49,7 +41,7 @@ public class Ajustar_item extends javax.swing.JFrame {
     
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT i.nombre, i.stock_actual, i.stock_critico, i.valor_costo, i.valor_venta, um.nombre, f.nombre"
                     + " FROM inventario i INNER JOIN unidad_medida um ON i.id_medida = um.id_medida LEFT JOIN familia f ON i.id_familia = f.id_familia ");
             Object datos[] = new Object[7];
@@ -60,26 +52,17 @@ public class Ajustar_item extends javax.swing.JFrame {
                 modeloTabla.addRow(datos);
             }
         } catch (Exception e) {
-            msj = "No se pudo llenar tabla";
-        }
-    }
-    
-    public void conectar(){
-        try{
-            Class.forName("com.mysql.jdbc.Driver");
-            String url="jdbc:mysql://localhost:3306/"+this.nomBD;
-            this.conexion=(Connection)DriverManager.getConnection(url,this.usuario,this.password);
-            this.sentencia=(Statement)this.conexion.createStatement();
-        }
-        catch(Exception e){
-            msj="error al conectar";
+            JOptionPane.showMessageDialog(null,"Error al Conectar","Conexion",JOptionPane.ERROR_MESSAGE);
         }
     }
     
     
     public void fechaActual(){
-        Calendar fecha = new GregorianCalendar();
-        lblFecha.setText(fecha.getTime().toString());
+        java.util.Date fechaActual = new java.util.Date();
+        long fecha = fechaActual.getTime();
+        java.sql.Date sqlDate = new java.sql.Date(fecha);
+        SimpleDateFormat formato = new SimpleDateFormat("dd-MMMM-yyy kk:mm");
+        lblFecha.setText(formato.format(sqlDate).toUpperCase());
     }
        
     
@@ -119,7 +102,7 @@ public class Ajustar_item extends javax.swing.JFrame {
         int val=0,can=0;
         String nom = jTable1.getValueAt(jTable1.getSelectedRow(),0).toString();
         try{
-            sentencia=(Statement)conexion.createStatement();
+            sentencia=(Statement)cn.createStatement();
             ResultSet rs=sentencia.executeQuery("SELECT stock_actual FROM inventario WHERE nombre = '" + nom + "'" );
             while(rs.next()){
                 can = rs.getInt("stock_actual");}
@@ -172,7 +155,8 @@ public class Ajustar_item extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("AJUSTAR ITEM");
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel9.setText("RACAD AUTOMOTRIZ - AJUSTAR ITEM");
@@ -324,7 +308,7 @@ public class Ajustar_item extends javax.swing.JFrame {
         
         //se obtiene codigo
         try{
-            sentencia=(Statement)conexion.createStatement();
+            sentencia=(Statement)cn.createStatement();
             ResultSet rs=sentencia.executeQuery("SELECT cod_item FROM inventario WHERE nombre = '" + nom + "'" );
             while(rs.next()){
                 cod = rs.getInt("cod_item");}
@@ -333,7 +317,7 @@ public class Ajustar_item extends javax.swing.JFrame {
         }
         //se obtiene numero folio
         try{
-                sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+                sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
                 ResultSet rs=sentencia.executeQuery("SELECT MAX(n_folio) as n_folio FROM ajuste");
                 while(rs.next()){
                     fol = rs.getInt("n_folio");
@@ -426,7 +410,7 @@ public class Ajustar_item extends javax.swing.JFrame {
         String desc = txtDesc.getText();
         int cant = Integer.parseInt(txtCant.getText());
         try{
-        sentencia=(Statement)conexion.createStatement();
+        sentencia=(Statement)cn.createStatement();
         ResultSet rs=sentencia.executeQuery("SELECT cod_item FROM inventario WHERE nombre = '" + nom + "'" );
         while(rs.next()){
             cod = rs.getInt("cod_item");}
@@ -434,7 +418,7 @@ public class Ajustar_item extends javax.swing.JFrame {
             msj="Error con Codigo";
         }
         try{
-                sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+                sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
                 ResultSet rs=sentencia.executeQuery("SELECT MAX(n_folio) as n_folio FROM ajuste");
                 while(rs.next()){
                     fol = rs.getInt("n_folio");
@@ -444,7 +428,7 @@ public class Ajustar_item extends javax.swing.JFrame {
             msj="Error con Codigo";
         }
         try{
-                sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+                sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
                 ResultSet rs=sentencia.executeQuery("SELECT MAX(rut_trabajador) as rut_trabajador FROM trabajador");
                 while(rs.next()){
                     rut = rs.getString("rut_trabajador");
@@ -497,7 +481,7 @@ public class Ajustar_item extends javax.swing.JFrame {
         String nom = jTable1.getValueAt(jTable1.getSelectedRow(),0).toString();
         int est = 0;
         try{
-        sentencia=(Statement)conexion.createStatement();
+        sentencia=(Statement)cn.createStatement();
         ResultSet rs=sentencia.executeQuery("SELECT estado FROM inventario WHERE nombre = '" + nom + "'" );
         while(rs.next()){
             est = rs.getInt("estado");

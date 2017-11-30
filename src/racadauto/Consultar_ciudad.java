@@ -1,7 +1,7 @@
 package racadauto;
 
+import Conexion.Conexion;
 import com.mysql.jdbc.*;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.KeyAdapter;
@@ -12,10 +12,8 @@ import javax.swing.table.TableRowSorter;
 public class Consultar_ciudad extends javax.swing.JFrame /*implements ActionListener*/ {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
     private TableRowSorter trsfiltro;
@@ -23,7 +21,6 @@ public class Consultar_ciudad extends javax.swing.JFrame /*implements ActionList
 
     public Consultar_ciudad() {
 
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
@@ -38,11 +35,8 @@ public class Consultar_ciudad extends javax.swing.JFrame /*implements ActionList
 
     private void setFilas() {
         try {
-            sentencia = (Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM ciudad"
-            /*"SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre " +
-                            "FROM inventario i,unidad_medida m,familia f" + 
-                            "WHERE i.id_familia = f.id_familia AND m.id_medida = i.id_medida"*/);
+            sentencia = (Statement) cn.createStatement();
+            ResultSet lista = sentencia.executeQuery("SELECT * FROM ciudad");
             Object datos[] = new Object[9];
             while (lista.next()) {
                 for (int i = 0; i < 2; i++) {
@@ -57,9 +51,9 @@ public class Consultar_ciudad extends javax.swing.JFrame /*implements ActionList
 
     public void filtro() {
 
-        filtro = txtbuscarxnom.getText().toUpperCase();
+        filtro = JT_nombre.getText().toUpperCase();
         int columna = 1;
-        trsfiltro.setRowFilter(RowFilter.regexFilter(txtbuscarxnom.getText().toUpperCase(), columna));
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_nombre.getText().toUpperCase(), columna));
     }
 
     public void clean() {
@@ -70,16 +64,7 @@ public class Consultar_ciudad extends javax.swing.JFrame /*implements ActionList
         }
     }
 
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (Exception e) {
-            msj = "error al conectar";
-        }
-    }
+    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -91,13 +76,13 @@ public class Consultar_ciudad extends javax.swing.JFrame /*implements ActionList
         JB_cancel = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        txtbuscarxnom = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        JT_nombre = new javax.swing.JTextField();
 
         jRadioButtonMenuItem1.setSelected(true);
         jRadioButtonMenuItem1.setText("jRadioButtonMenuItem1");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("CONSULTAR CIUDAD");
         setMinimumSize(new java.awt.Dimension(670, 450));
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
@@ -114,20 +99,31 @@ public class Consultar_ciudad extends javax.swing.JFrame /*implements ActionList
         jTable1.setModel(modeloTabla);
         jScrollPane1.setViewportView(jTable1);
 
-        txtbuscarxnom.setToolTipText("busqueda por nombre");
-        txtbuscarxnom.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        txtbuscarxnom.addActionListener(new java.awt.event.ActionListener() {
+        JT_nombre.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_nombre.setForeground(new java.awt.Color(153, 153, 153));
+        JT_nombre.setText("Buscar por nombre");
+        JT_nombre.setToolTipText("");
+        JT_nombre.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        JT_nombre.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_nombreFocusLost(evt);
+            }
+        });
+        JT_nombre.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_nombreMouseClicked(evt);
+            }
+        });
+        JT_nombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtbuscarxnomActionPerformed(evt);
+                JT_nombreActionPerformed(evt);
             }
         });
-        txtbuscarxnom.addKeyListener(new java.awt.event.KeyAdapter() {
+        JT_nombre.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtbuscarxnomKeyTyped(evt);
+                JT_nombreKeyTyped(evt);
             }
         });
-
-        jLabel2.setText("Filtro por Nombre:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -136,23 +132,18 @@ public class Consultar_ciudad extends javax.swing.JFrame /*implements ActionList
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(JB_cancel)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(txtbuscarxnom, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                            .addComponent(jLabel9))
+                        .addGap(0, 16, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(JT_nombre, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(JB_cancel, javax.swing.GroupLayout.Alignment.TRAILING))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -161,22 +152,19 @@ public class Consultar_ciudad extends javax.swing.JFrame /*implements ActionList
                 .addComponent(jLabel9)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 361, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtbuscarxnom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
-                        .addComponent(JB_cancel)
-                        .addContainerGap())))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(JT_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(122, 122, 122)
+                .addComponent(JB_cancel)
+                .addContainerGap())
         );
-
-        jLabel9.getAccessibleContext().setAccessibleName("RACAD AUTOMOTRIZ - CONSULTAR CIUDAD");
 
         pack();
         setLocationRelativeTo(null);
@@ -186,12 +174,12 @@ public class Consultar_ciudad extends javax.swing.JFrame /*implements ActionList
         this.dispose();
     }//GEN-LAST:event_JB_cancelActionPerformed
 
-    private void txtbuscarxnomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtbuscarxnomActionPerformed
+    private void JT_nombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JT_nombreActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtbuscarxnomActionPerformed
+    }//GEN-LAST:event_JT_nombreActionPerformed
 
-    private void txtbuscarxnomKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtbuscarxnomKeyTyped
-        txtbuscarxnom.addKeyListener(new KeyAdapter() {
+    private void JT_nombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_nombreKeyTyped
+        JT_nombre.addKeyListener(new KeyAdapter() {
             public void keyReleased(final KeyEvent e) {
                 filtro();
             }
@@ -201,7 +189,19 @@ public class Consultar_ciudad extends javax.swing.JFrame /*implements ActionList
     
 
 
-    }//GEN-LAST:event_txtbuscarxnomKeyTyped
+    }//GEN-LAST:event_JT_nombreKeyTyped
+
+    private void JT_nombreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_nombreMouseClicked
+        JT_nombre.setText("");
+        JT_nombre.setFont(new java.awt.Font("Tahoma",0,11));
+        JT_nombre.setForeground(new java.awt.Color(0,0,0));
+    }//GEN-LAST:event_JT_nombreMouseClicked
+
+    private void JT_nombreFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_nombreFocusLost
+        JT_nombre.setFont(new java.awt.Font("Tahoma",2,11));
+        JT_nombre.setForeground(new java.awt.Color(153,153,153));
+        JT_nombre.setText("Buscar por nombre");
+    }//GEN-LAST:event_JT_nombreFocusLost
 
 /**
  * @param args the command line arguments
@@ -267,12 +267,11 @@ public static void main(String args[]) {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton JB_cancel;
+    private javax.swing.JTextField JT_nombre;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField txtbuscarxnom;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,8 +5,7 @@
  */
 package racadauto;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import Conexion.Conexion;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,31 +19,19 @@ import javax.swing.table.DefaultTableModel;
 public class Ingresar_categoria extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    com.mysql.jdbc.Connection cn = (com.mysql.jdbc.Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla; 
     
     public Ingresar_categoria() {
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
     }
 
     
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (Exception e) {
-            msj = "ERROR AL CONECTAR";
-        }
-    }
+   
     
     private String[] getColumnas() {
 
@@ -55,7 +42,7 @@ public class Ingresar_categoria extends javax.swing.JFrame {
     
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT id_categoria,nombre "
                                                      + " FROM categoria");
             Object datos[] = new Object[7];
@@ -86,7 +73,7 @@ public class Ingresar_categoria extends javax.swing.JFrame {
         String nom = "";
 
         try {
-            sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+            sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT nombre FROM categoria");
             while (rs.next()) {
                 nom = rs.getString("nombre").toUpperCase().trim();
@@ -102,14 +89,14 @@ public class Ingresar_categoria extends javax.swing.JFrame {
         }
         
         
-        if (JT_nom.getText().equals("")) {
+        if (nombre.equals("")) {
             JOptionPane.showMessageDialog(null,
                     "EROR, Dejó una casilla vacía", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont ++;
         }
         
-        else if (JT_nom.getText().length() > 30) {
+        else if (nombre.length() > 30) {
             JOptionPane.showMessageDialog(null,
                     "Error, CATEGORIA maximo 30 letras", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
@@ -149,6 +136,7 @@ public class Ingresar_categoria extends javax.swing.JFrame {
         });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("INGRESAR CATEGORIA");
         setMinimumSize(new java.awt.Dimension(300, 300));
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
@@ -245,7 +233,7 @@ public class Ingresar_categoria extends javax.swing.JFrame {
             
             
             try {
-                sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+                sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT MAX(id_categoria) as id_categoria FROM categoria");
                 while (rs.next()) {
                     categoria = rs.getInt("id_categoria");

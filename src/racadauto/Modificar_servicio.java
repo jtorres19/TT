@@ -1,8 +1,7 @@
 package racadauto;
 
-import com.mysql.jdbc.*;
+import Conexion.Conexion;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -12,16 +11,13 @@ import javax.swing.table.DefaultTableModel;
 public class Modificar_servicio extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+   Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
 
     public Modificar_servicio() {
 
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
@@ -37,7 +33,7 @@ public class Modificar_servicio extends javax.swing.JFrame {
 
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT s.id_servicio,s.componente,s.precio,c.nombre"
                     + " FROM servicio s, categoria c"
                     + " WHERE s.id_categoria = c.id_categoria");
@@ -56,7 +52,7 @@ public class Modificar_servicio extends javax.swing.JFrame {
     public void llenarCombo() {
         CMB_categoria.removeAllItems();
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT * FROM categoria");
             while (lista.next()) {
                 CMB_categoria.addItem(lista.getString("nombre"));
@@ -80,16 +76,7 @@ public class Modificar_servicio extends javax.swing.JFrame {
         JT_precio.setText("");
     }
 
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (ClassNotFoundException | SQLException e) {
-            msj = "ERROR AL CONECTAR";
-        }
-    }
+   
 
     public int verificar() {
 
@@ -100,7 +87,7 @@ public class Modificar_servicio extends javax.swing.JFrame {
         String nom = "", comp = "";
 
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT componente FROM servicio");
             while (rs.next()) {
                 comp = rs.getString("componente").toUpperCase().trim();
@@ -111,7 +98,7 @@ public class Modificar_servicio extends javax.swing.JFrame {
         
         if (jTable1.getSelectedRow() == -1 ){
             JOptionPane.showMessageDialog(null,
-                    "ERROR, No se ha seleccionado ninguna fila", "ERROR",
+                    "ERROR, no se ha seleccionado ninguna fila", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
@@ -120,15 +107,15 @@ public class Modificar_servicio extends javax.swing.JFrame {
                 && (precio.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 2).toString())) 
                 && (cat.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 3)))){
             JOptionPane.showMessageDialog(null,
-                    "ERROR, No se ha MODIFICADO nada", "ERROR",
+                    "ERROR, no se ha MODIFICADO nada", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }   
 
-        if ((JT_componente.getText().equals(""))
-                || (JT_precio.getText().equals(""))) {
+        if ((componente.equals(""))
+                || (precio.equals(""))) {
             JOptionPane.showMessageDialog(null,
-                    "ERROR, Dejó una casilla vacía", "ERROR",
+                    "ERROR, dejó una casilla vacía", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
@@ -140,16 +127,9 @@ public class Modificar_servicio extends javax.swing.JFrame {
             cont++;
         }
 
-       if (precio.length() > 6) {
+       if (precio.length() > 6 || Integer.parseInt(precio) < 1) {
             JOptionPane.showMessageDialog(null,
-                    "ERROR, PRECIO máximo 6 números", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont++;
-        }
-       
-       if (Integer.parseInt(JT_precio.getText()) < 1){
-            JOptionPane.showMessageDialog(null,
-                    "ERROR, PRECIO debe ser mayor que 0", "ERROR",
+                    "ERROR, PRECIO <1M y >0", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
@@ -175,6 +155,7 @@ public class Modificar_servicio extends javax.swing.JFrame {
         CMB_categoria = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("MODIFICAR SERVICIO");
 
         JB_OK.setText("OK");
         JB_OK.addActionListener(new java.awt.event.ActionListener() {
@@ -294,7 +275,7 @@ public class Modificar_servicio extends javax.swing.JFrame {
             categoria = (String) CMB_categoria.getSelectedItem();
 
             try {
-                sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT id_categoria FROM categoria WHERE  nombre = '" + categoria + "'");
                 while (rs.next()) {
                     cat = rs.getInt("id_categoria");
@@ -305,7 +286,7 @@ public class Modificar_servicio extends javax.swing.JFrame {
             
             
             try {
-                sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT id_servicio FROM servicio WHERE componente = '" + componente + "'");
                 while (rs.next()) {
                     cod = rs.getInt("id_servicio");

@@ -1,5 +1,6 @@
 package racadauto;
 
+import Conexion.Conexion;
 import com.mysql.jdbc.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,10 +18,8 @@ import javax.swing.table.TableRowSorter;
 
 public class Eliminar_contacto extends javax.swing.JFrame {
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
     String filtro;
@@ -28,25 +27,13 @@ public class Eliminar_contacto extends javax.swing.JFrame {
 
 
     public Eliminar_contacto() {
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
         
     }
      
-    
-    public void conectar(){
-        try{
-            Class.forName("com.mysql.jdbc.Driver");
-            String url="jdbc:mysql://localhost:3306/"+this.nomBD;
-            this.conexion=(Connection)DriverManager.getConnection(url,this.usuario,this.password);
-            this.sentencia=(Statement)this.conexion.createStatement();
-        }
-        catch(Exception e){
-            msj="error al conectar";
-        }
-    }    
+   
     
     
     private String[] getColumnas() {
@@ -59,7 +46,7 @@ public class Eliminar_contacto extends javax.swing.JFrame {
     
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT * FROM cliente");
             Object datos[] = new Object[7];
             while (lista.next()) {
@@ -97,7 +84,7 @@ public class Eliminar_contacto extends javax.swing.JFrame {
         String rut2 = "";
         String rut= jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT rut_cliente FROM cliente WHERE rut_cliente = '" + rut + "'");
             while (rs.next()) {
                 rut = rs.getString("rut_cliente");
@@ -106,7 +93,7 @@ public class Eliminar_contacto extends javax.swing.JFrame {
             msj = "Error con su Solicitud";
         }
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT * FROM vehiculo");
             while (rs.next()) {
                 rut2 = rs.getString("rut_cliente");
@@ -248,7 +235,7 @@ public class Eliminar_contacto extends javax.swing.JFrame {
         
         String rut2 = "";
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT rut_cliente FROM cliente WHERE rut_cliente = '" + rut + "'");
             while (rs.next()) {
                 rut2 = rs.getString("rut_cliente");

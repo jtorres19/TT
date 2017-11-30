@@ -1,5 +1,6 @@
 package racadauto;
 
+import Conexion.Conexion;
 import com.mysql.jdbc.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,16 +13,13 @@ import javax.swing.table.DefaultTableModel;
 public class Modificar_familia extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
 
     public Modificar_familia() {
 
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
@@ -36,7 +34,7 @@ public class Modificar_familia extends javax.swing.JFrame {
 
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT * FROM familia"
             /*"SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre " +
                             "FROM inventario i,unidad_medida m,familia f" + 
@@ -54,37 +52,29 @@ public class Modificar_familia extends javax.swing.JFrame {
     }
 
     void limpiaTabla() {
-        do {
-            modeloTabla.getRowCount();
-            modeloTabla.removeRow(0);
-        } while (modeloTabla.getRowCount() != 0);
-    }
-
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (ClassNotFoundException | SQLException e) {
-            msj = "ERROR AL CONECTAR";
+        if (modeloTabla.getRowCount() > 0) {
+            do {
+                modeloTabla.getRowCount();
+                modeloTabla.removeRow(0);
+            } while (modeloTabla.getRowCount() != 0);
         }
     }
+
 
     public int verificar() {
 
         int cont = 0;
         String nom = "";
-        String nom2 = JT_nom.getText().toUpperCase();
+        String nom2 = JT_nom.getText().toUpperCase().trim();
 
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT nombre FROM familia");
             while (rs.next()) {
-                nom = rs.getString("nombre");
+                nom = rs.getString("nombre").trim();
                 if (nom2.equals(nom)) {
                     JOptionPane.showMessageDialog(null,
-                    "Error, NOMBRE no ha Cambiado", "ERROR",
+                    "ERROR, FAMILIA no ha cambiado", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont ++;
         }
@@ -92,25 +82,27 @@ public class Modificar_familia extends javax.swing.JFrame {
         } catch (SQLException eg) {
             msj = "Error con su Solicitud";
         }
-
-        if (JT_nom.getText().equals("")) {
+        
+        if (jTable1.getSelectedRow() == -1 ){
             JOptionPane.showMessageDialog(null,
-                    "Error, dejó una casilla vacía", "ERROR",
+                    "ERROR, no se ha seleccionado ninguna fila", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
 
-        if (JT_nom.getText().length() > 30) {
+        if (nom2.equals("")) {
             JOptionPane.showMessageDialog(null,
-                    "Error, NOMBRE maximo 30 letras", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont++;
-        } else if (nom2.matches("[-+]?\\d*\\.?\\d+")) {
-            JOptionPane.showMessageDialog(null,
-                    "Error, NOMBRE No Tiene Que Ser Númerico", "ERROR",
+                    "ERROR, dejó una casilla vacía", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
+
+        if (nom2.length() > 30) {
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, FAMILIA maximo 30 letras", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        } 
 
         return cont;
     }
@@ -128,7 +120,7 @@ public class Modificar_familia extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         JB_OK.setText("OK");
         JB_OK.addActionListener(new java.awt.event.ActionListener() {
@@ -149,6 +141,12 @@ public class Modificar_familia extends javax.swing.JFrame {
 
         jLabel2.setText("Nombre :");
 
+        JT_nom.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_nomKeyTyped(evt);
+            }
+        });
+
         jTable1.setModel(modeloTabla);
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -168,13 +166,13 @@ public class Modificar_familia extends javax.swing.JFrame {
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
                         .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel9)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(JB_cancel))
-                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -185,11 +183,11 @@ public class Modificar_familia extends javax.swing.JFrame {
                 .addComponent(jLabel9)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(JB_cancel, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -206,12 +204,12 @@ public class Modificar_familia extends javax.swing.JFrame {
 
         if (verificar() == 0) {
             String nom = "";
-            nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString().toUpperCase();
-            String nom2 = JT_nom.getText().toUpperCase();
+            nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString().toUpperCase().trim();
+            String nom2 = JT_nom.getText().toUpperCase().trim();
             int familia = 0;
 
             try {
-                sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT id_familia FROM familia WHERE nombre = '" + nom + "'");
                 while (rs.next()) {
                     familia = rs.getInt("id_familia");
@@ -226,11 +224,11 @@ public class Modificar_familia extends javax.swing.JFrame {
                     + "WHERE id_familia = '" + familia + "'";
             try {
                 sentencia.executeUpdate(sql);
-                msj = "Datos Modificados";
+                msj = "Datos modificados";
                 LBL_estado.setText(msj);
                 JT_nom.setText("");
             } catch (SQLException e) {
-                msj = "FAMILIA No Modificado";
+                msj = "FAMILIA no modificado";
                 LBL_estado.setText(msj);
             }
 
@@ -253,6 +251,19 @@ public class Modificar_familia extends javax.swing.JFrame {
         JT_nom.setText(nom);
 
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void JT_nomKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_nomKeyTyped
+        char validar = evt.getKeyChar();
+
+        if (!Character.isLetter(validar) && validar != evt.VK_BACK_SPACE && validar != evt.VK_SPACE ) {
+            getToolkit().beep();
+            evt.consume();
+
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, FAMILIA solo pueden ser letras", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_JT_nomKeyTyped
 
     /**
      * @param args the command line arguments

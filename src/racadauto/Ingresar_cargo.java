@@ -5,6 +5,7 @@
  */
 package racadauto;
 
+import Conexion.Conexion;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -20,31 +21,18 @@ import javax.swing.table.DefaultTableModel;
 public class Ingresar_cargo extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    com.mysql.jdbc.Connection cn = (com.mysql.jdbc.Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla; 
     
     public Ingresar_cargo() {
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
     }
 
-    
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (Exception e) {
-            msj = "ERROR AL CONECTAR";
-        }
-    }
+   
     
     private String[] getColumnas() {
 
@@ -55,7 +43,7 @@ public class Ingresar_cargo extends javax.swing.JFrame {
     
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT id_cargo,nombre "
                                                      + " FROM cargo");
             Object datos[] = new Object[7];
@@ -71,10 +59,12 @@ public class Ingresar_cargo extends javax.swing.JFrame {
     }
     
     void limpiaTabla() {
-        do {
-            modeloTabla.getRowCount();
-            modeloTabla.removeRow(0);
-        } while (modeloTabla.getRowCount() != 0);
+        if (modeloTabla.getRowCount() > 0) {
+            do {
+                modeloTabla.getRowCount();
+                modeloTabla.removeRow(0);
+            } while (modeloTabla.getRowCount() != 0);
+        }
     }
     
     public int verificar() {
@@ -84,7 +74,7 @@ public class Ingresar_cargo extends javax.swing.JFrame {
         String nom = "";
 
         try {
-            sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+            sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT nombre FROM cargo");
             while (rs.next()) {
                 nom = rs.getString("nombre").toUpperCase().trim();
@@ -100,12 +90,12 @@ public class Ingresar_cargo extends javax.swing.JFrame {
         }
         
         
-        if (JT_nom.getText().equals("")) {
+        if (nombre.equals("")) {
             JOptionPane.showMessageDialog(null,
                     "ERROR, dejó una casilla vacía", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont ++;
-        } else if (JT_nom.getText().length() > 30) {
+        } else if (nombre.length() > 30) {
             JOptionPane.showMessageDialog(null,
                     "ERROR, CARGO maximo 30 letras", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
@@ -186,18 +176,16 @@ public class Ingresar_cargo extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(149, 149, 149))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(LBL_estado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(18, 18, 18)
-                                .addComponent(JB_volver)))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(JB_volver))
                         .addComponent(jLabel9)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -212,7 +200,7 @@ public class Ingresar_cargo extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(JT_nom, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(JB_volver, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -239,19 +227,19 @@ public class Ingresar_cargo extends javax.swing.JFrame {
             String nom;
             int dis;
             int est = 1;
-            nom = JT_nom.getText().toUpperCase();
+            nom = JT_nom.getText().toUpperCase().trim();
             int cargo = 0;
             
             
             try {
-                sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+                sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT MAX(id_cargo) as id_cargo FROM cargo");
                 while (rs.next()) {
                     cargo = rs.getInt("id_cargo");
                 }
                 cargo ++;
             } catch (SQLException f) {
-                msj = "Error con Codigo";
+                msj = "Error con CODIGO";
             }
 
             String sql = "INSERT INTO cargo(id_cargo,nombre) VALUES(" + cargo + ",'" + nom + "')";
@@ -261,7 +249,7 @@ public class Ingresar_cargo extends javax.swing.JFrame {
                 LBL_estado.setText(msj);
                 dis = 1;
             } catch (SQLException e) {
-                msj = "Cargo no Ingresado, Problemas en Base de Datos";
+                msj = "CARGO no ingresado, problemas en base de datos";
                 LBL_estado.setText(msj);
                 dis = 0;
             }
@@ -269,7 +257,7 @@ public class Ingresar_cargo extends javax.swing.JFrame {
                 JT_nom.setText("");
             }
         } else {
-            msj = "Item no Ingresado";
+            msj = "CARGO no ingresado";
             LBL_estado.setText(msj);
         }
         

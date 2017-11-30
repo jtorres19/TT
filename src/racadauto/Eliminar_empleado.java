@@ -1,5 +1,6 @@
 package racadauto;
 
+import Conexion.Conexion;
 import com.mysql.jdbc.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,10 +18,8 @@ import javax.swing.table.TableRowSorter;
 
 public class Eliminar_empleado extends javax.swing.JFrame {
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
     String filtro;
@@ -28,7 +27,6 @@ public class Eliminar_empleado extends javax.swing.JFrame {
 
 
     public Eliminar_empleado() {
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
@@ -36,17 +34,7 @@ public class Eliminar_empleado extends javax.swing.JFrame {
     }
      
     
-    public void conectar(){
-        try{
-            Class.forName("com.mysql.jdbc.Driver");
-            String url="jdbc:mysql://localhost:3306/"+this.nomBD;
-            this.conexion=(Connection)DriverManager.getConnection(url,this.usuario,this.password);
-            this.sentencia=(Statement)this.conexion.createStatement();
-        }
-        catch(Exception e){
-            msj="error al conectar";
-        }
-    }    
+    
     
     
     private String[] getColumnas() {
@@ -59,7 +47,7 @@ public class Eliminar_empleado extends javax.swing.JFrame {
     
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT t.rut_trabajador,t.nombre,t.ape_paterno,t.ape_materno,t.fono,t.email,c.nombre "
                     + "                                 FROM trabajador t, cargo c "
                     + "                                 WHERE t.id_cargo = c.id_cargo");
@@ -97,9 +85,9 @@ public class Eliminar_empleado extends javax.swing.JFrame {
     public int verificar() {
         int yes = 0;
         String rut2 = "";
-        String rut= jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
+        String rut= jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString().trim();
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT rut_trabajador FROM trabajador WHERE rut_trabajador = '" + rut + "'");
             while (rs.next()) {
                 rut = rs.getString("rut_trabajador").trim();
@@ -108,7 +96,7 @@ public class Eliminar_empleado extends javax.swing.JFrame {
             msj = "Error con su Solicitud";
         }
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT * FROM detalle_solicitud");
             while (rs.next()) {
                 rut2 = rs.getString("rut_trabajador").trim();
@@ -121,7 +109,7 @@ public class Eliminar_empleado extends javax.swing.JFrame {
             msj = "No se puede Eliminar, trabajador referenciado en otra tabla";
         }
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT * FROM solicitud_servicio");
             while (rs.next()) {
                 rut2 = rs.getString("rut_trabajador").trim();
@@ -185,6 +173,7 @@ public class Eliminar_empleado extends javax.swing.JFrame {
             }
         });
 
+        jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel(modeloTabla);
         jScrollPane1.setViewportView(jTable1);
 
@@ -217,11 +206,11 @@ public class Eliminar_empleado extends javax.swing.JFrame {
                                 .addComponent(jl_Event, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(txtbuscarxnom, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(txtbuscarxnom, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel9))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -258,6 +247,11 @@ public class Eliminar_empleado extends javax.swing.JFrame {
     }//GEN-LAST:event_JB_cancelActionPerformed
 
     private void BTN_DelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_DelActionPerformed
+        if (jTable1.getSelectedRow() == -1){
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, No se ha seleccionado ninguna fila", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+        }
         
         String rut = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString().trim();
         String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString().trim();
@@ -268,7 +262,7 @@ public class Eliminar_empleado extends javax.swing.JFrame {
         
         String rut2 = "";
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT rut_trabajador FROM trabajador WHERE rut_trabajador = '" + rut + "'");
             while (rs.next()) {
                 rut2 = rs.getString("rut_trabajador").trim();

@@ -1,5 +1,6 @@
 package racadauto;
 
+import Conexion.Conexion;
 import com.mysql.jdbc.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,16 +13,13 @@ import javax.swing.table.DefaultTableModel;
 public class Modificar_ciudad extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
 
     public Modificar_ciudad() {
 
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
@@ -36,7 +34,7 @@ public class Modificar_ciudad extends javax.swing.JFrame {
 
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT * FROM ciudad"
             /*"SELECT i.cod_item,i.nombre,i.stock_actual,i.stock_critico,i.valor_costo,i.valor_venta,i.estado,m.nombre,f.nombre " +
                             "FROM inventario i,unidad_medida m,familia f" + 
@@ -60,16 +58,7 @@ public class Modificar_ciudad extends javax.swing.JFrame {
         } while (modeloTabla.getRowCount() != 0);
     }
 
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (ClassNotFoundException | SQLException e) {
-            msj = "ERROR AL CONECTAR";
-        }
-    }
+    
 
     public int verificar() {
 
@@ -78,7 +67,7 @@ public class Modificar_ciudad extends javax.swing.JFrame {
         String nom2 = JT_nom.getText().toUpperCase();
 
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT nombre FROM ciudad");
             while (rs.next()) {
                 nom = rs.getString("nombre").toUpperCase();
@@ -211,7 +200,7 @@ public class Modificar_ciudad extends javax.swing.JFrame {
             int cod = 0;
 
             try {
-                sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT cod_ciudad FROM ciudad WHERE nombre = '" + nom + "'");
                 while (rs.next()) {
                     cod = rs.getInt("cod_ciudad");

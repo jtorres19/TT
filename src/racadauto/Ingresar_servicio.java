@@ -5,8 +5,8 @@
  */
 package racadauto;
 
+import Conexion.Conexion;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,31 +20,19 @@ import javax.swing.table.DefaultTableModel;
 public class Ingresar_servicio extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
 
     public Ingresar_servicio() {
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
         llenarCombo();
     }
 
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (Exception e) {
-            msj = "ERROR AL CONECTAR";
-        }
-    }
+    
 
     private String[] getColumnas() {
 
@@ -55,7 +43,7 @@ public class Ingresar_servicio extends javax.swing.JFrame {
 
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT s.id_servicio,s.componente,s.precio,c.nombre"
                     + " FROM servicio s, categoria c"
                     + " WHERE s.id_categoria = c.id_categoria");
@@ -88,7 +76,7 @@ public class Ingresar_servicio extends javax.swing.JFrame {
     public void llenarCombo() {
         CMB_categoria.removeAllItems();
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT * FROM categoria");
             while (lista.next()) {
                 CMB_categoria.addItem(lista.getString("nombre"));
@@ -107,7 +95,7 @@ public class Ingresar_servicio extends javax.swing.JFrame {
         String comp = "";
 
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             
             ResultSet es = sentencia.executeQuery("SELECT id_categoria FROM categoria WHERE nombre = '" + categoria + "'");
             while (es.next()) {
@@ -129,8 +117,8 @@ public class Ingresar_servicio extends javax.swing.JFrame {
             msj = "Error con su Solicitud";
         }
 
-        if ((JT_componente.getText().equals(""))
-                || (JT_precio.getText().equals(""))) {
+        if ((componente.equals(""))
+                || (precio.equals(""))) {
             JOptionPane.showMessageDialog(null,
                     "ERROR, Dejó una casilla vacía", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
@@ -144,20 +132,13 @@ public class Ingresar_servicio extends javax.swing.JFrame {
             cont++;
         }
 
-        if (precio.length() > 6) {
+        if (precio.length() > 6 || Integer.parseInt(precio) < 1) {
             JOptionPane.showMessageDialog(null,
-                    "ERROR, PRECIO máximo 6 números", "ERROR",
+                    "ERROR, PRECIO <1M y >0", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
         
-        if (Integer.parseInt(JT_precio.getText()) < 1){
-            JOptionPane.showMessageDialog(null,
-                    "Error, PRECIO debe ser mayor que 0", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            cont++;
-        }
-
         return cont;
     }
 
@@ -195,6 +176,7 @@ public class Ingresar_servicio extends javax.swing.JFrame {
         });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("INGRESAR SERVICIO");
         setMinimumSize(new java.awt.Dimension(300, 300));
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
@@ -323,7 +305,7 @@ public class Ingresar_servicio extends javax.swing.JFrame {
             int servicio = 0;
 
             try {
-                sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT MAX(id_servicio) as id_servicio FROM servicio");
                 while (rs.next()) {
                     servicio = rs.getInt("id_servicio");
@@ -334,7 +316,7 @@ public class Ingresar_servicio extends javax.swing.JFrame {
             }
 
             try {
-                sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT id_categoria FROM categoria WHERE nombre = '" + categoria + "'");
                 while (rs.next()) {
                     categoria2 = rs.getInt("id_categoria");

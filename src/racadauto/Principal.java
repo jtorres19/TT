@@ -30,6 +30,9 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem25 = new javax.swing.JMenuItem();
         jMenuItem12 = new javax.swing.JMenuItem();
         jMenuItem9 = new javax.swing.JMenuItem();
+        jMenuItem40 = new javax.swing.JMenuItem();
+        jMenuItem45 = new javax.swing.JMenuItem();
+        jMenuItem48 = new javax.swing.JMenuItem();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
         log_ingre = new javax.swing.JMenuItem();
@@ -88,8 +91,33 @@ public class Principal extends javax.swing.JFrame {
         jMenu8 = new javax.swing.JMenu();
         new_car = new javax.swing.JMenuItem();
         mod_car = new javax.swing.JMenuItem();
+        jMenuItem37 = new javax.swing.JMenuItem();
         elim_car = new javax.swing.JMenuItem();
-        jMenuItem18 = new javax.swing.JMenuItem();
+        jMenu17 = new javax.swing.JMenu();
+        jMenuItem38 = new javax.swing.JMenuItem();
+        jMenuItem39 = new javax.swing.JMenuItem();
+        jMenuItem41 = new javax.swing.JMenuItem();
+        jMenuItem42 = new javax.swing.JMenuItem();
+        jMenu18 = new javax.swing.JMenu();
+        jMenuItem43 = new javax.swing.JMenuItem();
+        jMenuItem44 = new javax.swing.JMenuItem();
+        jMenuItem46 = new javax.swing.JMenuItem();
+        jMenuItem47 = new javax.swing.JMenuItem();
+        jMenu19 = new javax.swing.JMenu();
+        jMenuItem49 = new javax.swing.JMenuItem();
+        jMenuItem50 = new javax.swing.JMenuItem();
+        jMenuItem51 = new javax.swing.JMenuItem();
+        jMenuItem52 = new javax.swing.JMenuItem();
+        jMenu20 = new javax.swing.JMenu();
+        jMenuItem53 = new javax.swing.JMenuItem();
+        jMenuItem54 = new javax.swing.JMenuItem();
+        jMenuItem55 = new javax.swing.JMenuItem();
+        jMenuItem56 = new javax.swing.JMenuItem();
+        jMenu21 = new javax.swing.JMenu();
+        jMenuItem57 = new javax.swing.JMenuItem();
+        jMenuItem58 = new javax.swing.JMenuItem();
+        jMenuItem59 = new javax.swing.JMenuItem();
+        jMenuItem60 = new javax.swing.JMenuItem();
         jMenu11 = new javax.swing.JMenu();
         jMenuItem28 = new javax.swing.JMenuItem();
         jMenuItem29 = new javax.swing.JMenuItem();
@@ -131,6 +159,12 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem12.setText("jMenuItem12");
 
         jMenuItem9.setText("jMenuItem9");
+
+        jMenuItem40.setText("jMenuItem40");
+
+        jMenuItem45.setText("jMenuItem45");
+
+        jMenuItem48.setText("jMenuItem48");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("RACAD AUTOMOTRIZ");
@@ -543,6 +577,14 @@ public class Principal extends javax.swing.JFrame {
         });
         jMenu8.add(mod_car);
 
+        jMenuItem37.setText("Consultar Vehículo");
+        jMenuItem37.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem37ActionPerformed(evt);
+            }
+        });
+        jMenu8.add(jMenuItem37);
+
         elim_car.setText("Eliminar Vehiculo");
         elim_car.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -551,13 +593,180 @@ public class Principal extends javax.swing.JFrame {
         });
         jMenu8.add(elim_car);
 
-        jMenuItem18.setText("Modificar Otros");
-        jMenuItem18.addActionListener(new java.awt.event.ActionListener() {
+        jMenu17.setText("Marca");
+
+        jMenuItem38.setText("Nueva Marca");
+        jMenuItem38.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem18ActionPerformed(evt);
+                jMenuItem38ActionPerformed(evt);
             }
         });
-        jMenu8.add(jMenuItem18);
+        jMenu17.add(jMenuItem38);
+
+        jMenuItem39.setText("Modificar Marca");
+        jMenuItem39.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem39ActionPerformed(evt);
+            }
+        });
+        jMenu17.add(jMenuItem39);
+
+        jMenuItem41.setText("Consultar Marca");
+        jMenuItem41.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem41ActionPerformed(evt);
+            }
+        });
+        jMenu17.add(jMenuItem41);
+
+        jMenuItem42.setText("Eliminar Marca");
+        jMenuItem42.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem42ActionPerformed(evt);
+            }
+        });
+        jMenu17.add(jMenuItem42);
+
+        jMenu8.add(jMenu17);
+
+        jMenu18.setText("Modelo");
+
+        jMenuItem43.setText("Nuevo Modelo");
+        jMenuItem43.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem43ActionPerformed(evt);
+            }
+        });
+        jMenu18.add(jMenuItem43);
+
+        jMenuItem44.setText("Modificar Modelo");
+        jMenuItem44.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem44ActionPerformed(evt);
+            }
+        });
+        jMenu18.add(jMenuItem44);
+
+        jMenuItem46.setText("Consultar Modelo");
+        jMenuItem46.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem46ActionPerformed(evt);
+            }
+        });
+        jMenu18.add(jMenuItem46);
+
+        jMenuItem47.setText("Eliminar Modelo");
+        jMenuItem47.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem47ActionPerformed(evt);
+            }
+        });
+        jMenu18.add(jMenuItem47);
+
+        jMenu8.add(jMenu18);
+
+        jMenu19.setText("Tipo Vehículo");
+
+        jMenuItem49.setText("Nuevo Tipo Vehículo");
+        jMenuItem49.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem49ActionPerformed(evt);
+            }
+        });
+        jMenu19.add(jMenuItem49);
+
+        jMenuItem50.setText("Modificar Tipo Vehículo");
+        jMenuItem50.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem50ActionPerformed(evt);
+            }
+        });
+        jMenu19.add(jMenuItem50);
+
+        jMenuItem51.setText("Consultar Tipo Vehiculo");
+        jMenuItem51.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem51ActionPerformed(evt);
+            }
+        });
+        jMenu19.add(jMenuItem51);
+
+        jMenuItem52.setText("Eliminar Tipo Vehiculo");
+        jMenuItem52.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem52ActionPerformed(evt);
+            }
+        });
+        jMenu19.add(jMenuItem52);
+
+        jMenu8.add(jMenu19);
+
+        jMenu20.setText("Tipo Motor");
+
+        jMenuItem53.setText("Nuevo Motor");
+        jMenuItem53.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem53ActionPerformed(evt);
+            }
+        });
+        jMenu20.add(jMenuItem53);
+
+        jMenuItem54.setText("Modificar Motor");
+        jMenuItem54.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem54ActionPerformed(evt);
+            }
+        });
+        jMenu20.add(jMenuItem54);
+
+        jMenuItem55.setText("Consultar motor");
+        jMenuItem55.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem55ActionPerformed(evt);
+            }
+        });
+        jMenu20.add(jMenuItem55);
+
+        jMenuItem56.setText("Eliminar Motor");
+        jMenuItem56.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem56ActionPerformed(evt);
+            }
+        });
+        jMenu20.add(jMenuItem56);
+
+        jMenu8.add(jMenu20);
+
+        jMenu21.setText("Tipo Combustible");
+
+        jMenuItem57.setText("Nuevo Combustible");
+        jMenuItem57.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem57ActionPerformed(evt);
+            }
+        });
+        jMenu21.add(jMenuItem57);
+
+        jMenuItem58.setText("Modificar Combustible");
+        jMenuItem58.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem58ActionPerformed(evt);
+            }
+        });
+        jMenu21.add(jMenuItem58);
+
+        jMenuItem59.setText("Consultar Combustible");
+        jMenuItem59.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem59ActionPerformed(evt);
+            }
+        });
+        jMenu21.add(jMenuItem59);
+
+        jMenuItem60.setText("Eliminar Combustible");
+        jMenu21.add(jMenuItem60);
+
+        jMenu8.add(jMenu21);
 
         jMenuBar1.add(jMenu8);
 
@@ -662,11 +871,6 @@ public class Principal extends javax.swing.JFrame {
         Ingresar_ciudad c = new Ingresar_ciudad();
         c.setVisible(true);
     }//GEN-LAST:event_new_cityActionPerformed
-
-    private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
-        Otros_vehiculo q = new Otros_vehiculo();
-        q.setVisible(true);
-    }//GEN-LAST:event_jMenuItem18ActionPerformed
 
     private void mod_clientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mod_clientActionPerformed
         Modificar_cliente rr=new Modificar_cliente();
@@ -837,6 +1041,106 @@ public class Principal extends javax.swing.JFrame {
         m.setVisible(true);
     }//GEN-LAST:event_jMenuItem36ActionPerformed
 
+    private void jMenuItem37ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem37ActionPerformed
+        Consultar_vehiculo mm = new Consultar_vehiculo();
+        mm.setVisible(true);
+    }//GEN-LAST:event_jMenuItem37ActionPerformed
+
+    private void jMenuItem38ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem38ActionPerformed
+        Ingresar_marca o = new Ingresar_marca();
+        o.setVisible(true);
+    }//GEN-LAST:event_jMenuItem38ActionPerformed
+
+    private void jMenuItem57ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem57ActionPerformed
+        Ingresar_combustible oo = new Ingresar_combustible();
+        oo.setVisible(true);
+    }//GEN-LAST:event_jMenuItem57ActionPerformed
+
+    private void jMenuItem53ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem53ActionPerformed
+        Ingresar_motor p = new Ingresar_motor();
+        p.setVisible(true);
+    }//GEN-LAST:event_jMenuItem53ActionPerformed
+
+    private void jMenuItem49ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem49ActionPerformed
+        Ingresar_tipovehiculo pp = new Ingresar_tipovehiculo();
+        pp.setVisible(true);
+    }//GEN-LAST:event_jMenuItem49ActionPerformed
+
+    private void jMenuItem43ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem43ActionPerformed
+        Ingresar_modelo q = new Ingresar_modelo();
+        q.setVisible(true);
+    }//GEN-LAST:event_jMenuItem43ActionPerformed
+
+    private void jMenuItem39ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem39ActionPerformed
+        Modificar_marca qq = new Modificar_marca();
+        qq.setVisible(true);
+    }//GEN-LAST:event_jMenuItem39ActionPerformed
+
+    private void jMenuItem58ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem58ActionPerformed
+        Modificar_combustible r = new Modificar_combustible();
+        r.setVisible(true);
+    }//GEN-LAST:event_jMenuItem58ActionPerformed
+
+    private void jMenuItem50ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem50ActionPerformed
+        Modificar_tipovehiculo rr = new Modificar_tipovehiculo();
+        rr.setVisible(true);
+    }//GEN-LAST:event_jMenuItem50ActionPerformed
+
+    private void jMenuItem54ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem54ActionPerformed
+        Modificar_motor s = new Modificar_motor();
+        s.setVisible(true);
+    }//GEN-LAST:event_jMenuItem54ActionPerformed
+
+    private void jMenuItem44ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem44ActionPerformed
+        Modificar_modelo ss = new Modificar_modelo();
+        ss.setVisible(true);
+    }//GEN-LAST:event_jMenuItem44ActionPerformed
+
+    private void jMenuItem41ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem41ActionPerformed
+        Consultar_marca t = new Consultar_marca();
+        t.setVisible(true);
+    }//GEN-LAST:event_jMenuItem41ActionPerformed
+
+    private void jMenuItem51ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem51ActionPerformed
+        Consultar_tipovehiculo tt = new Consultar_tipovehiculo();
+        tt.setVisible(true);
+    }//GEN-LAST:event_jMenuItem51ActionPerformed
+
+    private void jMenuItem55ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem55ActionPerformed
+        Consultar_motor u = new Consultar_motor();
+        u.setVisible(true);
+    }//GEN-LAST:event_jMenuItem55ActionPerformed
+
+    private void jMenuItem59ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem59ActionPerformed
+        Consultar_combustible uu = new Consultar_combustible();
+        uu.setVisible(true);
+    }//GEN-LAST:event_jMenuItem59ActionPerformed
+
+    private void jMenuItem46ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem46ActionPerformed
+        Consultar_modelo v = new Consultar_modelo();
+        v.setVisible(true);
+    }//GEN-LAST:event_jMenuItem46ActionPerformed
+
+    private void jMenuItem42ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem42ActionPerformed
+        Eliminar_marca vv = new Eliminar_marca();
+        vv.setVisible(true);
+    }//GEN-LAST:event_jMenuItem42ActionPerformed
+
+    private void jMenuItem47ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem47ActionPerformed
+        Eliminar_modelo w = new Eliminar_modelo();
+        w.setVisible(true);
+    }//GEN-LAST:event_jMenuItem47ActionPerformed
+
+    private void jMenuItem52ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem52ActionPerformed
+        Eliminar_tipovehiculo ww = new Eliminar_tipovehiculo();
+        ww.setVisible(true);
+    }//GEN-LAST:event_jMenuItem52ActionPerformed
+
+    private void jMenuItem56ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem56ActionPerformed
+        Eliminar_motor ww = new Eliminar_motor();
+        ww.setVisible(true);
+    }//GEN-LAST:event_jMenuItem56ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -898,7 +1202,12 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu14;
     private javax.swing.JMenu jMenu15;
     private javax.swing.JMenu jMenu16;
+    private javax.swing.JMenu jMenu17;
+    private javax.swing.JMenu jMenu18;
+    private javax.swing.JMenu jMenu19;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu20;
+    private javax.swing.JMenu jMenu21;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
@@ -918,7 +1227,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem16;
     private javax.swing.JMenuItem jMenuItem17;
-    private javax.swing.JMenuItem jMenuItem18;
     private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem20;
@@ -939,9 +1247,33 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem34;
     private javax.swing.JMenuItem jMenuItem35;
     private javax.swing.JMenuItem jMenuItem36;
+    private javax.swing.JMenuItem jMenuItem37;
+    private javax.swing.JMenuItem jMenuItem38;
+    private javax.swing.JMenuItem jMenuItem39;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem40;
+    private javax.swing.JMenuItem jMenuItem41;
+    private javax.swing.JMenuItem jMenuItem42;
+    private javax.swing.JMenuItem jMenuItem43;
+    private javax.swing.JMenuItem jMenuItem44;
+    private javax.swing.JMenuItem jMenuItem45;
+    private javax.swing.JMenuItem jMenuItem46;
+    private javax.swing.JMenuItem jMenuItem47;
+    private javax.swing.JMenuItem jMenuItem48;
+    private javax.swing.JMenuItem jMenuItem49;
     private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem50;
+    private javax.swing.JMenuItem jMenuItem51;
+    private javax.swing.JMenuItem jMenuItem52;
+    private javax.swing.JMenuItem jMenuItem53;
+    private javax.swing.JMenuItem jMenuItem54;
+    private javax.swing.JMenuItem jMenuItem55;
+    private javax.swing.JMenuItem jMenuItem56;
+    private javax.swing.JMenuItem jMenuItem57;
+    private javax.swing.JMenuItem jMenuItem58;
+    private javax.swing.JMenuItem jMenuItem59;
     private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem60;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;

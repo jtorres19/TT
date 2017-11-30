@@ -1,42 +1,40 @@
 package racadauto;
 
-import com.mysql.jdbc.Connection;
+import Conexion.Conexion;
 import com.mysql.jdbc.Statement;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-public class ModEli_modelo_vehiculo extends javax.swing.JFrame {
+public class Modificar_modelo extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD="racad";
-    private String usuario="root";
-    private String password="";
+    Conexion con = new Conexion();
+    java.sql.Connection cn = (java.sql.Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
 
-    
-    public ModEli_modelo_vehiculo() {
-        conectar();
+    public Modificar_modelo() {
         modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
+        llenarcombos();
     }
-    
+
     private String[] getColumnas() {
 
-        String columna[] = new String[]{"Marca", "Modelo", "Nombre", "Tipo", "Combustible", "Motor"};
+        String columna[] = new String[]{"ID MODELO", "NOMBRE", "MARCA", "TIPO VEHICULO", "TIPO COMBUSTIBLE", "TIPO MOTOR"};
 
         return columna;
     }
 
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT * FROM modelo");
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+            ResultSet lista = sentencia.executeQuery("SELECT o.id_modelo,o.nombre,a.nombre,v.nombre,c.nombre,m.nombre "
+                    + "FROM marca a, modelo o,tipo_vehiculo v,tipo_combustible c,tipo_motor m "
+                    + "WHERE a.id_marca = o.id_marca AND o.id_tipo_vehiculo = v.id_tipo_vehiculo AND o.id_tipo_combustible = c.id_tipo_combustible AND o.id_tipo_motor = m.id_tipo_motor");
             Object datos[] = new Object[6];
             while (lista.next()) {
                 for (int i = 0; i < 6; i++) {
@@ -48,21 +46,23 @@ public class ModEli_modelo_vehiculo extends javax.swing.JFrame {
             msj = "No se pudo llenar tabla";
         }
     }
-    
+
     void limpiaTabla() {
-        do {
-            modeloTabla.getRowCount();
-            modeloTabla.removeRow(0);
-        } while (modeloTabla.getRowCount() != 0);
+        if (modeloTabla.getRowCount() > 0) {
+            do {
+                modeloTabla.getRowCount();
+                modeloTabla.removeRow(0);
+            } while (modeloTabla.getRowCount() != 0);
+        }
     }
-    
-    public void llenarcombos(){
+
+    public void llenarcombos() {
         cmb_tipo.removeAllItems();
         cmb_marc.removeAllItems();
         cmb_comb.removeAllItems();
         cmb_motor.removeAllItems();
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT nombre FROM tipo_vehiculo");
             while (lista.next()) {
                 cmb_tipo.addItem(lista.getString("nombre"));
@@ -71,7 +71,7 @@ public class ModEli_modelo_vehiculo extends javax.swing.JFrame {
             msj = "no se pudo seleccionar";
         }
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT nombre FROM marca");
             while (lista.next()) {
                 cmb_marc.addItem(lista.getString("nombre"));
@@ -80,7 +80,7 @@ public class ModEli_modelo_vehiculo extends javax.swing.JFrame {
             msj = "no se pudo seleccionar";
         }
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT nombre FROM tipo_combustible");
             while (lista.next()) {
                 cmb_comb.addItem(lista.getString("nombre"));
@@ -89,7 +89,7 @@ public class ModEli_modelo_vehiculo extends javax.swing.JFrame {
             msj = "no se pudo seleccionar";
         }
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT nombre FROM tipo_motor");
             while (lista.next()) {
                 cmb_motor.addItem(lista.getString("nombre"));
@@ -98,41 +98,58 @@ public class ModEli_modelo_vehiculo extends javax.swing.JFrame {
             msj = "no se pudo seleccionar";
         }
     }
-    
-    public int verificar(){
+
+    public int verificar() {
+
         int ver = 0;
-        if (txt_nom.getText().equals("")){
+        String nombre, tipo, combustible, marca, motor;
+        nombre = txt_nom.getText().toUpperCase().trim();
+        tipo = cmb_tipo.getSelectedItem().toString().trim();
+        combustible = cmb_comb.getSelectedItem().toString().trim();
+        marca = cmb_marc.getSelectedItem().toString().trim();
+        motor = cmb_motor.getSelectedItem().toString().trim();
+
+        if (nombre.equals("")) {
             JOptionPane.showMessageDialog(null,
                     "Error, dejó la casilla vacía", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
-            ver ++;
+            ver++;
         }
-        if (cmb_tipo.getSelectedIndex()==-1){
+        if (jTable2.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null,
-                    "Error, no seleccionó en la tabla", "ERROR",
+                    "ERROR, No se ha seleccionado ninguna fila", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
-            ver ++;
+            ver++;
+        } else if (nombre.equals(jTable2.getValueAt(jTable2.getSelectedRow(), 1).toString()) &&
+                    marca.equals(jTable2.getValueAt(jTable2.getSelectedRow(), 2).toString()) &&
+                    tipo.equals(jTable2.getValueAt(jTable2.getSelectedRow(), 3).toString()) &&
+                    combustible.equals(jTable2.getValueAt(jTable2.getSelectedRow(), 4).toString()) &&
+                    motor.equals(jTable2.getValueAt(jTable2.getSelectedRow(), 5).toString())) {
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, No se ha MODIFICADO nada", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
-        if (txt_nom.getText().length() >=16){
+
+        if (nombre.length() > 15) {
             JOptionPane.showMessageDialog(null,
                     "Nombre no puede exceder 15 caracteres!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
-            ver ++;
+            ver++;
         }
         return ver;
     }
-    
-    public int verificar2(){
-        int ver2=0;
-        int mod=0;
-        int mod2=0;
+
+    public int verificar2() {
+        int ver2 = 0;
+        int mod = 0;
+        int mod2 = 0;
         int nom = Integer.parseInt(jTable2.getValueAt(jTable2.getSelectedRow(), 1).toString());
         try {
-            sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT * FROM vehiculo");
             while (rs.next()) {
                 mod = rs.getInt("id_modelo");
-                if(mod==nom){
+                if (mod == nom) {
                     ver2++;
                 }
             }
@@ -141,11 +158,11 @@ public class ModEli_modelo_vehiculo extends javax.swing.JFrame {
             LBL_estado.setText(msj);
         }
         try {
-            sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet sr = sentencia.executeQuery("SELECT * FROM repuestos");
             while (sr.next()) {
                 mod2 = sr.getInt("id_modelo");
-                if(mod2==nom){
+                if (mod2 == nom) {
                     ver2++;
                 }
             }
@@ -154,19 +171,6 @@ public class ModEli_modelo_vehiculo extends javax.swing.JFrame {
             LBL_estado.setText(msj);
         }
         return ver2;
-    }
-
-    
-    public void conectar(){
-        try{
-            Class.forName("com.mysql.jdbc.Driver");
-            String url="jdbc:mysql://localhost:3306/"+this.nomBD;
-            this.conexion=(Connection)DriverManager.getConnection(url,this.usuario,this.password);
-            this.sentencia=(Statement)this.conexion.createStatement();
-        }
-        catch(Exception e){
-            msj="error al conectar";
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -190,18 +194,18 @@ public class ModEli_modelo_vehiculo extends javax.swing.JFrame {
         cmb_motor = new javax.swing.JComboBox<>();
         txt_nom = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         LBL_estado = new javax.swing.JLabel();
 
         jTable1.setModel(modeloTabla);
         jScrollPane1.setViewportView(jTable1);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("MODIFICAR MODELO VEHICULO");
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel9.setText("RACAD AUTOMOTRIZ - MODIFICAR O ELIMINAR MODELO");
+        jLabel9.setText("RACAD AUTOMOTRIZ - MODIFICAR MODELO VEHICULO");
 
-        JB_cancel.setText("Salir");
+        JB_cancel.setText("Volver");
         JB_cancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 JB_cancelActionPerformed(evt);
@@ -232,17 +236,16 @@ public class ModEli_modelo_vehiculo extends javax.swing.JFrame {
             }
         });
 
+        txt_nom.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_nomKeyTyped(evt);
+            }
+        });
+
         jButton1.setText("Modificar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setText("Eliminar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
             }
         });
 
@@ -255,82 +258,81 @@ public class ModEli_modelo_vehiculo extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 495, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(56, 56, 56)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
+                                .addComponent(txt_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel4))
+                                .addGap(30, 30, 30)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(cmb_tipo, 0, 126, Short.MAX_VALUE)
+                                    .addComponent(cmb_motor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(64, 64, 64)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jLabel1)
+                                .addGap(6, 6, 6)
+                                .addComponent(cmb_marc, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(49, 49, 49))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addComponent(jLabel5)
+                                .addGap(18, 18, 18)
+                                .addComponent(cmb_comb, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel9)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel2)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                .addComponent(txt_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGroup(layout.createSequentialGroup()
-                                                    .addComponent(jLabel1)
-                                                    .addGap(18, 18, 18)
-                                                    .addComponent(cmb_marc, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(20, 20, 20)
-                                                .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel5)
-                                            .addComponent(jLabel4)
-                                            .addComponent(jLabel6)))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jButton2)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jButton1)
-                                        .addGap(52, 52, 52)))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(cmb_comb, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(cmb_motor, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(cmb_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(40, 40, 40))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(40, Short.MAX_VALUE))
+                                        .addGap(18, 18, 18)
+                                        .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(cmb_marc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txt_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(11, 11, 11)
-                        .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(cmb_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(cmb_comb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(cmb_motor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(JB_cancel)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addGap(14, 14, 14))
+                    .addComponent(jLabel2)
+                    .addComponent(txt_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(cmb_marc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel4)
+                        .addComponent(jLabel5)
+                        .addComponent(cmb_comb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmb_tipo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(cmb_motor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton1)
+                            .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(JB_cancel))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -342,50 +344,50 @@ public class ModEli_modelo_vehiculo extends javax.swing.JFrame {
     }//GEN-LAST:event_JB_cancelActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (verificar()==0){
-            String nom = txt_nom.getText().toUpperCase();
+        if (verificar() == 0) {
+            String nom = txt_nom.getText().toUpperCase().trim();
             String tipo = (String) cmb_tipo.getSelectedItem();
             String comb = (String) cmb_comb.getSelectedItem();
             String marc = (String) cmb_marc.getSelectedItem();
             String motor = (String) cmb_motor.getSelectedItem();
-            int id = Integer.parseInt(jTable2.getValueAt(jTable2.getSelectedRow(), 1).toString());
-            int motor1=0;
-            int tipo1=0;
-            int comb1=0;
-            int marc1=0;
+            int id = Integer.parseInt(jTable2.getValueAt(jTable2.getSelectedRow(), 0).toString());
+            int motor1 = 0;
+            int tipo1 = 0;
+            int comb1 = 0;
+            int marc1 = 0;
             try {
-                sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT id_tipo_vehiculo FROM tipo_vehiculo WHERE  nombre = '" + tipo + "'");
                 while (rs.next()) {
                     tipo1 = rs.getInt("id_tipo_vehiculo");
-                }      
+                }
             } catch (SQLException s) {
                 msj = "Error con tipo";
             }
             try {
-                sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT id_tipo_motor FROM tipo_motor WHERE  nombre = '" + motor + "'");
                 while (rs.next()) {
                     motor1 = rs.getInt("id_tipo_motor");
-                }      
+                }
             } catch (SQLException s) {
                 msj = "Error con motor";
             }
             try {
-                sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT id_tipo_combustible FROM tipo_combustible WHERE  nombre = '" + comb + "'");
                 while (rs.next()) {
                     comb1 = rs.getInt("id_tipo_combustible");
-                }      
+                }
             } catch (SQLException s) {
                 msj = "Error con combustible";
             }
             try {
-                sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT id_marca FROM marca WHERE  nombre = '" + marc + "'");
                 while (rs.next()) {
                     marc1 = rs.getInt("id_marca");
-                }      
+                }
             } catch (SQLException s) {
                 msj = "Error con Cliente";
             }
@@ -395,7 +397,7 @@ public class ModEli_modelo_vehiculo extends javax.swing.JFrame {
                     + "id_tipo_vehiculo = '" + tipo1 + "',"
                     + "id_tipo_combustible = '" + comb1 + "',"
                     + "id_tipo_motor = '" + motor1 + "',"
-                    + "id_marca = '" + marc1 +"'"
+                    + "id_marca = '" + marc1 + "'"
                     + "WHERE id_modelo = '" + id + "'";
             try {
                 sentencia.executeUpdate(sql);
@@ -403,78 +405,53 @@ public class ModEli_modelo_vehiculo extends javax.swing.JFrame {
                 LBL_estado.setText(msj);
                 txt_nom.setText("");
             } catch (SQLException e) {
-                msj = "Item no Ingresado";
+                msj = "MODELO no Ingresado";
                 LBL_estado.setText(msj);
             }
-        }
-        else{
-            msj = "Item no Ingresado";
+        } else {
+            msj = "MODELO no Ingresado";
             LBL_estado.setText(msj);
         }
-        
+
         limpiaTabla();
         setFilas();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
-          
-        llenarcombos();
-        
-        int mar = 0;
-        mar = Integer.parseInt(jTable2.getValueAt(jTable2.getSelectedRow(), 0).toString());
-        mar--;
-        cmb_marc.setSelectedIndex(mar);
-        
-        String nom = jTable2.getValueAt(jTable2.getSelectedRow(), 2).toString();
-        txt_nom.setText(nom);
-        
-        int veh = 0;
-        veh = Integer.parseInt(jTable2.getValueAt(jTable2.getSelectedRow(), 3).toString());
-        veh--;
-        cmb_tipo.setSelectedIndex(veh);
-        
-        int com = 0;
-        com = Integer.parseInt(jTable2.getValueAt(jTable2.getSelectedRow(), 4).toString());
-        com--;
-        cmb_comb.setSelectedIndex(com);
-        
-        int mot = 0;
-        mot = Integer.parseInt(jTable2.getValueAt(jTable2.getSelectedRow(), 5).toString());
-        mot--;
-        cmb_motor.setSelectedIndex(mot);
-        
-        
+
+        String nombre = jTable2.getValueAt(jTable2.getSelectedRow(), 1).toString().toUpperCase();
+        txt_nom.setText(nombre);
+
+        String marca = jTable2.getValueAt(jTable2.getSelectedRow(), 2).toString();
+        cmb_marc.setSelectedItem(marca);
+
+        String tipo = jTable2.getValueAt(jTable2.getSelectedRow(), 3).toString();
+        cmb_tipo.setSelectedItem(tipo);
+
+        String combustible = jTable2.getValueAt(jTable2.getSelectedRow(), 4).toString();
+        cmb_comb.setSelectedItem(combustible);
+
+        String motor = jTable2.getValueAt(jTable2.getSelectedRow(), 5).toString();
+        cmb_motor.setSelectedItem(motor);
+
     }//GEN-LAST:event_jTable2MouseClicked
 
     private void cmb_combActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_combActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cmb_combActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (verificar()==0){
-            if (verificar2()==0){
-                int nom = Integer.parseInt(jTable2.getValueAt(jTable2.getSelectedRow(), 1).toString());
-                String sql = "DELETE FROM modelo WHERE id_modelo =" + nom + "";
-                try{
-                    sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
-                    sentencia.executeUpdate(sql);
-                    LBL_estado.setText("Modelo de auto " + nom + " borrado con exito");
-                }
-                catch(SQLException e){
-                    msj="Error al borrar modelo de auto" + nom + "";
-                    LBL_estado.setText(msj);
-                }
-                limpiaTabla();
-                setFilas();
-            }else{
-                msj="Error al borrar modelo, se encuentra en uso!";
-                LBL_estado.setText(msj);
-            }
-        }else{
-            msj="No ha seleccionado nada!";
-            LBL_estado.setText(msj);
-        }   
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void txt_nomKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_nomKeyTyped
+        char validar = evt.getKeyChar();
+
+        if (!Character.isLetter(validar) && !Character.isDigit(validar) && validar != evt.VK_SPACE && validar != evt.VK_BACK_SPACE) {
+            getToolkit().beep();
+            evt.consume();
+
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, MODELO solo puede ser alfanumerico", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_txt_nomKeyTyped
 
     /**
      * @param args the command line arguments
@@ -493,14 +470,70 @@ public class ModEli_modelo_vehiculo extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ModEli_modelo_vehiculo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Modificar_modelo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ModEli_modelo_vehiculo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Modificar_modelo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ModEli_modelo_vehiculo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Modificar_modelo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ModEli_modelo_vehiculo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Modificar_modelo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -513,7 +546,7 @@ public class ModEli_modelo_vehiculo extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ModEli_modelo_vehiculo().setVisible(true);
+                new Modificar_modelo().setVisible(true);
             }
         });
     }
@@ -526,7 +559,6 @@ public class ModEli_modelo_vehiculo extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cmb_motor;
     private javax.swing.JComboBox<String> cmb_tipo;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
