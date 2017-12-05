@@ -57,11 +57,6 @@ public class Principal extends javax.swing.JFrame {
         mod_emp = new javax.swing.JMenuItem();
         search_emp = new javax.swing.JMenuItem();
         elim_emp = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
-        new_cargo = new javax.swing.JMenuItem();
-        mod_cargo = new javax.swing.JMenuItem();
-        search_cargo = new javax.swing.JMenuItem();
-        elim_cargo = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         newitem = new javax.swing.JMenuItem();
         mod_item = new javax.swing.JMenuItem();
@@ -78,6 +73,11 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem13 = new javax.swing.JMenuItem();
         jMenuItem15 = new javax.swing.JMenuItem();
         jMenuItem17 = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        new_cargo = new javax.swing.JMenuItem();
+        mod_cargo = new javax.swing.JMenuItem();
+        search_cargo = new javax.swing.JMenuItem();
+        elim_cargo = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
         new_client = new javax.swing.JMenuItem();
         mod_client = new javax.swing.JMenuItem();
@@ -118,6 +118,8 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem58 = new javax.swing.JMenuItem();
         jMenuItem59 = new javax.swing.JMenuItem();
         jMenuItem60 = new javax.swing.JMenuItem();
+        jMenu22 = new javax.swing.JMenu();
+        jMenuItem18 = new javax.swing.JMenuItem();
         jMenu11 = new javax.swing.JMenu();
         jMenuItem28 = new javax.swing.JMenuItem();
         jMenuItem29 = new javax.swing.JMenuItem();
@@ -173,7 +175,7 @@ public class Principal extends javax.swing.JFrame {
 
         jMenu2.setText("Login");
 
-        log_ingre.setText("Ingresar");
+        log_ingre.setText("Cerrar Cesion");
         log_ingre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 log_ingreActionPerformed(evt);
@@ -333,42 +335,6 @@ public class Principal extends javax.swing.JFrame {
         });
         jMenu3.add(elim_emp);
 
-        jMenu1.setText("Cargos");
-
-        new_cargo.setText("Nuevo Cargo");
-        new_cargo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                new_cargoActionPerformed(evt);
-            }
-        });
-        jMenu1.add(new_cargo);
-
-        mod_cargo.setText("Modificar Cargo");
-        mod_cargo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mod_cargoActionPerformed(evt);
-            }
-        });
-        jMenu1.add(mod_cargo);
-
-        search_cargo.setText("Consultar Cargo");
-        search_cargo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                search_cargoActionPerformed(evt);
-            }
-        });
-        jMenu1.add(search_cargo);
-
-        elim_cargo.setText("Eliminar Cargo");
-        elim_cargo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                elim_cargoActionPerformed(evt);
-            }
-        });
-        jMenu1.add(elim_cargo);
-
-        jMenu3.add(jMenu1);
-
         jMenuBar1.add(jMenu3);
 
         jMenu4.setText("Inventario");
@@ -484,6 +450,42 @@ public class Principal extends javax.swing.JFrame {
         jMenu13.add(jMenuItem17);
 
         jMenu4.add(jMenu13);
+
+        jMenu1.setText("Cargos");
+
+        new_cargo.setText("Nuevo Cargo");
+        new_cargo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                new_cargoActionPerformed(evt);
+            }
+        });
+        jMenu1.add(new_cargo);
+
+        mod_cargo.setText("Modificar Cargo");
+        mod_cargo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mod_cargoActionPerformed(evt);
+            }
+        });
+        jMenu1.add(mod_cargo);
+
+        search_cargo.setText("Consultar Cargo");
+        search_cargo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                search_cargoActionPerformed(evt);
+            }
+        });
+        jMenu1.add(search_cargo);
+
+        elim_cargo.setText("Eliminar Cargo");
+        elim_cargo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                elim_cargoActionPerformed(evt);
+            }
+        });
+        jMenu1.add(elim_cargo);
+
+        jMenu4.add(jMenu1);
 
         jMenuBar1.add(jMenu4);
 
@@ -770,6 +772,18 @@ public class Principal extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu8);
 
+        jMenu22.setText("Repuestos");
+
+        jMenuItem18.setText("Ingresar Repuesto");
+        jMenuItem18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem18ActionPerformed(evt);
+            }
+        });
+        jMenu22.add(jMenuItem18);
+
+        jMenuBar1.add(jMenu22);
+
         jMenu11.setText("Informes");
 
         jMenuItem28.setText("Trabajos");
@@ -835,6 +849,7 @@ public class Principal extends javax.swing.JFrame {
     private void log_ingreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_log_ingreActionPerformed
         Ingreso_sistema v=new Ingreso_sistema();
         v.setVisible(true); 
+        this.dispose();
     }//GEN-LAST:event_log_ingreActionPerformed
 
     private void new_empActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_new_empActionPerformed
@@ -898,12 +913,12 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_adj_itemActionPerformed
 
     private void start_workActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_start_workActionPerformed
-        r2_1 yyz=new r2_1();
+        Presupuestar_trabajo2 yyz = new Presupuestar_trabajo2();
         yyz.setVisible(true);
     }//GEN-LAST:event_start_workActionPerformed
 
     private void update_workActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_workActionPerformed
-        r2_2 yes=new r2_2();
+        Orden_trabajo yes =new Orden_trabajo();
         yes.setVisible(true);
     }//GEN-LAST:event_update_workActionPerformed
 
@@ -918,7 +933,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_end_workActionPerformed
 
     private void jMenuItem21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem21ActionPerformed
-        this.dispose();
+        System.exit(0);
     }//GEN-LAST:event_jMenuItem21ActionPerformed
 
     private void search_empActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_search_empActionPerformed
@@ -1141,6 +1156,11 @@ public class Principal extends javax.swing.JFrame {
         ww.setVisible(true);
     }//GEN-LAST:event_jMenuItem56ActionPerformed
 
+    private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
+        Ingresar_repuestos x = new Ingresar_repuestos();
+        x.setVisible(true);
+    }//GEN-LAST:event_jMenuItem18ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1208,6 +1228,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu20;
     private javax.swing.JMenu jMenu21;
+    private javax.swing.JMenu jMenu22;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
@@ -1227,6 +1248,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem16;
     private javax.swing.JMenuItem jMenuItem17;
+    private javax.swing.JMenuItem jMenuItem18;
     private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem20;

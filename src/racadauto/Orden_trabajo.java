@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -45,7 +43,7 @@ public class Orden_trabajo extends javax.swing.JFrame {
         try {
             sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT cod_solicitud, folio, observaciones, patente "
-                    + "FROM solicitud_servicio WHERE estado_solicitud = 'PRESUPUEST' ");
+                    + "FROM solicitud_servicio WHERE estado_solicitud = 'PRESUPUESTO' ");
             Object datos[] = new Object[4];
             while (lista.next()) {
                 for (int i = 0; i < 4; i++) {

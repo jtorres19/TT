@@ -1,30 +1,25 @@
 package racadauto;
 
+import Conexion.Conexion;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class Presupuestar_trabajo extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla; 
     DefaultTableModel modeloTabla2; 
 
     
     public Presupuestar_trabajo() {
-        conectar();
         modeloTabla = new DefaultTableModel(null, getColumnas());
         modeloTabla2 = new DefaultTableModel(null, getColumnas2());
         setFilas();
@@ -46,7 +41,7 @@ public class Presupuestar_trabajo extends javax.swing.JFrame {
 
     private void setFilas() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT v.patente, v.kms, v.color, c.nombre, c.ape_paterno, c.ape_materno, ma.nombre, mo.nombre "
                     + "FROM vehiculo v INNER JOIN cliente c ON v.rut_cliente = c.rut_cliente "
                     + "LEFT JOIN marca ma ON v.id_marca = ma.id_marca "
@@ -66,7 +61,7 @@ public class Presupuestar_trabajo extends javax.swing.JFrame {
     
     private void setFilas2() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT rut_trabajador, nombre, ape_paterno, ape_materno "
                     + "FROM trabajador ");
             Object datos[] = new Object[4];
@@ -89,17 +84,6 @@ public class Presupuestar_trabajo extends javax.swing.JFrame {
         } while ((modeloTabla.getRowCount() != 0)&(modeloTabla2.getRowCount() != 0));
     }
     
-    
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (Exception e) {
-            msj = "ERROR AL CONECTAR";
-        }
-    }
 
     public void clean() {
         jl_Cod.setText("");
@@ -122,7 +106,7 @@ public class Presupuestar_trabajo extends javax.swing.JFrame {
     public void llenarLabels(){
         int cod=0;
         try {
-            sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+            sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
             ResultSet rs = sentencia.executeQuery("SELECT MAX(cod_solicitud) as cod_solicitud FROM solicitud_servicio");
             while (rs.next()) {
             cod = rs.getInt("cod_solicitud");
@@ -221,7 +205,8 @@ public class Presupuestar_trabajo extends javax.swing.JFrame {
         LBL_estado3 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("PRESUPUESTO");
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel9.setText("RACAD AUTOMOTRIZ - PRESUPUESTAR TRABAJO");
@@ -319,7 +304,7 @@ public class Presupuestar_trabajo extends javax.swing.JFrame {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -360,10 +345,11 @@ public class Presupuestar_trabajo extends javax.swing.JFrame {
                             .addComponent(JB_cancel)
                             .addComponent(jButton1)))
                     .addComponent(LBL_estado1, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void JB_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_cancelActionPerformed
@@ -372,21 +358,20 @@ public class Presupuestar_trabajo extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if (verificar() == 0) {
-            String obser;
             String pat = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
-            int rut = Integer.parseInt(jTable2.getValueAt(jTable2.getSelectedRow(), 0).toString());
+            String rut = jTable2.getValueAt(jTable2.getSelectedRow(), 0).toString();
             int dis;
             int fol = 0;
             String fech = lblFecha.getText();
-            obser = jt_Obser.getText();
+            String obser = jt_Obser.getText().toUpperCase().trim();
             int cod = 0;
             //int sub = Integer.parseInt(jt_Sub.getText());
             int total = Integer.parseInt(jt_Total.getText());
             int mod=0;
             int mar=0;
-            String est = "PRESUPUEST";
+            String est = "PRESUPUESTO";
             try {
-                sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
+                sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT MAX(cod_solicitud) as cod_solicitud FROM solicitud_servicio");
                 while (rs.next()) {
                     cod = rs.getInt("cod_solicitud");
@@ -396,22 +381,12 @@ public class Presupuestar_trabajo extends javax.swing.JFrame {
                 msj = "Error con Codigo";
             }
             
-            try {
-                sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
-                ResultSet rs = sentencia.executeQuery("SELECT MAX(folio) as folio FROM solicitud_servicio");
-                while (rs.next()) {
-                    fol = rs.getInt("folio");
-                }
-                fol++;
-            } catch (SQLException f) {
-                msj = "Error con Codigo";
-            }
 
             //la fecha orden y entrega so "place-holders" que se quedarán para que funcione el programa
             //la fecha presupuesto hay que hacer que sea la actual si
             //sub-total se dejó en cero, puesto a que esto es un presupuesto
             String sql = "INSERT INTO solicitud_servicio(cod_solicitud,folio,observaciones,subtotal,total,fecha_presupuesto,fecha_orden,fecha_entrega,estado_solicitud,patente,rut_trabajador) "
-                         + "VALUES(" + cod + "," + fol + ",'" + obser + "',0," + total + ",'" + fech + "','2017-10-05','2017-10-05','" + est + "','" + pat + "'," + rut + ")";
+                         + "VALUES(" + cod + ",0,'" + obser + "',0," + total + ",'" + fech + "','2017-10-05','2017-10-05','" + est + "','" + pat + "','" + rut + "')";
             
             try {
                 sentencia.executeUpdate(sql);
@@ -419,7 +394,7 @@ public class Presupuestar_trabajo extends javax.swing.JFrame {
                 LBL_estado3.setText(msj);
                 dis = 1;
             } catch (SQLException e) {
-                msj = "Item no Ingresado en bd";
+                msj = "PRESUPUESTO no Ingresado en bd";
                 LBL_estado3.setText(msj);
                 dis = 0;
             }
@@ -430,7 +405,7 @@ public class Presupuestar_trabajo extends javax.swing.JFrame {
                 setFilas2();
             }
         } else {
-            msj = "Item no Ingresado";
+            msj = "PRESUPUESTO no Ingresado";
             LBL_estado3.setText(msj);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -442,7 +417,7 @@ public class Presupuestar_trabajo extends javax.swing.JFrame {
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
-        String nom = jTable1.getValueAt(jTable2.getSelectedRow(), 0).toString();
+        String nom = jTable2.getValueAt(jTable2.getSelectedRow(), 0).toString();
         LBL_estado1.setText("Trabajador : " + nom +"");
     }//GEN-LAST:event_jTable2MouseClicked
 

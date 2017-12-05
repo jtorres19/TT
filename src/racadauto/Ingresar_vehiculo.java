@@ -466,7 +466,7 @@ public class Ingresar_vehiculo extends javax.swing.JFrame {
                 LBL_estado.setText(msj);
                 dis = 1;
             } catch (SQLException e) {
-                msj = "Item no Ingresado";
+                msj = "VEHICULO no Ingresado";
                 LBL_estado.setText(msj);
                 dis = 0;
             }

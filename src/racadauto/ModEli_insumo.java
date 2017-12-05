@@ -1,13 +1,9 @@
 package racadauto;
 
 import com.mysql.jdbc.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.naming.spi.DirStateFactory.Result;
-import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 

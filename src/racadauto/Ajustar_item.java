@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class Ajustar_item extends javax.swing.JFrame {
-    
+
     private Statement sentencia;
     Conexion con = new Conexion();
     Connection cn = (Connection) con.getConnection();
@@ -17,28 +17,27 @@ public class Ajustar_item extends javax.swing.JFrame {
     String msj = "";
 
     public Ajustar_item() {
-         
-        modeloTabla = new DefaultTableModel(null,getColumnas());
+
+        modeloTabla = new DefaultTableModel(null, getColumnas());
         setFilas();
         initComponents();
         fechaActual();
     }
-    
+
     private String[] getColumnas() {
 
         String columna[] = new String[]{"NOMBRE", "STOCK ACTUAL", "STOCK CRITICO", "VALOR COSTO", "VALOR VENTA", "MEDIDA", "FAMILIA"};
 
         return columna;
     }
-    
+
     void limpiaTabla() {
         do {
             modeloTabla.getRowCount();
             modeloTabla.removeRow(0);
         } while (modeloTabla.getRowCount() != 0);
     }
-    
-    
+
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
@@ -52,86 +51,126 @@ public class Ajustar_item extends javax.swing.JFrame {
                 modeloTabla.addRow(datos);
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,"Error al Conectar","Conexion",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error al Conectar", "Conexion", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-    
-    public void fechaActual(){
+
+    public void fechaActual() {
         java.util.Date fechaActual = new java.util.Date();
         long fecha = fechaActual.getTime();
         java.sql.Date sqlDate = new java.sql.Date(fecha);
-        SimpleDateFormat formato = new SimpleDateFormat("dd-MMMM-yyy kk:mm");
+        SimpleDateFormat formato = new SimpleDateFormat("dd-MMMM-yyy");
         lblFecha.setText(formato.format(sqlDate).toUpperCase());
     }
-       
-    
-    public int validar(){
-        int val=0;
-        if ((txtDesc.getText().equals(""))||
-            (txtCant.getText().equals(""))){
+
+    public int validar() {
+        int val = 0;
+        String rut = JT_rut.getText().trim();
+        if (rut.equals("")) {
             JOptionPane.showMessageDialog(null,
-                "Error, dejó una casilla vacía","ERROR",
-                JOptionPane.ERROR_MESSAGE);
-                val+=1;
+                    "ERROR, debe ingresar un rut", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            val++;
+        } else if (!rut.matches("^([0-9]*\\d{7,8}[0-9k])$")) {
+            JOptionPane.showMessageDialog(null, "ERROR, RUT mal escrito", "ERROR", JOptionPane.ERROR_MESSAGE);
+            val++;
+        } else if (rut.length() > 9) {
+            JOptionPane.showMessageDialog(null,
+                    "ERROR, RUT maximo 9 digitos", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            val++;
         }
-        if(txtDesc.getText().length()>=140) {  
+        if ((txtDesc.getText().equals(""))
+                || (txtCant.getText().equals(""))) {
             JOptionPane.showMessageDialog(null,
-                "Error, solo 140 caracteres","ERROR",
-                JOptionPane.ERROR_MESSAGE);
-                val+=1;
+                    "Error, dejó una casilla vacía", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            val += 1;
         }
-        if(txtCant.getText().length()>=2) {  
+        if (txtDesc.getText().length() >= 140) {
             JOptionPane.showMessageDialog(null,
-                "Error, cantidad <100 y >0","ERROR",
-                JOptionPane.ERROR_MESSAGE);
-                val+=1;
+                    "Error, solo 140 caracteres", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            val += 1;
+        }
+        if (txtCant.getText().length() >= 2) {
+            JOptionPane.showMessageDialog(null,
+                    "Error, cantidad <100 y >0", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            val += 1;
         }
         String cant = txtCant.getText();
-        if(!cant.matches("[-+]?\\d*\\.?\\d+")){ 
+        if (!cant.matches("[-+]?\\d*\\.?\\d+")) {
             JOptionPane.showMessageDialog(null,
-                "Error, stock tiene que ser numerico","ERROR",
-                JOptionPane.ERROR_MESSAGE);
-                val+=1;
+                    "Error, stock tiene que ser numerico", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            val += 1;
+        }
+
+        return val;
+    }
+
+    public int validar2() {
+        int val = 0, can = 0, cont = 0;
+        String rut = JT_rut.getText().trim(), rut2 = "";
+        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
+        try {
+            sentencia = (Statement) cn.createStatement();
+            ResultSet rs = sentencia.executeQuery("SELECT stock_actual FROM inventario WHERE nombre = '" + nom + "'");
+            while (rs.next()) {
+                can = rs.getInt("stock_actual");
+            }
+        } catch (SQLException f) {
+            msj = "Error con Codigo";
+        }
+
+        try {
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+            ResultSet rs = sentencia.executeQuery("SELECT rut_trabajador FROM trabajador");
+            while (rs.next()) {
+                rut2 = rs.getString("rut_trabajador").trim();
+                if (rut.equals(rut2)) {
+                    cont++;
+                }
+            }
+
+        } catch (SQLException eg) {
+            msj = "Error con su Solicitud";
         }
         
-        return val;
-    }
-    
-    public int validar2(){
-        int val=0,can=0;
-        String nom = jTable1.getValueAt(jTable1.getSelectedRow(),0).toString();
-        try{
-            sentencia=(Statement)cn.createStatement();
-            ResultSet rs=sentencia.executeQuery("SELECT stock_actual FROM inventario WHERE nombre = '" + nom + "'" );
-            while(rs.next()){
-                can = rs.getInt("stock_actual");}
-            }catch(SQLException f){
-                msj="Error con Codigo";
-        }
-        if ((txtDesc.getText().equals(""))||
-            (txtCant.getText().equals(""))){
+        if (cont == 0){
             JOptionPane.showMessageDialog(null,
-                "Error, dejó una casilla vacía","ERROR",
-                JOptionPane.ERROR_MESSAGE);
-                val+=1;
-        }else{
-            val=0;
-        }
-        if (can == 0){
+                        "ERROR, Rut no valido", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                JT_rut.setText("");
+                val++;
+        }else val = 0;
+        
+        
+        if ((txtDesc.getText().equals(""))
+                || (txtCant.getText().equals(""))) {
             JOptionPane.showMessageDialog(null,
-                "Error, item no puede ser negativo","ERROR",
-                JOptionPane.ERROR_MESSAGE);
-                val+=1;
-        }else{
-            val=0;
+                    "Error, dejó una casilla vacía", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            val += 1;
+        } else {
+            val = 0;
+        }
+        if (can == 0) {
+            JOptionPane.showMessageDialog(null,
+                    "Error, item no puede ser negativo", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            val += 1;
+        } else {
+            val = 0;
         }
         return val;
     }
-    
-    public void clean(){
+
+    public void clean() {
         txtDesc.setText("");
         txtCant.setText("");
+        JT_rut.setText("");
     }
 
     @SuppressWarnings("unchecked")
@@ -154,6 +193,8 @@ public class Ajustar_item extends javax.swing.JFrame {
         txtDesc = new javax.swing.JTextArea();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        JT_rut = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("AJUSTAR ITEM");
@@ -212,6 +253,8 @@ public class Ajustar_item extends javax.swing.JFrame {
         });
         jScrollPane4.setViewportView(jTable1);
 
+        jLabel1.setText("Rut Trabajador:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -241,11 +284,15 @@ public class Ajustar_item extends javax.swing.JFrame {
                         .addComponent(btnRehab, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(lblEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(lblEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(JT_rut, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -258,8 +305,12 @@ public class Ajustar_item extends javax.swing.JFrame {
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblEstado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(lblEstado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel6))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(JT_rut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnRehab, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -294,40 +345,41 @@ public class Ajustar_item extends javax.swing.JFrame {
     }//GEN-LAST:event_JB_cancelActionPerformed
 
     private void btnIncreaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIncreaseActionPerformed
-        if (validar()==0){
-        int dis=0;
-        int sto=Integer.parseInt(txtCant.getText());
-        int fol=0;
-        String rut="185823393";
-        String nom = jTable1.getValueAt(jTable1.getSelectedRow(),0).toString();
-        int est = 0;
-        int cod=0;
-        String fech = lblFecha.getText();
-        String desc = txtDesc.getText();
-        int cant = Integer.parseInt(txtCant.getText());
-        
-        //se obtiene codigo
-        try{
-            sentencia=(Statement)cn.createStatement();
-            ResultSet rs=sentencia.executeQuery("SELECT cod_item FROM inventario WHERE nombre = '" + nom + "'" );
-            while(rs.next()){
-                cod = rs.getInt("cod_item");}
-            }catch(SQLException f){
-                msj="Error con Codigo";
-        }
-        //se obtiene numero folio
-        try{
-                sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
-                ResultSet rs=sentencia.executeQuery("SELECT MAX(n_folio) as n_folio FROM ajuste");
-                while(rs.next()){
+        if (validar() == 0) {
+            int dis = 0;
+            int sto = Integer.parseInt(txtCant.getText());
+            int fol = 0;
+            String rut = JT_rut.getText().trim();
+            String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
+            int est = 0;
+            int cod = 0;
+            String fech = lblFecha.getText();
+            String desc = txtDesc.getText();
+            int cant = Integer.parseInt(txtCant.getText());
+
+            //se obtiene codigo
+            try {
+                sentencia = (Statement) cn.createStatement();
+                ResultSet rs = sentencia.executeQuery("SELECT cod_item FROM inventario WHERE nombre = '" + nom + "'");
+                while (rs.next()) {
+                    cod = rs.getInt("cod_item");
+                }
+            } catch (SQLException f) {
+                msj = "Error con Codigo";
+            }
+            //se obtiene numero folio
+            try {
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+                ResultSet rs = sentencia.executeQuery("SELECT MAX(n_folio) as n_folio FROM ajuste");
+                while (rs.next()) {
                     fol = rs.getInt("n_folio");
                 }
-                fol+=1;
-            }catch(SQLException f){
-            msj="Error con Codigo";
-        }
-        //se obtiene rut trabajador
-        /*
+                fol += 1;
+            } catch (SQLException f) {
+                msj = "Error con Codigo";
+            }
+            //se obtiene rut trabajador
+            /*
         try{
                 sentencia=(com.mysql.jdbc.Statement)conexion.createStatement();
                 ResultSet rs=sentencia.executeQuery("SELECT MAX(rut_trabajador) as rut_trabajador FROM trabajador");
@@ -337,166 +389,160 @@ public class Ajustar_item extends javax.swing.JFrame {
             }catch(SQLException f){
             msj="Error con Codigo";
         }
-        */
-            String sql="UPDATE inventario SET stock_actual =stock_actual+"+ sto +" WHERE  cod_item =" + cod + "";
-            try{
+             */
+            String sql = "UPDATE inventario SET stock_actual =stock_actual+" + sto + " WHERE  cod_item =" + cod + "";
+            try {
                 sentencia.executeUpdate(sql);
-                msj="Datos Guardados";
+                msj = "Datos Guardados";
                 txtDesc.setText(msj);
                 dis += 1;
-            }
-            catch(SQLException e){
-                msj="Item no Ingresado stock";
+            } catch (SQLException e) {
+                msj = "Item no Ingresado stock";
                 txtDesc.setText(msj);
                 dis = 0;
             }
-            
-            
-            String sql2="INSERT INTO ajuste(n_folio,rut_trabajador,cod_item,fecha,descrip_ajuste,cantidad) VALUES(" + fol + ",'" + rut +"'," + cod + ",'2017-11-17','" + desc + "'," + cant + ")";
-            try{
+
+            String sql2 = "INSERT INTO ajuste(n_folio,rut_trabajador,cod_item,fecha,descrip_ajuste,cantidad) VALUES(" + fol + ",'" + rut + "'," + cod + ",'" + fech + "','" + desc + "'," + cant + ")";
+            try {
                 sentencia.executeUpdate(sql2);
-                msj="Datos Guardados";
+                msj = "Datos Guardados";
                 txtDesc.setText(msj);
                 dis += 1;
-            }
-            catch(SQLException e){
-                msj="Item no Ingresado ajuste";
+            } catch (SQLException e) {
+                msj = "Item no Ingresado ajuste";
                 txtDesc.setText(msj);
                 dis = 0;
             }
-            
-            if (dis == 2){
+
+            if (dis == 2) {
                 clean();
                 lblEstado.setText("Completado!");
             }
-        }else{
+        } else {
             lblEstado.setText("Llene todo!");
         }
-        
+
         limpiaTabla();
         setFilas();
-        
+
     }//GEN-LAST:event_btnIncreaseActionPerformed
 
     private void btnRehabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRehabActionPerformed
         String est = lblEstado.getText();
-        String nom = jTable1.getValueAt(jTable1.getSelectedRow(),0).toString();
-        if (est == "Des-Habilitado"){
-            String sql="UPDATE inventario SET estado = 1 WHERE nombre ='" + nom + "'";
-                try{
-                    sentencia.executeUpdate(sql);
-                    lblEstado.setText("Cambiado!");
-                }
-                catch(SQLException ee){
-                    msj="Error al inactivar";
-                    lblEstado.setText(msj);
-                }
+        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
+        if (est == "Des-Habilitado") {
+            String sql = "UPDATE inventario SET estado = 1 WHERE nombre ='" + nom + "'";
+            try {
+                sentencia.executeUpdate(sql);
+                lblEstado.setText("Cambiado!");
+            } catch (SQLException ee) {
+                msj = "Error al inactivar";
+                lblEstado.setText(msj);
+            }
         }
         limpiaTabla();
         setFilas();
-        
+
     }//GEN-LAST:event_btnRehabActionPerformed
 
     private void btnDecreaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDecreaseActionPerformed
-        if (validar2()==0){
-        int dis=0;
-        int sto=Integer.parseInt(txtCant.getText());
-        int fol=0;
-        String rut="";
-        String nom = jTable1.getValueAt(jTable1.getSelectedRow(),0).toString();
-        int est = 0;
-        int cod=0;
-        String fech = "2017-10-05";
-        String desc = txtDesc.getText();
-        int cant = Integer.parseInt(txtCant.getText());
-        try{
-        sentencia=(Statement)cn.createStatement();
-        ResultSet rs=sentencia.executeQuery("SELECT cod_item FROM inventario WHERE nombre = '" + nom + "'" );
-        while(rs.next()){
-            cod = rs.getInt("cod_item");}
-        }catch(SQLException f){
-            msj="Error con Codigo";
-        }
-        try{
-                sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
-                ResultSet rs=sentencia.executeQuery("SELECT MAX(n_folio) as n_folio FROM ajuste");
-                while(rs.next()){
+        if (validar2() == 0) {
+            int dis = 0;
+            int sto = Integer.parseInt(txtCant.getText());
+            int fol = 0;
+            String rut = JT_rut.getText().trim();
+            String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
+            int est = 0;
+            int cod = 0;
+            String fech = lblFecha.getText();
+            String desc = txtDesc.getText();
+            int cant = Integer.parseInt(txtCant.getText());
+            try {
+                sentencia = (Statement) cn.createStatement();
+                ResultSet rs = sentencia.executeQuery("SELECT cod_item FROM inventario WHERE nombre = '" + nom + "'");
+                while (rs.next()) {
+                    cod = rs.getInt("cod_item");
+                }
+            } catch (SQLException f) {
+                msj = "Error con Codigo";
+            }
+            try {
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+                ResultSet rs = sentencia.executeQuery("SELECT MAX(n_folio) as n_folio FROM ajuste");
+                while (rs.next()) {
                     fol = rs.getInt("n_folio");
                 }
-                fol+=1;
-            }catch(SQLException f){
-            msj="Error con Codigo";
-        }
-        try{
-                sentencia=(com.mysql.jdbc.Statement)cn.createStatement();
-                ResultSet rs=sentencia.executeQuery("SELECT MAX(rut_trabajador) as rut_trabajador FROM trabajador");
-                while(rs.next()){
+                fol += 1;
+            } catch (SQLException f) {
+                msj = "Error con Codigo";
+            }
+            try {
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+                ResultSet rs = sentencia.executeQuery("SELECT MAX(rut_trabajador) as rut_trabajador FROM trabajador");
+                while (rs.next()) {
                     rut = rs.getString("rut_trabajador");
                 }
-            }catch(SQLException f){
-            msj="Error con Codigo";
-        }
-            String sql="UPDATE inventario SET stock_actual = stock_actual - "+ sto +" WHERE  cod_item =" + cod + "";
-            try{
+            } catch (SQLException f) {
+                msj = "Error con Codigo";
+            }
+            String sql = "UPDATE inventario SET stock_actual = stock_actual - " + sto + " WHERE  cod_item =" + cod + "";
+            try {
                 sentencia.executeUpdate(sql);
-                msj="Datos Guardados";
+                msj = "Datos Guardados";
                 txtDesc.setText(msj);
                 dis += 1;
-            }
-            catch(SQLException e){
-                msj="Item no Ingresado Stock";
+            } catch (SQLException e) {
+                msj = "Item no Ingresado Stock";
                 txtDesc.setText(msj);
                 dis = 0;
             }
-            String sql2="INSERT INTO ajuste(n_folio,rut_trabajador,cod_item,fecha,descrip_ajuste,cantidad) VALUES(" + fol + ",'" + rut + "'," + cod + ",'2017-10-05','" + desc + "'," + cant + ")";
-            try{
+            String sql2 = "INSERT INTO ajuste(n_folio,rut_trabajador,cod_item,fecha,descrip_ajuste,cantidad) VALUES(" + fol + ",'" + rut + "'," + cod + ",'" + fech + "','" + desc + "'," + cant + ")";
+            try {
                 sentencia.executeUpdate(sql2);
-                msj="Datos Guardados";
+                msj = "Datos Guardados";
                 txtDesc.setText(msj);
                 dis += 1;
-            }
-            catch(SQLException e){
-                msj="Item no Ingresado Ajuste";
+            } catch (SQLException e) {
+                msj = "Item no Ingresado Ajuste";
                 txtDesc.setText(msj);
                 dis = 0;
             }
-            
-            if (dis == 2){
+
+            if (dis == 2) {
                 clean();
                 lblEstado.setText("Completado!");
             }
-            
-        }else{
+
+        } else {
             lblEstado.setText("Llene todo!");
         }
-        
+
         limpiaTabla();
         setFilas();
-        
+
     }//GEN-LAST:event_btnDecreaseActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
-        
-        String nom = jTable1.getValueAt(jTable1.getSelectedRow(),0).toString();
+
+        String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
         int est = 0;
-        try{
-        sentencia=(Statement)cn.createStatement();
-        ResultSet rs=sentencia.executeQuery("SELECT estado FROM inventario WHERE nombre = '" + nom + "'" );
-        while(rs.next()){
-            est = rs.getInt("estado");
-            
-            if (est == 1){
-                lblEstado.setText("Habilitado");
-            }else{
-                lblEstado.setText("Des-Habilitado");
+        try {
+            sentencia = (Statement) cn.createStatement();
+            ResultSet rs = sentencia.executeQuery("SELECT estado FROM inventario WHERE nombre = '" + nom + "'");
+            while (rs.next()) {
+                est = rs.getInt("estado");
+
+                if (est == 1) {
+                    lblEstado.setText("Habilitado");
+                } else {
+                    lblEstado.setText("Des-Habilitado");
+                }
             }
-            }
+        } catch (SQLException ed) {
+            msj = "No se pudo llenar Label";
         }
-        catch(SQLException ed){
-            msj="No se pudo llenar Label";
-        }
-        
+
     }//GEN-LAST:event_jTable1MouseClicked
 
     /**
@@ -539,9 +585,11 @@ public class Ajustar_item extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton JB_cancel;
+    private javax.swing.JTextField JT_rut;
     private javax.swing.JButton btnDecrease;
     private javax.swing.JButton btnIncrease;
     private javax.swing.JButton btnRehab;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

@@ -1,29 +1,22 @@
 package racadauto;
 
+import Conexion.Conexion;
 import com.mysql.jdbc.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.naming.spi.DirStateFactory.Result;
-import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class Ingresar_repuestos extends javax.swing.JFrame {
 
     private Statement sentencia;
-    private Connection conexion;
-    private String nomBD = "racad";
-    private String usuario = "root";
-    private String password = "";
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla1;
     DefaultTableModel modeloTabla2;    
     
     public Ingresar_repuestos() {
-        conectar();
         modeloTabla1 = new DefaultTableModel(null, getColumnas());
         modeloTabla2 = new DefaultTableModel(null, getColumnas2());
         setFilas();
@@ -39,7 +32,7 @@ public class Ingresar_repuestos extends javax.swing.JFrame {
     private void setFilas() {
         int cod=0;
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT i.nombre, i.stock_actual, i.stock_critico, i.valor_costo "
                 + "FROM inventario i WHERE i.estado = 1 AND i.cod_item  NOT IN (SELECT cod_item FROM repuestos)");
             Object datos[] = new Object[4];
@@ -62,7 +55,7 @@ public class Ingresar_repuestos extends javax.swing.JFrame {
     //esto podría solucioar modificar_trabajo y agregar_insumo si es que hubiese algun error allí
     private void setFilas2() {
         try {
-            sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT m.id_marca, ma.nombre, m.id_modelo, m.nombre "
                     + "FROM modelo m INNER JOIN marca ma ON m.id_marca = ma.id_marca");
             Object datos[] = new Object[4];
@@ -77,16 +70,6 @@ public class Ingresar_repuestos extends javax.swing.JFrame {
         }
     }    
     
-    public void conectar() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/" + this.nomBD;
-            this.conexion = (Connection) DriverManager.getConnection(url, this.usuario, this.password);
-            this.sentencia = (Statement) this.conexion.createStatement();
-        } catch (Exception e) {
-            msj = "error al conectar";
-        }
-    }
     
     public int verificar(){
         int v=0;
@@ -100,10 +83,14 @@ public class Ingresar_repuestos extends javax.swing.JFrame {
     }
     
     void limpiaTabla() {
-        do {
-            modeloTabla1.setRowCount(0);
-            modeloTabla2.setRowCount(0);
-        } while ((modeloTabla1.getRowCount() != 0)&(modeloTabla2.getRowCount() != 0));
+        if (modeloTabla1.getRowCount() > 0 && modeloTabla2.getRowCount() > 0) {
+            do {
+                modeloTabla1.getRowCount();
+                modeloTabla1.removeRow(0);
+                modeloTabla2.getRowCount();
+                modeloTabla2.removeRow(0);
+            } while (modeloTabla1.getRowCount() != 0 && modeloTabla2.getRowCount() != 0);
+        }
     }
     
     
@@ -133,7 +120,8 @@ public class Ingresar_repuestos extends javax.swing.JFrame {
 
         jLabel1.setText("jLabel1");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("AGREGAR REPUESTOS");
 
         JB_cancel.setText("Salir");
         JB_cancel.addActionListener(new java.awt.event.ActionListener() {
@@ -145,6 +133,7 @@ public class Ingresar_repuestos extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jLabel9.setText("RACAD AUTOMOTRIZ - REPUESTOS");
 
+        jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel(modeloTabla1);
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -157,6 +146,7 @@ public class Ingresar_repuestos extends javax.swing.JFrame {
 
         jLabel4.setText("Marca/Modelo :");
 
+        jTable2.setAutoCreateRowSorter(true);
         jTable2.setModel(modeloTabla2);
         jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -184,24 +174,24 @@ public class Ingresar_repuestos extends javax.swing.JFrame {
                             .addComponent(jLabel9)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
+                                .addComponent(jLabel3)
+                                .addGap(26, 26, 26)
                                 .addComponent(LBL_1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(12, 12, 12)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4)
+                        .addGap(27, 27, 27)
                         .addComponent(LBL_2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(19, 19, 19)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(LBL_estado4, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jButton1)
+                        .addGap(18, 18, 18)
+                        .addComponent(LBL_estado4, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(JB_cancel)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -230,6 +220,7 @@ public class Ingresar_repuestos extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void JB_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_cancelActionPerformed
@@ -251,7 +242,7 @@ public class Ingresar_repuestos extends javax.swing.JFrame {
             int mo = Integer.parseInt(jTable2.getValueAt(jTable2.getSelectedRow(), 2).toString());
             int cod=0;
             try {
-                sentencia = (com.mysql.jdbc.Statement) conexion.createStatement();
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT cod_item FROM inventario WHERE nombre = '" + nom + "'");
                 while (rs.next()) {
                     cod = rs.getInt("cod_item");
@@ -294,13 +285,13 @@ public class Ingresar_repuestos extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(r5_1_1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ingresar_repuestos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(r5_1_1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ingresar_repuestos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(r5_1_1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ingresar_repuestos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(r5_1_1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Ingresar_repuestos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
