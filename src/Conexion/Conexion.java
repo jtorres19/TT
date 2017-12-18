@@ -2,6 +2,7 @@ package Conexion;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 public class Conexion {
@@ -14,7 +15,7 @@ public class Conexion {
             Class.forName("com.mysql.jdbc.Driver");
             conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/racad", "root", "");
             
-        } catch (Exception e) {
+        } catch (ClassNotFoundException | SQLException e) {
             JOptionPane.showMessageDialog(null,"Error al Conectar","Conexion",JOptionPane.ERROR_MESSAGE);
         }
         

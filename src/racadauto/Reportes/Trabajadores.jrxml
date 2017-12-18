@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b1dc4b9a-bdd3-413e-863c-82cd37acc531">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT
+     trabajador.`rut_trabajador` AS trabajador_rut_trabajador,
+     trabajador.`nombre` AS trabajador_nombre,
+     trabajador.`ape_paterno` AS trabajador_ape_paterno,
+     trabajador.`ape_materno` AS trabajador_ape_materno,
+     trabajador.`fono` AS trabajador_fono,
+     trabajador.`email` AS trabajador_email,
+     cargo.`nombre` AS cargo_nombre
+FROM
+     `trabajador` trabajador INNER JOIN `cargo` cargo ON trabajador.`id_cargo` = cargo.`id_cargo`]]>
+	</queryString>
+	<field name="trabajador_rut_trabajador" class="java.lang.String"/>
+	<field name="trabajador_nombre" class="java.lang.String"/>
+	<field name="trabajador_ape_paterno" class="java.lang.String"/>
+	<field name="trabajador_ape_materno" class="java.lang.String"/>
+	<field name="trabajador_fono" class="java.lang.String"/>
+	<field name="trabajador_email" class="java.lang.String"/>
+	<field name="cargo_nombre" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="125" splitType="Stretch">
+			<staticText>
+				<reportElement x="193" y="0" width="158" height="41" uuid="da2a8cf1-04c0-4e48-8984-f387c3336564"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="24" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Trabajadores]]></text>
+			</staticText>
+			<image>
+				<reportElement x="0" y="0" width="142" height="101" uuid="54d1942f-a98c-4ebd-94c4-220a1f4f655a"/>
+				<imageExpression><![CDATA["C:\\Users\\JTorres\\Downloads\\Racad.jpeg"]]></imageExpression>
+			</image>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="399" y="10" width="126" height="20" uuid="e1c5ca9f-f485-4c56-af3b-1c2daffe46bf"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="142" y="41" width="413" height="17" uuid="94462593-9da4-4bad-857f-133bd15bb207"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[CALLE BAQUEDANO N°1129, BELLOTO CENTRO, QUILPUÉ.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="142" y="58" width="413" height="21" uuid="50872722-d263-40cb-b176-cf4e9008089a"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[TELEFONO: 32-3277586 / +56984786687 ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="142" y="79" width="413" height="20" uuid="6c220998-fc1d-48ea-b86a-1d1af7db55f3"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[RRSS: www.facebook.com/racad  /  www.instagram.com/racadautomotriz/]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="57" height="20" uuid="093b33f0-4b97-406e-a1de-70176ab91d2e"/>
+				<textElement verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="57" y="0" width="83" height="20" uuid="d7440eff-6861-4277-add7-d2af7f5ec123"/>
+				<textElement verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="140" y="0" width="78" height="20" uuid="d6f4aed1-0c7f-4218-92da-59cf7dc3e64a"/>
+				<textElement verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[APE. PATERNO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="218" y="0" width="87" height="20" uuid="39edd604-b89f-46b9-aec7-89280bb2f998"/>
+				<textElement verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[APE. MATERNO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="305" y="0" width="65" height="20" uuid="549d53ef-0c51-4fcc-82ee-b6b64bbc7693"/>
+				<textElement verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TELEFONO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="370" y="0" width="115" height="20" uuid="e7c5f292-3b7d-407a-bb17-84ff30f7b575"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[EMAIL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="485" y="0" width="70" height="20" uuid="86a87185-1bf5-4192-9341-7680cd900d5b"/>
+				<textElement verticalAlignment="Top">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CARGO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="57" height="20" uuid="417db02d-0eae-41bd-bc33-712eb1007f40"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trabajador_rut_trabajador}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="57" y="0" width="83" height="20" uuid="f7f5298f-9dd9-438e-a8f5-28f69193485b"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trabajador_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="140" y="0" width="78" height="20" uuid="7a2797e1-9fef-4a99-8fab-afa52bd5ba27"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trabajador_ape_paterno}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="218" y="0" width="87" height="20" uuid="64454bc1-e627-4762-a0ba-e4f286498dba"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trabajador_ape_materno}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="305" y="0" width="65" height="20" uuid="2125ce73-9852-4216-b67e-d003609f60d6"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trabajador_fono}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="370" y="0" width="115" height="20" uuid="f5b0d8de-2f3c-44b8-a3ff-8adadb048dca"/>
+				<textFieldExpression><![CDATA[$F{trabajador_email}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="485" y="0" width="70" height="20" uuid="0afed66c-ed37-4fa9-b8df-47dc15c77bf9"/>
+				<textFieldExpression><![CDATA[$F{cargo_nombre}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="209" y="0" width="80" height="20" uuid="0a28a70f-9919-4831-8cf3-10897f668273"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="289" y="0" width="40" height="20" uuid="6bc1ae2b-c284-4a5e-8c29-cdbc1bd6674e"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

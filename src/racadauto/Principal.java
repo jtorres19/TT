@@ -1,14 +1,25 @@
 package racadauto;
 
+import Conexion.Conexion;
+import com.mysql.jdbc.Connection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 public class Principal extends javax.swing.JFrame {
 
-    
+    Conexion con = new Conexion();
+    Connection cn = (Connection) con.getConnection();
+
     public Principal() {
         initComponents();
     }
 
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -57,6 +68,11 @@ public class Principal extends javax.swing.JFrame {
         mod_emp = new javax.swing.JMenuItem();
         search_emp = new javax.swing.JMenuItem();
         elim_emp = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        new_cargo = new javax.swing.JMenuItem();
+        mod_cargo = new javax.swing.JMenuItem();
+        search_cargo = new javax.swing.JMenuItem();
+        elim_cargo = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         newitem = new javax.swing.JMenuItem();
         mod_item = new javax.swing.JMenuItem();
@@ -73,11 +89,6 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem13 = new javax.swing.JMenuItem();
         jMenuItem15 = new javax.swing.JMenuItem();
         jMenuItem17 = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
-        new_cargo = new javax.swing.JMenuItem();
-        mod_cargo = new javax.swing.JMenuItem();
-        search_cargo = new javax.swing.JMenuItem();
-        elim_cargo = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
         new_client = new javax.swing.JMenuItem();
         mod_client = new javax.swing.JMenuItem();
@@ -301,9 +312,9 @@ public class Principal extends javax.swing.JFrame {
 
         jMenuBar1.add(init_work);
 
-        jMenu3.setText("Empleados");
+        jMenu3.setText("Trabajadores");
 
-        new_emp.setText("Nuevo Empleado");
+        new_emp.setText("Nuevo Trabajador");
         new_emp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 new_empActionPerformed(evt);
@@ -311,7 +322,7 @@ public class Principal extends javax.swing.JFrame {
         });
         jMenu3.add(new_emp);
 
-        mod_emp.setText("Modificar Empleado");
+        mod_emp.setText("Modificar Trabajador");
         mod_emp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mod_empActionPerformed(evt);
@@ -319,7 +330,7 @@ public class Principal extends javax.swing.JFrame {
         });
         jMenu3.add(mod_emp);
 
-        search_emp.setText("Consultar Empleado");
+        search_emp.setText("Consultar Trabajador");
         search_emp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 search_empActionPerformed(evt);
@@ -327,13 +338,49 @@ public class Principal extends javax.swing.JFrame {
         });
         jMenu3.add(search_emp);
 
-        elim_emp.setText("Eliminar Empleado");
+        elim_emp.setText("Eliminar Trabajador");
         elim_emp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 elim_empActionPerformed(evt);
             }
         });
         jMenu3.add(elim_emp);
+
+        jMenu1.setText("Cargos");
+
+        new_cargo.setText("Nuevo Cargo");
+        new_cargo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                new_cargoActionPerformed(evt);
+            }
+        });
+        jMenu1.add(new_cargo);
+
+        mod_cargo.setText("Modificar Cargo");
+        mod_cargo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mod_cargoActionPerformed(evt);
+            }
+        });
+        jMenu1.add(mod_cargo);
+
+        search_cargo.setText("Consultar Cargo");
+        search_cargo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                search_cargoActionPerformed(evt);
+            }
+        });
+        jMenu1.add(search_cargo);
+
+        elim_cargo.setText("Eliminar Cargo");
+        elim_cargo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                elim_cargoActionPerformed(evt);
+            }
+        });
+        jMenu1.add(elim_cargo);
+
+        jMenu3.add(jMenu1);
 
         jMenuBar1.add(jMenu3);
 
@@ -450,42 +497,6 @@ public class Principal extends javax.swing.JFrame {
         jMenu13.add(jMenuItem17);
 
         jMenu4.add(jMenu13);
-
-        jMenu1.setText("Cargos");
-
-        new_cargo.setText("Nuevo Cargo");
-        new_cargo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                new_cargoActionPerformed(evt);
-            }
-        });
-        jMenu1.add(new_cargo);
-
-        mod_cargo.setText("Modificar Cargo");
-        mod_cargo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mod_cargoActionPerformed(evt);
-            }
-        });
-        jMenu1.add(mod_cargo);
-
-        search_cargo.setText("Consultar Cargo");
-        search_cargo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                search_cargoActionPerformed(evt);
-            }
-        });
-        jMenu1.add(search_cargo);
-
-        elim_cargo.setText("Eliminar Cargo");
-        elim_cargo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                elim_cargoActionPerformed(evt);
-            }
-        });
-        jMenu1.add(elim_cargo);
-
-        jMenu4.add(jMenu1);
 
         jMenuBar1.add(jMenu4);
 
@@ -789,16 +800,36 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem28.setText("Trabajos");
         jMenu11.add(jMenuItem28);
 
-        jMenuItem29.setText("Empleados");
+        jMenuItem29.setText("Trabajadores");
+        jMenuItem29.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem29ActionPerformed(evt);
+            }
+        });
         jMenu11.add(jMenuItem29);
 
         jMenuItem30.setText("Inventario");
+        jMenuItem30.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem30ActionPerformed(evt);
+            }
+        });
         jMenu11.add(jMenuItem30);
 
         jMenuItem31.setText("Clientes");
+        jMenuItem31.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem31ActionPerformed(evt);
+            }
+        });
         jMenu11.add(jMenuItem31);
 
         jMenuItem32.setText("Vehículos");
+        jMenuItem32.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem32ActionPerformed(evt);
+            }
+        });
         jMenu11.add(jMenuItem32);
 
         jMenuItem2.setText("Ingresos y Egresos");
@@ -825,60 +856,60 @@ public class Principal extends javax.swing.JFrame {
 
     private void newitemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newitemActionPerformed
         // TODO add your handling code here:
-        Ingresar_item v1=new Ingresar_item();
-        v1.setVisible(true); 
+        Ingresar_item v1 = new Ingresar_item();
+        v1.setVisible(true);
     }//GEN-LAST:event_newitemActionPerformed
 
     private void pedidoingresoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pedidoingresoActionPerformed
         // TODO add your handling code here:
-        Consultar_item v2=new Consultar_item();
-        v2.setVisible(true); 
+        Consultar_item v2 = new Consultar_item();
+        v2.setVisible(true);
     }//GEN-LAST:event_pedidoingresoActionPerformed
 
     private void deletitemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletitemActionPerformed
         // TODO add your handling code here:
-        Eliminar_item v3=new Eliminar_item();
-        v3.setVisible(true); 
+        Eliminar_item v3 = new Eliminar_item();
+        v3.setVisible(true);
     }//GEN-LAST:event_deletitemActionPerformed
 
     private void new_carActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_new_carActionPerformed
         Ingresar_vehiculo c = new Ingresar_vehiculo();
-        c.setVisible(true); 
+        c.setVisible(true);
     }//GEN-LAST:event_new_carActionPerformed
 
     private void log_ingreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_log_ingreActionPerformed
-        Ingreso_sistema v=new Ingreso_sistema();
-        v.setVisible(true); 
+        Ingreso_sistema v = new Ingreso_sistema();
+        v.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_log_ingreActionPerformed
 
     private void new_empActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_new_empActionPerformed
-        Ingresar_empleado r=new Ingresar_empleado();
+        Ingresar_empleado r = new Ingresar_empleado();
         r.setVisible(true);
     }//GEN-LAST:event_new_empActionPerformed
 
     private void elim_empActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_elim_empActionPerformed
-        Eliminar_empleado z=new Eliminar_empleado();
-        z.setVisible(true); 
+        Eliminar_empleado z = new Eliminar_empleado();
+        z.setVisible(true);
     }//GEN-LAST:event_elim_empActionPerformed
 
     private void elim_clientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_elim_clientActionPerformed
         Eliminar_cliente y = new Eliminar_cliente();
-        y.setVisible(true); 
+        y.setVisible(true);
     }//GEN-LAST:event_elim_clientActionPerformed
 
     private void elim_carActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_elim_carActionPerformed
         Eliminar_vehiculo x = new Eliminar_vehiculo();
-        x.setVisible(true); 
+        x.setVisible(true);
     }//GEN-LAST:event_elim_carActionPerformed
 
     private void new_clientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_new_clientActionPerformed
-        Ingresar_cliente m=new Ingresar_cliente();
+        Ingresar_cliente m = new Ingresar_cliente();
         m.setVisible(true);
     }//GEN-LAST:event_new_clientActionPerformed
 
     private void new_cargoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_new_cargoActionPerformed
-        Ingresar_cargo s=new Ingresar_cargo();
+        Ingresar_cargo s = new Ingresar_cargo();
         s.setVisible(true);
     }//GEN-LAST:event_new_cargoActionPerformed
 
@@ -888,17 +919,17 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_new_cityActionPerformed
 
     private void mod_clientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mod_clientActionPerformed
-        Modificar_cliente rr=new Modificar_cliente();
+        Modificar_cliente rr = new Modificar_cliente();
         rr.setVisible(true);
     }//GEN-LAST:event_mod_clientActionPerformed
 
     private void mod_itemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mod_itemActionPerformed
-        Modificar_item vv=new Modificar_item();
-        vv.setVisible(true);    
+        Modificar_item vv = new Modificar_item();
+        vv.setVisible(true);
     }//GEN-LAST:event_mod_itemActionPerformed
 
     private void mod_empActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mod_empActionPerformed
-        Modificar_empleado zz=new Modificar_empleado();
+        Modificar_empleado zz = new Modificar_empleado();
         zz.setVisible(true);
     }//GEN-LAST:event_mod_empActionPerformed
 
@@ -908,7 +939,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_mod_carActionPerformed
 
     private void adj_itemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adj_itemActionPerformed
-        Ajustar_item xx=new Ajustar_item();
+        Ajustar_item xx = new Ajustar_item();
         xx.setVisible(true);
     }//GEN-LAST:event_adj_itemActionPerformed
 
@@ -918,17 +949,17 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_start_workActionPerformed
 
     private void update_workActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_workActionPerformed
-        Orden_trabajo yes =new Orden_trabajo();
+        Orden_trabajo2 yes = new Orden_trabajo2();
         yes.setVisible(true);
     }//GEN-LAST:event_update_workActionPerformed
 
     private void mod_workActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mod_workActionPerformed
-        r2_3 kek=new r2_3();
+        r2_3 kek = new r2_3();
         kek.setVisible(true);
     }//GEN-LAST:event_mod_workActionPerformed
 
     private void end_workActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_end_workActionPerformed
-        r2_4 wii=new r2_4();
+        r2_4 wii = new r2_4();
         wii.setVisible(true);
     }//GEN-LAST:event_end_workActionPerformed
 
@@ -1160,6 +1191,91 @@ public class Principal extends javax.swing.JFrame {
         Ingresar_repuestos x = new Ingresar_repuestos();
         x.setVisible(true);
     }//GEN-LAST:event_jMenuItem18ActionPerformed
+
+    private void jMenuItem29ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem29ActionPerformed
+        try {
+            
+            JasperReport reporte = null;
+            String path = "src\\racadauto\\Reportes\\Trabajadores.jasper";
+
+            reporte = (JasperReport) JRLoader.loadObjectFromFile(path);
+
+            JasperPrint jprint = JasperFillManager.fillReport(reporte, null, cn);
+
+            JasperViewer view = new JasperViewer(jprint, false);
+
+            view.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+            view.setVisible(true);
+
+        } catch (JRException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_jMenuItem29ActionPerformed
+
+    private void jMenuItem31ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem31ActionPerformed
+        try {
+            
+            JasperReport reporte = null;
+            String path = "src\\racadauto\\Reportes\\Clientes.jasper";
+
+            reporte = (JasperReport) JRLoader.loadObjectFromFile(path);
+
+            JasperPrint jprint = JasperFillManager.fillReport(reporte, null, cn);
+
+            JasperViewer view = new JasperViewer(jprint, false);
+
+            view.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+            view.setVisible(true);
+
+        } catch (JRException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jMenuItem31ActionPerformed
+
+    private void jMenuItem32ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem32ActionPerformed
+        try {
+            
+            JasperReport reporte = null;
+            String path = "src\\racadauto\\Reportes\\Vehiculos.jasper";
+
+            reporte = (JasperReport) JRLoader.loadObjectFromFile(path);
+
+            JasperPrint jprint = JasperFillManager.fillReport(reporte, null, cn);
+
+            JasperViewer view = new JasperViewer(jprint, false);
+
+            view.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+            view.setVisible(true);
+
+        } catch (JRException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jMenuItem32ActionPerformed
+
+    private void jMenuItem30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem30ActionPerformed
+        try {
+            
+            JasperReport reporte = null;
+            String path = "src\\racadauto\\Reportes\\Inventario.jasper";
+
+            reporte = (JasperReport) JRLoader.loadObjectFromFile(path);
+
+            JasperPrint jprint = JasperFillManager.fillReport(reporte, null, cn);
+
+            JasperViewer view = new JasperViewer(jprint, false);
+
+            view.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+            view.setVisible(true);
+
+        } catch (JRException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jMenuItem30ActionPerformed
 
     /**
      * @param args the command line arguments

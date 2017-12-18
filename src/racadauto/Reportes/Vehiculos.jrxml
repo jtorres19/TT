@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cf3298a4-80cf-482c-b5ab-fa01206cd459">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT
+     vehiculo.`patente` AS vehiculo_patente,
+     vehiculo.`año` AS vehiculo_año,
+     vehiculo.`kms` AS vehiculo_kms,
+     vehiculo.`vin` AS vehiculo_vin,
+     vehiculo.`color` AS vehiculo_color,
+     vehiculo.`rut_cliente` AS vehiculo_rut_cliente,
+     modelo.`nombre` AS modelo_nombre,
+     marca.`nombre` AS marca_nombre
+FROM
+     `vehiculo` vehiculo INNER JOIN `modelo` modelo ON vehiculo.`id_modelo` = modelo.`id_modelo`
+     AND vehiculo.`id_marca` = modelo.`id_marca`
+     INNER JOIN `marca` marca ON modelo.`id_marca` = marca.`id_marca`]]>
+	</queryString>
+	<field name="vehiculo_patente" class="java.lang.String"/>
+	<field name="vehiculo_año" class="java.lang.Integer"/>
+	<field name="vehiculo_kms" class="java.lang.Integer"/>
+	<field name="vehiculo_vin" class="java.lang.String"/>
+	<field name="vehiculo_color" class="java.lang.String"/>
+	<field name="vehiculo_rut_cliente" class="java.lang.Integer"/>
+	<field name="modelo_nombre" class="java.lang.String"/>
+	<field name="marca_nombre" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="128" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="142" height="99" uuid="6113ec21-51f2-46a0-b249-46fe5b58cf02"/>
+				<imageExpression><![CDATA["C:\\Users\\JTorres\\Downloads\\Racad.jpeg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="142" y="41" width="413" height="17" uuid="2ca34b82-101e-44c0-9ee2-c7b66ecf5080"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[CALLE BAQUEDANO N°1129, BELLOTO CENTRO, QUILPUÉ.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="142" y="79" width="413" height="20" uuid="7c69ec3e-60fa-4b5d-a912-5d8eca2192ab"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[RRSS: www.facebook.com/racad  /  www.instagram.com/racadautomotriz/]]></text>
+			</staticText>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="391" y="11" width="126" height="20" uuid="f4fe1498-2835-42f0-876c-bce430be0780"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="142" y="58" width="413" height="21" uuid="03edc6a6-bb80-4976-a1d3-e7e578db1fab"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[TELEFONO: 32-3277586 / +56984786687 ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="193" y="0" width="158" height="41" uuid="4bd0a342-3357-4a30-9619-de4cc01d0c5e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="24" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Vehiculos]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="29" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="51" height="20" uuid="f86df49a-766a-447a-aa0d-a2c1d0fdbeea"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="51" y="0" width="56" height="20" uuid="a24c70ba-bc1f-426c-8f63-2007ece6aff2"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[PATENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="107" y="0" width="74" height="20" uuid="26b97c64-3cbe-41b5-973d-423c36b35596"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[MARCA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="181" y="0" width="76" height="20" uuid="1b3c1a53-facf-4a2c-a3d2-0c3fe4c7787a"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[MODELO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="257" y="0" width="35" height="20" uuid="711c47cf-635d-46cf-85f5-d14913e5231f"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[AÑO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="292" y="0" width="85" height="20" uuid="32a50167-94b5-41f4-bf0d-81851ef7020f"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[KILOMETRAJE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="377" y="0" width="100" height="20" uuid="35dc7cda-002d-4aea-88b2-eb927ff43192"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[VIN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="477" y="0" width="78" height="20" uuid="95b6db39-8d41-4af5-becc-beab3e3fd649"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[COLOR]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="120" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="51" height="20" uuid="d8e61372-490b-4979-8f4d-a622fa76acf7"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vehiculo_rut_cliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="51" y="0" width="56" height="20" uuid="ba4ffe53-8bc3-4ae1-b270-6e7d64a23522"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vehiculo_patente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="107" y="0" width="74" height="20" uuid="b9452e0d-cc30-4a83-b72b-0a0c388a1888"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{marca_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="181" y="0" width="76" height="20" uuid="21081a49-dea6-4494-a8d3-ff4346e51b43"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{modelo_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="257" y="0" width="35" height="20" uuid="a9a3709c-e3b2-4f87-9dec-1750203e7609"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vehiculo_año}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="292" y="0" width="85" height="20" uuid="7d88b7af-1067-4bc1-bdc2-289361c3ec88"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vehiculo_kms}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="377" y="0" width="100" height="20" uuid="b94e015c-b109-471e-965a-a2589e73adbd"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vehiculo_vin}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="477" y="0" width="78" height="20" uuid="c05fa027-3280-433f-a281-87cbffbbc7ad"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vehiculo_color}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="215" y="0" width="80" height="20" uuid="fecf0c42-0237-4397-99db-7d24281a705d"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="295" y="0" width="40" height="20" uuid="a012db04-1f59-4be0-ad33-3cdcb330d2ff"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
