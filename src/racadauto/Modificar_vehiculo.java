@@ -2,10 +2,14 @@ package racadauto;
 
 import Conexion.Conexion;
 import com.mysql.jdbc.Statement;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 public class Modificar_vehiculo extends javax.swing.JFrame {
 
@@ -14,6 +18,8 @@ public class Modificar_vehiculo extends javax.swing.JFrame {
     java.sql.Connection cn = (java.sql.Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
+    private TableRowSorter trsfiltro;
+    String filtro;
 
     public Modificar_vehiculo() {
         modeloTabla = new DefaultTableModel(null, getColumnas());
@@ -167,6 +173,34 @@ public class Modificar_vehiculo extends javax.swing.JFrame {
         return cont;
 
     }
+    
+    public void filtroPatente() {
+
+        filtro = JT_patente.getText().toUpperCase();
+        int columna = 0;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_patente.getText().toUpperCase(), columna));
+    }
+    
+    public void filtroMarca() {
+
+        filtro = JT_marca.getText().toUpperCase();
+        int columna = 5;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_marca.getText().toUpperCase(), columna));
+    }
+   
+    public void filtroModelo() {
+
+        filtro = JT_modelo.getText().toUpperCase();
+        int columna = 6;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_modelo.getText().toUpperCase(), columna));
+    }
+    
+    public void filtroNombre() {
+
+        filtro = JT_nombre.getText().toUpperCase();
+        int columna = 7;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_nombre.getText().toUpperCase(), columna));
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -194,6 +228,10 @@ public class Modificar_vehiculo extends javax.swing.JFrame {
         txt_vin = new javax.swing.JTextField();
         txt_color = new javax.swing.JTextField();
         LBL_patente = new javax.swing.JLabel();
+        JT_patente = new javax.swing.JTextField();
+        JT_nombre = new javax.swing.JTextField();
+        JT_marca = new javax.swing.JTextField();
+        JT_modelo = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("MODIFICAR VEHICULO");
@@ -276,6 +314,98 @@ public class Modificar_vehiculo extends javax.swing.JFrame {
             }
         });
 
+        JT_patente.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_patente.setForeground(new java.awt.Color(153, 153, 153));
+        JT_patente.setText("Buscar por patente");
+        JT_patente.setToolTipText("");
+        JT_patente.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_patenteFocusLost(evt);
+            }
+        });
+        JT_patente.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_patenteMouseClicked(evt);
+            }
+        });
+        JT_patente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_patenteKeyTyped(evt);
+            }
+        });
+
+        JT_nombre.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_nombre.setForeground(new java.awt.Color(153, 153, 153));
+        JT_nombre.setText("Buscar por nombre cliente");
+        JT_nombre.setToolTipText("");
+        JT_nombre.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        JT_nombre.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_nombreFocusLost(evt);
+            }
+        });
+        JT_nombre.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_nombreMouseClicked(evt);
+            }
+        });
+        JT_nombre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JT_nombreActionPerformed(evt);
+            }
+        });
+        JT_nombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_nombreKeyTyped(evt);
+            }
+        });
+
+        JT_marca.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_marca.setForeground(new java.awt.Color(153, 153, 153));
+        JT_marca.setText("Buscar por marca");
+        JT_marca.setToolTipText("");
+        JT_marca.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_marcaFocusLost(evt);
+            }
+        });
+        JT_marca.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_marcaMouseClicked(evt);
+            }
+        });
+        JT_marca.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_marcaKeyTyped(evt);
+            }
+        });
+
+        JT_modelo.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_modelo.setForeground(new java.awt.Color(153, 153, 153));
+        JT_modelo.setText("Buscar por modelo");
+        JT_modelo.setToolTipText("");
+        JT_modelo.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        JT_modelo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_modeloFocusLost(evt);
+            }
+        });
+        JT_modelo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_modeloMouseClicked(evt);
+            }
+        });
+        JT_modelo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JT_modeloActionPerformed(evt);
+            }
+        });
+        JT_modelo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_modeloKeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -316,10 +446,6 @@ public class Modificar_vehiculo extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(18, 18, 18)
-                                .addComponent(LBL_patente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                         .addComponent(jLabel5)
@@ -333,8 +459,26 @@ public class Modificar_vehiculo extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(cmb_model, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(cmb_marca, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txt_color, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(165, 165, 165)))
+                                    .addComponent(txt_color, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(LBL_patente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(165, 165, 165))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addComponent(JT_patente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(201, 201, 201)
+                                .addComponent(JT_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 12, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(JT_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(JT_modelo, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(40, 40, 40)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -344,6 +488,12 @@ public class Modificar_vehiculo extends javax.swing.JFrame {
                 .addComponent(jLabel9)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(17, 17, 17)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(JT_patente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_marca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_modelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -380,13 +530,13 @@ public class Modificar_vehiculo extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
                             .addComponent(cmb_model, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(JB_cancel)
                         .addComponent(jButton1))
                     .addComponent(LBL_estado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -565,6 +715,102 @@ public class Modificar_vehiculo extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txt_colorKeyTyped
 
+    private void JT_patenteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_patenteFocusLost
+        JT_patente.setFont(new java.awt.Font("Tahoma",2,11));
+        JT_patente.setForeground(new java.awt.Color(153,153,153));
+        JT_patente.setText("Buscar por patente");
+    }//GEN-LAST:event_JT_patenteFocusLost
+
+    private void JT_patenteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_patenteMouseClicked
+        JT_patente.setText("");
+        JT_patente.setFont(new java.awt.Font("Tahoma",0,11));
+        JT_patente.setForeground(new java.awt.Color(0,0,0));
+    }//GEN-LAST:event_JT_patenteMouseClicked
+
+    private void JT_patenteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_patenteKeyTyped
+        JT_patente.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroPatente();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTabla);
+        jTable1.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_patenteKeyTyped
+
+    private void JT_nombreFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_nombreFocusLost
+        JT_nombre.setFont(new java.awt.Font("Tahoma",2,11));
+        JT_nombre.setForeground(new java.awt.Color(153,153,153));
+        JT_nombre.setText("Buscar por nombre cliente");
+    }//GEN-LAST:event_JT_nombreFocusLost
+
+    private void JT_nombreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_nombreMouseClicked
+        JT_nombre.setText("");
+        JT_nombre.setFont(new java.awt.Font("Tahoma",0,11));
+        JT_nombre.setForeground(new java.awt.Color(0,0,0));
+    }//GEN-LAST:event_JT_nombreMouseClicked
+
+    private void JT_nombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JT_nombreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JT_nombreActionPerformed
+
+    private void JT_nombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_nombreKeyTyped
+        JT_nombre.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroNombre();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTabla);
+        jTable1.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_nombreKeyTyped
+
+    private void JT_marcaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_marcaFocusLost
+        JT_marca.setFont(new java.awt.Font("Tahoma",2,11));
+        JT_marca.setForeground(new java.awt.Color(153,153,153));
+        JT_marca.setText("Buscar por marca");
+    }//GEN-LAST:event_JT_marcaFocusLost
+
+    private void JT_marcaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_marcaMouseClicked
+        JT_marca.setText("");
+        JT_marca.setFont(new java.awt.Font("Tahoma",0,11));
+        JT_marca.setForeground(new java.awt.Color(0,0,0));
+    }//GEN-LAST:event_JT_marcaMouseClicked
+
+    private void JT_marcaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_marcaKeyTyped
+        JT_marca.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroMarca();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTabla);
+        jTable1.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_marcaKeyTyped
+
+    private void JT_modeloFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_modeloFocusLost
+        JT_modelo.setFont(new java.awt.Font("Tahoma",2,11));
+        JT_modelo.setForeground(new java.awt.Color(153,153,153));
+        JT_modelo.setText("Buscar por modelo");
+    }//GEN-LAST:event_JT_modeloFocusLost
+
+    private void JT_modeloMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_modeloMouseClicked
+        JT_modelo.setText("");
+        JT_modelo.setFont(new java.awt.Font("Tahoma",0,11));
+        JT_modelo.setForeground(new java.awt.Color(0,0,0));
+    }//GEN-LAST:event_JT_modeloMouseClicked
+
+    private void JT_modeloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JT_modeloActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JT_modeloActionPerformed
+
+    private void JT_modeloKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_modeloKeyTyped
+        JT_modelo.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroModelo();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTabla);
+        jTable1.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_modeloKeyTyped
+
     /**
      * @param args the command line arguments
      */
@@ -603,6 +849,10 @@ public class Modificar_vehiculo extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton JB_cancel;
+    private javax.swing.JTextField JT_marca;
+    private javax.swing.JTextField JT_modelo;
+    private javax.swing.JTextField JT_nombre;
+    private javax.swing.JTextField JT_patente;
     private javax.swing.JLabel LBL_estado;
     private javax.swing.JLabel LBL_patente;
     private javax.swing.JLabel LBL_rut;

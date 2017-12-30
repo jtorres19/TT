@@ -4,21 +4,27 @@ import Conexion.Conexion;
 import com.mysql.jdbc.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.naming.spi.DirStateFactory.Result;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 public class Eliminar_item extends javax.swing.JFrame {
 
     private Statement sentencia;
-   Conexion con = new Conexion();
+    Conexion con = new Conexion();
     Connection cn = (Connection) con.getConnection();
     private String msj;
+    private TableRowSorter trsfiltro;
     DefaultTableModel modeloTabla;
+    String filtro;
 
     public Eliminar_item() {
         modeloTabla = new DefaultTableModel(null, getColumnas());
@@ -133,26 +139,51 @@ public class Eliminar_item extends javax.swing.JFrame {
         }
         return yes;
     }
+    
+    public void filtroNombre() {
 
+        filtro = JT_nombre.getText().toUpperCase();
+        int columna = 0;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_nombre.getText().toUpperCase(), columna));
+    }
+
+    public void filtroCosto() {
+
+        filtro = JT_vcosto.getText().toUpperCase();
+        int columna = 3;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_vcosto.getText().toUpperCase(), columna));
+    }
+
+    public void filtroVenta() {
+
+        filtro = JT_vventa.getText().toUpperCase();
+        int columna = 4;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_vventa.getText().toUpperCase(), columna));
+    }
+    
+    public void filtroActual() {
+
+        filtro = JT_actual.getText();
+        int columna = 1;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_actual.getText(), columna));
+        
+    }
    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        cmbCod = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
         JB_cancel = new javax.swing.JButton();
         BTN_Del = new javax.swing.JButton();
         jl_Event = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-
-        cmbCod.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbCodActionPerformed(evt);
-            }
-        });
+        JT_nombre = new javax.swing.JTextField();
+        JT_actual = new javax.swing.JTextField();
+        JT_vcosto = new javax.swing.JTextField();
+        JT_vventa = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ELIMINAR ITEM");
@@ -183,22 +214,126 @@ public class Eliminar_item extends javax.swing.JFrame {
         jTable1.setModel(modeloTabla);
         jScrollPane1.setViewportView(jTable1);
 
+        JT_nombre.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_nombre.setForeground(new java.awt.Color(153, 153, 153));
+        JT_nombre.setText("Buscar por nombre");
+        JT_nombre.setToolTipText("");
+        JT_nombre.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        JT_nombre.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_nombreFocusLost(evt);
+            }
+        });
+        JT_nombre.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_nombreMouseClicked(evt);
+            }
+        });
+        JT_nombre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JT_nombreActionPerformed(evt);
+            }
+        });
+        JT_nombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_nombreKeyTyped(evt);
+            }
+        });
+
+        JT_actual.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_actual.setForeground(new java.awt.Color(153, 153, 153));
+        JT_actual.setText("Buscar por stock actual");
+        JT_actual.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_actualFocusLost(evt);
+            }
+        });
+        JT_actual.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_actualMouseClicked(evt);
+            }
+        });
+        JT_actual.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_actualKeyTyped(evt);
+            }
+        });
+
+        JT_vcosto.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_vcosto.setForeground(new java.awt.Color(153, 153, 153));
+        JT_vcosto.setText("Buscar por valor costo");
+        JT_vcosto.setToolTipText("");
+        JT_vcosto.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        JT_vcosto.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_vcostoFocusLost(evt);
+            }
+        });
+        JT_vcosto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_vcostoMouseClicked(evt);
+            }
+        });
+        JT_vcosto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JT_vcostoActionPerformed(evt);
+            }
+        });
+        JT_vcosto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_vcostoKeyTyped(evt);
+            }
+        });
+
+        JT_vventa.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_vventa.setForeground(new java.awt.Color(153, 153, 153));
+        JT_vventa.setText("Buscar por valor venta");
+        JT_vventa.setToolTipText("");
+        JT_vventa.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        JT_vventa.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_vventaFocusLost(evt);
+            }
+        });
+        JT_vventa.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_vventaMouseClicked(evt);
+            }
+        });
+        JT_vventa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JT_vventaActionPerformed(evt);
+            }
+        });
+        JT_vventa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_vventaKeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(BTN_Del, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(jl_Event, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGap(18, 18, 18)
-                            .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel9))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1)
+                    .addComponent(jLabel9)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(BTN_Del, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jl_Event, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(JT_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(JT_actual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(JT_vcosto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(JT_vventa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -208,22 +343,24 @@ public class Eliminar_item extends javax.swing.JFrame {
                 .addComponent(jLabel9)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(15, 15, 15)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(JT_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_actual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_vcosto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_vventa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(JB_cancel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(BTN_Del, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jl_Event, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addComponent(jl_Event, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void cmbCodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCodActionPerformed
-        //copia fallida
-    }//GEN-LAST:event_cmbCodActionPerformed
 
     private void JB_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_cancelActionPerformed
         this.dispose();
@@ -277,6 +414,106 @@ public class Eliminar_item extends javax.swing.JFrame {
         
     }//GEN-LAST:event_BTN_DelActionPerformed
 
+    private void JT_nombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JT_nombreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JT_nombreActionPerformed
+
+    private void JT_nombreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_nombreMouseClicked
+        JT_nombre.setText("");
+        JT_nombre.setFont(new java.awt.Font("Tahoma",0,11));
+        JT_nombre.setForeground(new java.awt.Color(0,0,0));
+    }//GEN-LAST:event_JT_nombreMouseClicked
+
+    private void JT_nombreFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_nombreFocusLost
+        JT_nombre.setFont(new java.awt.Font("Tahoma",2,11));
+        JT_nombre.setForeground(new java.awt.Color(153,153,153));
+        JT_nombre.setText("Buscar por nombre");
+    }//GEN-LAST:event_JT_nombreFocusLost
+
+    private void JT_nombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_nombreKeyTyped
+        JT_nombre.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroNombre();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTabla);
+        jTable1.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_nombreKeyTyped
+
+    private void JT_actualFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_actualFocusLost
+        JT_actual.setFont(new java.awt.Font("Tahoma",2,11));
+        JT_actual.setForeground(new java.awt.Color(153,153,153));
+        JT_actual.setText("Buscar por stock actual");
+    }//GEN-LAST:event_JT_actualFocusLost
+
+    private void JT_actualMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_actualMouseClicked
+        JT_actual.setText("");
+        JT_actual.setFont(new java.awt.Font("Tahoma",0,11));
+        JT_actual.setForeground(new java.awt.Color(0,0,0));
+    }//GEN-LAST:event_JT_actualMouseClicked
+
+    private void JT_actualKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_actualKeyTyped
+        JT_actual.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroActual();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTabla);
+        jTable1.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_actualKeyTyped
+
+    private void JT_vcostoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_vcostoFocusLost
+        JT_vcosto.setFont(new java.awt.Font("Tahoma",2,11));
+        JT_vcosto.setForeground(new java.awt.Color(153,153,153));
+        JT_vcosto.setText("Buscar por valor costo");
+    }//GEN-LAST:event_JT_vcostoFocusLost
+
+    private void JT_vcostoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_vcostoMouseClicked
+        JT_vcosto.setText("");
+        JT_vcosto.setFont(new java.awt.Font("Tahoma",0,11));
+        JT_vcosto.setForeground(new java.awt.Color(0,0,0));
+    }//GEN-LAST:event_JT_vcostoMouseClicked
+
+    private void JT_vcostoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JT_vcostoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JT_vcostoActionPerformed
+
+    private void JT_vcostoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_vcostoKeyTyped
+        JT_vcosto.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroCosto();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTabla);
+        jTable1.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_vcostoKeyTyped
+
+    private void JT_vventaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_vventaFocusLost
+        JT_vventa.setFont(new java.awt.Font("Tahoma",2,11));
+        JT_vventa.setForeground(new java.awt.Color(153,153,153));
+        JT_vventa.setText("Buscar por valor venta");
+    }//GEN-LAST:event_JT_vventaFocusLost
+
+    private void JT_vventaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_vventaMouseClicked
+        JT_vventa.setText("");
+        JT_vventa.setFont(new java.awt.Font("Tahoma",0,11));
+        JT_vventa.setForeground(new java.awt.Color(0,0,0));
+    }//GEN-LAST:event_JT_vventaMouseClicked
+
+    private void JT_vventaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JT_vventaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JT_vventaActionPerformed
+
+    private void JT_vventaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_vventaKeyTyped
+        JT_vventa.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroVenta();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTabla);
+        jTable1.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_vventaKeyTyped
+
     /**
      * @param args the command line arguments
      */
@@ -318,7 +555,10 @@ public class Eliminar_item extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BTN_Del;
     private javax.swing.JButton JB_cancel;
-    private javax.swing.JComboBox<String> cmbCod;
+    private javax.swing.JTextField JT_actual;
+    private javax.swing.JTextField JT_nombre;
+    private javax.swing.JTextField JT_vcosto;
+    private javax.swing.JTextField JT_vventa;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
