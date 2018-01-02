@@ -34,10 +34,6 @@ FROM
 				</textElement>
 				<text><![CDATA[Trabajadores]]></text>
 			</staticText>
-			<image>
-				<reportElement x="0" y="0" width="142" height="101" uuid="54d1942f-a98c-4ebd-94c4-220a1f4f655a"/>
-				<imageExpression><![CDATA["C:\\Users\\JTorres\\Downloads\\Racad.jpeg"]]></imageExpression>
-			</image>
 			<textField pattern="EEEEE dd MMMMM yyyy">
 				<reportElement x="399" y="10" width="126" height="20" uuid="e1c5ca9f-f485-4c56-af3b-1c2daffe46bf"/>
 				<textElement verticalAlignment="Middle"/>
@@ -58,6 +54,10 @@ FROM
 				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[RRSS: www.facebook.com/racad  /  www.instagram.com/racadautomotriz/]]></text>
 			</staticText>
+			<image>
+				<reportElement x="0" y="0" width="140" height="125" uuid="9709d2e1-33ba-4a3f-b9ac-def30693b0df"/>
+				<imageExpression><![CDATA["C:\\Users\\JTorres\\Documents\\NetBeansProjects\\RacadAuto\\src\\racadauto\\Images\\Racad.jpeg"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>

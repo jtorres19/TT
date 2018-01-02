@@ -6,11 +6,10 @@
 package racadauto;
 
 import Conexion.Conexion;
+import Conexion.Hash;
+import Conexion.Trabajador;
+import Conexion.sqlTrabajador;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 /**
@@ -19,10 +18,8 @@ import javax.swing.JOptionPane;
  */
 public class Ingreso_sistema extends javax.swing.JFrame {
 
-    private Statement sentencia;
     Conexion con = new Conexion();
     Connection cn = (Connection) con.getConnection();
-    private String msj;
 
     public Ingreso_sistema() {
         initComponents();
@@ -32,10 +29,11 @@ public class Ingreso_sistema extends javax.swing.JFrame {
         int cont = 0;
 
         String rut = JT_rut.getText().trim();
+        String pass = new String(JP_contraseña.getPassword()).trim();
 
-        if (rut.equals("")) {
+        if (rut.equals("") || pass.equals("")) {
             JOptionPane.showMessageDialog(null,
-                    "ERROR, debe ingresar un rut", "ERROR",
+                    "ERROR, dejó una casilla vacía", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         } else if (!rut.matches("^([0-9]*\\d{7,8}[0-9k])$")) {
@@ -60,16 +58,20 @@ public class Ingreso_sistema extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         JT_rut = new javax.swing.JTextField();
         JB_cancel = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        JP_contraseña = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("LOG IN");
-        setResizable(false);
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel1.setText("Ingresar al Sistema");
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("RACAD AUTOMOTRIZ - INGRESAR AL SISTEMA");
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel2.setText("Ingrese R.U.T. (Todo junto, sin puntos ni guión)");
+        jLabel2.setText("R.U.T:");
 
         jButton1.setText("OK");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -85,31 +87,44 @@ public class Ingreso_sistema extends javax.swing.JFrame {
             }
         });
 
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel3.setText("(Sin puntos ni guión)");
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel4.setText("Contraseña:");
+
+        JP_contraseña.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        JP_contraseña.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JP_contraseñaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(JB_cancel))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(0, 0, Short.MAX_VALUE))))
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 261, Short.MAX_VALUE)
+                        .addComponent(JB_cancel))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(72, 72, 72)
-                                .addComponent(JT_rut, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(35, 35, 35)
-                                .addComponent(jLabel2)))
-                        .addGap(0, 30, Short.MAX_VALUE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel2))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(JT_rut, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                                    .addComponent(JP_contraseña))
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel3)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -117,11 +132,17 @@ public class Ingreso_sistema extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(69, 69, 69)
-                .addComponent(jLabel2)
+                .addGap(55, 55, 55)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel2)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(JT_rut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3)))
                 .addGap(18, 18, 18)
-                .addComponent(JT_rut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 118, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(JP_contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(JB_cancel)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -138,38 +159,38 @@ public class Ingreso_sistema extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (verificar() == 0) {
+            sqlTrabajador modSql = new sqlTrabajador();
+            Trabajador mod = new Trabajador();
             int cont = 0;
             String rut = JT_rut.getText().trim();
-            String rut2 = "", cargo = "";
-            try {
-                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
-                ResultSet rs = sentencia.executeQuery("SELECT rut_trabajador FROM trabajador");
-                while (rs.next()) {
-                    rut2 = rs.getString("rut_trabajador").trim();
-                    if (rut.equals(rut2)) {
-                        cont++;
-                    }
-                }
-                
-                
+            String pass = new String(JP_contraseña.getPassword()).trim();
+            String contraseña = Hash.sha1(pass);
+            String rut2 = "", cargo = "", pass2 = "";
 
-            } catch (SQLException eg) {
-                msj = "Error con su Solicitud";
-            }
-            
-            if(cont > 0){
-                Principal a = new Principal();
-                this.dispose();
-                a.setVisible(true);
-            }else{
+            mod.setRut(rut);
+            mod.setContraseña(contraseña);
+
+            if (modSql.existeTrabajador(rut) == 0) {
                 JOptionPane.showMessageDialog(null,
-                        "ERROR, Rut no valido", "ERROR",
+                        "ERROR, TRABAJADOR no existe", "ERROR",
                         JOptionPane.ERROR_MESSAGE);
-                JT_rut.setText("");
-            }
+            } else if (modSql.login(mod)) {
 
+                Principal frmPrincipal = new Principal(mod);
+                frmPrincipal.setVisible(true);
+                this.dispose();
+
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "ERROR, CONTRASEÑA no es correcta", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void JP_contraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JP_contraseñaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JP_contraseñaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -217,9 +238,12 @@ public class Ingreso_sistema extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton JB_cancel;
+    private javax.swing.JPasswordField JP_contraseña;
     private javax.swing.JTextField JT_rut;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     // End of variables declaration//GEN-END:variables
 }

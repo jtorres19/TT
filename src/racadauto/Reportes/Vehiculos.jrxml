@@ -31,10 +31,6 @@ FROM
 	</background>
 	<title>
 		<band height="128" splitType="Stretch">
-			<image>
-				<reportElement x="0" y="0" width="142" height="99" uuid="6113ec21-51f2-46a0-b249-46fe5b58cf02"/>
-				<imageExpression><![CDATA["C:\\Users\\JTorres\\Downloads\\Racad.jpeg"]]></imageExpression>
-			</image>
 			<staticText>
 				<reportElement x="142" y="41" width="413" height="17" uuid="2ca34b82-101e-44c0-9ee2-c7b66ecf5080"/>
 				<textElement verticalAlignment="Middle"/>
@@ -62,6 +58,10 @@ FROM
 				</textElement>
 				<text><![CDATA[Vehiculos]]></text>
 			</staticText>
+			<image>
+				<reportElement x="0" y="0" width="142" height="128" uuid="91e2cf45-c8d9-4dae-8fe0-8361beed9610"/>
+				<imageExpression><![CDATA["C:\\Users\\JTorres\\Documents\\NetBeansProjects\\RacadAuto\\src\\racadauto\\Images\\Racad.jpeg"]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>
@@ -128,7 +128,7 @@ FROM
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="120" splitType="Stretch">
+		<band height="38" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="0" width="51" height="20" uuid="d8e61372-490b-4979-8f4d-a622fa76acf7"/>
 				<textElement>
@@ -191,7 +191,7 @@ FROM
 		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="54" splitType="Stretch">
+		<band height="23" splitType="Stretch">
 			<textField>
 				<reportElement x="215" y="0" width="80" height="20" uuid="fecf0c42-0237-4397-99db-7d24281a705d"/>
 				<textElement textAlignment="Right"/>

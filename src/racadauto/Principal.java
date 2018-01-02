@@ -1,9 +1,11 @@
 package racadauto;
 
 import Conexion.Conexion;
+import Conexion.Trabajador;
 import com.mysql.jdbc.Connection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -15,9 +17,57 @@ public class Principal extends javax.swing.JFrame {
 
     Conexion con = new Conexion();
     Connection cn = (Connection) con.getConnection();
+    Trabajador mod;
 
     public Principal() {
         initComponents();
+    }
+    
+    public Principal(Trabajador mod){
+        JOptionPane.showMessageDialog(null,
+                        "BIENVENIDO, " + mod.getNombre() + " " + mod.getPaterno() + " " + mod.getMaterno(),"WELCOME", 
+                        JOptionPane.INFORMATION_MESSAGE);
+        initComponents();
+        setLocationRelativeTo(null);
+        this.mod = mod;
+        
+        LBL_trabajador.setText(mod.getNombre() + " " + mod.getPaterno() + " " + mod.getMaterno());
+        LBL_cargo.setText(mod.getCargo());
+        
+        if (mod.getCargo().equals("JEFE DE TALLER")){
+        
+        }else if (mod.getCargo().equals("SUPERVISOR")){
+            
+            subEliminarServicio.setEnabled(false);
+            subEliminarCategoria.setEnabled(false);
+            subEliminarTrabajador.setEnabled(false);
+            subEliminarCargo.setEnabled(false);
+            subEliminarItem.setEnabled(false);
+            subEliminarMedida.setEnabled(false);
+            subEliminarFamilia.setEnabled(false);
+            subEliminarCliente.setEnabled(false);
+            subEliminarCiudad.setEnabled(false);
+            subEliminarVehiculo.setEnabled(false);
+            subEliminarMotor.setEnabled(false);
+            subEliminarTipoVehiculo.setEnabled(false);
+            subEliminarCombustible.setEnabled(false);
+            subEliminarMarca.setEnabled(false);
+            subEliminarModelo.setEnabled(false);
+            
+        }else{
+            
+            menuTrabajadores.setEnabled(false);
+            menuInventario.setEnabled(false);
+            menuCategoria.setEnabled(false);
+            menuServicios.setEnabled(false);
+            menuMarca.setEnabled(false);
+            menuModelo.setEnabled(false);
+            menuTipoVehiculo.setEnabled(false);
+            menuCombustible.setEnabled(false);
+            menuMotor.setEnabled(false);
+            subInfIngEgre.setEnabled(false);
+            
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -44,100 +94,104 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem40 = new javax.swing.JMenuItem();
         jMenuItem45 = new javax.swing.JMenuItem();
         jMenuItem48 = new javax.swing.JMenuItem();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        LBL_trabajador = new javax.swing.JLabel();
+        LBL_cargo = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu2 = new javax.swing.JMenu();
-        log_ingre = new javax.swing.JMenuItem();
-        jMenuItem21 = new javax.swing.JMenuItem();
-        init_work = new javax.swing.JMenu();
-        start_work = new javax.swing.JMenuItem();
-        update_work = new javax.swing.JMenuItem();
-        mod_work = new javax.swing.JMenuItem();
-        end_work = new javax.swing.JMenuItem();
-        jMenu15 = new javax.swing.JMenu();
-        jMenuItem23 = new javax.swing.JMenuItem();
-        jMenuItem24 = new javax.swing.JMenuItem();
-        jMenuItem26 = new javax.swing.JMenuItem();
-        jMenuItem27 = new javax.swing.JMenuItem();
-        jMenu16 = new javax.swing.JMenu();
-        jMenuItem33 = new javax.swing.JMenuItem();
-        jMenuItem34 = new javax.swing.JMenuItem();
-        jMenuItem35 = new javax.swing.JMenuItem();
-        jMenuItem36 = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
-        new_emp = new javax.swing.JMenuItem();
-        mod_emp = new javax.swing.JMenuItem();
-        search_emp = new javax.swing.JMenuItem();
-        elim_emp = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
-        new_cargo = new javax.swing.JMenuItem();
-        mod_cargo = new javax.swing.JMenuItem();
-        search_cargo = new javax.swing.JMenuItem();
-        elim_cargo = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
-        newitem = new javax.swing.JMenuItem();
-        mod_item = new javax.swing.JMenuItem();
-        pedidoingreso = new javax.swing.JMenuItem();
-        deletitem = new javax.swing.JMenuItem();
-        adj_item = new javax.swing.JMenuItem();
-        jMenu12 = new javax.swing.JMenu();
-        jMenuItem6 = new javax.swing.JMenuItem();
-        jMenuItem7 = new javax.swing.JMenuItem();
-        jMenuItem8 = new javax.swing.JMenuItem();
-        jMenuItem10 = new javax.swing.JMenuItem();
-        jMenu13 = new javax.swing.JMenu();
-        jMenuItem11 = new javax.swing.JMenuItem();
-        jMenuItem13 = new javax.swing.JMenuItem();
-        jMenuItem15 = new javax.swing.JMenuItem();
-        jMenuItem17 = new javax.swing.JMenuItem();
-        jMenu5 = new javax.swing.JMenu();
-        new_client = new javax.swing.JMenuItem();
-        mod_client = new javax.swing.JMenuItem();
-        jMenuItem20 = new javax.swing.JMenuItem();
-        elim_client = new javax.swing.JMenuItem();
-        jMenu14 = new javax.swing.JMenu();
-        new_city = new javax.swing.JMenuItem();
-        modi_city = new javax.swing.JMenuItem();
-        consu_city = new javax.swing.JMenuItem();
-        elim_city = new javax.swing.JMenuItem();
-        jMenu8 = new javax.swing.JMenu();
-        new_car = new javax.swing.JMenuItem();
-        mod_car = new javax.swing.JMenuItem();
-        jMenuItem37 = new javax.swing.JMenuItem();
-        elim_car = new javax.swing.JMenuItem();
-        jMenu17 = new javax.swing.JMenu();
-        jMenuItem38 = new javax.swing.JMenuItem();
-        jMenuItem39 = new javax.swing.JMenuItem();
-        jMenuItem41 = new javax.swing.JMenuItem();
-        jMenuItem42 = new javax.swing.JMenuItem();
-        jMenu18 = new javax.swing.JMenu();
-        jMenuItem43 = new javax.swing.JMenuItem();
-        jMenuItem44 = new javax.swing.JMenuItem();
-        jMenuItem46 = new javax.swing.JMenuItem();
-        jMenuItem47 = new javax.swing.JMenuItem();
-        jMenu19 = new javax.swing.JMenu();
-        jMenuItem49 = new javax.swing.JMenuItem();
-        jMenuItem50 = new javax.swing.JMenuItem();
-        jMenuItem51 = new javax.swing.JMenuItem();
-        jMenuItem52 = new javax.swing.JMenuItem();
-        jMenu20 = new javax.swing.JMenu();
-        jMenuItem53 = new javax.swing.JMenuItem();
-        jMenuItem54 = new javax.swing.JMenuItem();
-        jMenuItem55 = new javax.swing.JMenuItem();
-        jMenuItem56 = new javax.swing.JMenuItem();
-        jMenu21 = new javax.swing.JMenu();
-        jMenuItem57 = new javax.swing.JMenuItem();
-        jMenuItem58 = new javax.swing.JMenuItem();
-        jMenuItem59 = new javax.swing.JMenuItem();
-        jMenuItem60 = new javax.swing.JMenuItem();
+        menuLogin = new javax.swing.JMenu();
+        subCerrarSesion = new javax.swing.JMenuItem();
+        subSalir = new javax.swing.JMenuItem();
+        menuTabajos = new javax.swing.JMenu();
+        subPresupuesto = new javax.swing.JMenuItem();
+        subOT = new javax.swing.JMenuItem();
+        subModificarOT = new javax.swing.JMenuItem();
+        subFacturarOT = new javax.swing.JMenuItem();
+        menuServicios = new javax.swing.JMenu();
+        subNuevoServicio = new javax.swing.JMenuItem();
+        subModificarServicio = new javax.swing.JMenuItem();
+        subBuscarServicio = new javax.swing.JMenuItem();
+        subEliminarServicio = new javax.swing.JMenuItem();
+        menuCategoria = new javax.swing.JMenu();
+        subNuevaCategoria = new javax.swing.JMenuItem();
+        subModificarCategoria = new javax.swing.JMenuItem();
+        subBuscarCategoria = new javax.swing.JMenuItem();
+        subEliminarCategoria = new javax.swing.JMenuItem();
+        menuTrabajadores = new javax.swing.JMenu();
+        subNuevoTrabajador = new javax.swing.JMenuItem();
+        subModificarTrabajador = new javax.swing.JMenuItem();
+        subBuscarTrabajador = new javax.swing.JMenuItem();
+        subEliminarTrabajador = new javax.swing.JMenuItem();
+        menuCargos = new javax.swing.JMenu();
+        subNuevoCargo = new javax.swing.JMenuItem();
+        subModificarCargo = new javax.swing.JMenuItem();
+        subBuscarCargo = new javax.swing.JMenuItem();
+        subEliminarCargo = new javax.swing.JMenuItem();
+        menuInventario = new javax.swing.JMenu();
+        subNuevoItem = new javax.swing.JMenuItem();
+        subModificarItem = new javax.swing.JMenuItem();
+        subBuscarItem = new javax.swing.JMenuItem();
+        subEliminarItem = new javax.swing.JMenuItem();
+        subAjustarItem = new javax.swing.JMenuItem();
+        menuMedida = new javax.swing.JMenu();
+        subNuevaMedida = new javax.swing.JMenuItem();
+        subModificarMedida = new javax.swing.JMenuItem();
+        subBuscarMedida = new javax.swing.JMenuItem();
+        subEliminarMedida = new javax.swing.JMenuItem();
+        menuFamilia = new javax.swing.JMenu();
+        subNuevaFamilia = new javax.swing.JMenuItem();
+        subModificarFamilia = new javax.swing.JMenuItem();
+        subBuscarFamilia = new javax.swing.JMenuItem();
+        subEliminarFamilia = new javax.swing.JMenuItem();
+        menuClientes = new javax.swing.JMenu();
+        subNuevoCliente = new javax.swing.JMenuItem();
+        subModificarCliente = new javax.swing.JMenuItem();
+        subBuscarCliente = new javax.swing.JMenuItem();
+        subEliminarCliente = new javax.swing.JMenuItem();
+        menuCiudad = new javax.swing.JMenu();
+        subNuevaCiudad = new javax.swing.JMenuItem();
+        subModificarCiudad = new javax.swing.JMenuItem();
+        subBuscarCiudad = new javax.swing.JMenuItem();
+        subEliminarCiudad = new javax.swing.JMenuItem();
+        menuVehiculos = new javax.swing.JMenu();
+        subNuevoVehiculo = new javax.swing.JMenuItem();
+        subModificarVehiculo = new javax.swing.JMenuItem();
+        subBuscarVehiculo = new javax.swing.JMenuItem();
+        subEliminarVehiculo = new javax.swing.JMenuItem();
+        menuMarca = new javax.swing.JMenu();
+        subNuevaMarca = new javax.swing.JMenuItem();
+        subModificarMarca = new javax.swing.JMenuItem();
+        subBuscarMarca = new javax.swing.JMenuItem();
+        subEliminarMarca = new javax.swing.JMenuItem();
+        menuModelo = new javax.swing.JMenu();
+        subNuevoModelo = new javax.swing.JMenuItem();
+        subModificarModelo = new javax.swing.JMenuItem();
+        subBuscarModelo = new javax.swing.JMenuItem();
+        subEliminarModelo = new javax.swing.JMenuItem();
+        menuTipoVehiculo = new javax.swing.JMenu();
+        subNuevoTipoVehiculo = new javax.swing.JMenuItem();
+        subModificarTipoVehiculo = new javax.swing.JMenuItem();
+        subBuscarTipoVehiculo = new javax.swing.JMenuItem();
+        subEliminarTipoVehiculo = new javax.swing.JMenuItem();
+        menuMotor = new javax.swing.JMenu();
+        subNuevoMotor = new javax.swing.JMenuItem();
+        subModificarMotor = new javax.swing.JMenuItem();
+        subBuscarMotor = new javax.swing.JMenuItem();
+        subEliminarMotor = new javax.swing.JMenuItem();
+        menuCombustible = new javax.swing.JMenu();
+        subNuevoCombustible = new javax.swing.JMenuItem();
+        subModificarCombustible = new javax.swing.JMenuItem();
+        subBuscarCombustible = new javax.swing.JMenuItem();
+        subEliminarCombustible = new javax.swing.JMenuItem();
         jMenu22 = new javax.swing.JMenu();
         jMenuItem18 = new javax.swing.JMenuItem();
-        jMenu11 = new javax.swing.JMenu();
-        jMenuItem28 = new javax.swing.JMenuItem();
-        jMenuItem29 = new javax.swing.JMenuItem();
-        jMenuItem30 = new javax.swing.JMenuItem();
-        jMenuItem31 = new javax.swing.JMenuItem();
-        jMenuItem32 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        menuInformes = new javax.swing.JMenu();
+        subInfOT = new javax.swing.JMenuItem();
+        subInfTrabajadores = new javax.swing.JMenuItem();
+        subInfInventario = new javax.swing.JMenuItem();
+        subInfClientes = new javax.swing.JMenuItem();
+        subInfVehiculos = new javax.swing.JMenuItem();
+        subInfIngEgre = new javax.swing.JMenuItem();
 
         jMenu6.setText("File");
         jMenuBar2.add(jMenu6);
@@ -184,604 +238,614 @@ public class Principal extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(500, 400));
         setResizable(false);
 
-        jMenu2.setText("Login");
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel1.setText("Cargo:");
 
-        log_ingre.setText("Cerrar Cesion");
-        log_ingre.addActionListener(new java.awt.event.ActionListener() {
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel2.setText("Trabajador:");
+
+        LBL_trabajador.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+
+        LBL_cargo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+
+        menuLogin.setText("Login");
+
+        subCerrarSesion.setText("Cerrar Sesion");
+        subCerrarSesion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                log_ingreActionPerformed(evt);
+                subCerrarSesionActionPerformed(evt);
             }
         });
-        jMenu2.add(log_ingre);
+        menuLogin.add(subCerrarSesion);
 
-        jMenuItem21.setText("Salir");
-        jMenuItem21.addActionListener(new java.awt.event.ActionListener() {
+        subSalir.setText("Salir");
+        subSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem21ActionPerformed(evt);
+                subSalirActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem21);
+        menuLogin.add(subSalir);
 
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(menuLogin);
 
-        init_work.setText("Trabajos");
+        menuTabajos.setText("Trabajos");
 
-        start_work.setText("Presupuestar Trabajo");
-        start_work.addActionListener(new java.awt.event.ActionListener() {
+        subPresupuesto.setText("Presupuestar Trabajo");
+        subPresupuesto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                start_workActionPerformed(evt);
+                subPresupuestoActionPerformed(evt);
             }
         });
-        init_work.add(start_work);
+        menuTabajos.add(subPresupuesto);
 
-        update_work.setText("Orden de Trabajo");
-        update_work.addActionListener(new java.awt.event.ActionListener() {
+        subOT.setText("Orden de Trabajo");
+        subOT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                update_workActionPerformed(evt);
+                subOTActionPerformed(evt);
             }
         });
-        init_work.add(update_work);
+        menuTabajos.add(subOT);
 
-        mod_work.setText("Modificar Trabajo");
-        mod_work.addActionListener(new java.awt.event.ActionListener() {
+        subModificarOT.setText("Modificar Trabajo");
+        subModificarOT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mod_workActionPerformed(evt);
+                subModificarOTActionPerformed(evt);
             }
         });
-        init_work.add(mod_work);
+        menuTabajos.add(subModificarOT);
 
-        end_work.setText("Facturar Trabajo");
-        end_work.addActionListener(new java.awt.event.ActionListener() {
+        subFacturarOT.setText("Facturar Trabajo");
+        subFacturarOT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                end_workActionPerformed(evt);
+                subFacturarOTActionPerformed(evt);
             }
         });
-        init_work.add(end_work);
+        menuTabajos.add(subFacturarOT);
 
-        jMenu15.setText("Servicios");
+        menuServicios.setText("Servicios");
 
-        jMenuItem23.setText("Nuevo Servicio");
-        jMenuItem23.addActionListener(new java.awt.event.ActionListener() {
+        subNuevoServicio.setText("Nuevo Servicio");
+        subNuevoServicio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem23ActionPerformed(evt);
+                subNuevoServicioActionPerformed(evt);
             }
         });
-        jMenu15.add(jMenuItem23);
+        menuServicios.add(subNuevoServicio);
 
-        jMenuItem24.setText("Modificar Servicio");
-        jMenuItem24.addActionListener(new java.awt.event.ActionListener() {
+        subModificarServicio.setText("Modificar Servicio");
+        subModificarServicio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem24ActionPerformed(evt);
+                subModificarServicioActionPerformed(evt);
             }
         });
-        jMenu15.add(jMenuItem24);
+        menuServicios.add(subModificarServicio);
 
-        jMenuItem26.setText("Consultar Servicio");
-        jMenuItem26.addActionListener(new java.awt.event.ActionListener() {
+        subBuscarServicio.setText("Consultar Servicio");
+        subBuscarServicio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem26ActionPerformed(evt);
+                subBuscarServicioActionPerformed(evt);
             }
         });
-        jMenu15.add(jMenuItem26);
+        menuServicios.add(subBuscarServicio);
 
-        jMenuItem27.setText("Eliminar Servicio");
-        jMenuItem27.addActionListener(new java.awt.event.ActionListener() {
+        subEliminarServicio.setText("Eliminar Servicio");
+        subEliminarServicio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem27ActionPerformed(evt);
+                subEliminarServicioActionPerformed(evt);
             }
         });
-        jMenu15.add(jMenuItem27);
+        menuServicios.add(subEliminarServicio);
 
-        init_work.add(jMenu15);
+        menuTabajos.add(menuServicios);
 
-        jMenu16.setText("Categoría");
+        menuCategoria.setText("Categoría");
 
-        jMenuItem33.setText("Nueva Categoría");
-        jMenuItem33.addActionListener(new java.awt.event.ActionListener() {
+        subNuevaCategoria.setText("Nueva Categoría");
+        subNuevaCategoria.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem33ActionPerformed(evt);
+                subNuevaCategoriaActionPerformed(evt);
             }
         });
-        jMenu16.add(jMenuItem33);
+        menuCategoria.add(subNuevaCategoria);
 
-        jMenuItem34.setText("Modificar Categoría");
-        jMenuItem34.addActionListener(new java.awt.event.ActionListener() {
+        subModificarCategoria.setText("Modificar Categoría");
+        subModificarCategoria.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem34ActionPerformed(evt);
+                subModificarCategoriaActionPerformed(evt);
             }
         });
-        jMenu16.add(jMenuItem34);
+        menuCategoria.add(subModificarCategoria);
 
-        jMenuItem35.setText("Consultar Categoría");
-        jMenuItem35.addActionListener(new java.awt.event.ActionListener() {
+        subBuscarCategoria.setText("Consultar Categoría");
+        subBuscarCategoria.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem35ActionPerformed(evt);
+                subBuscarCategoriaActionPerformed(evt);
             }
         });
-        jMenu16.add(jMenuItem35);
+        menuCategoria.add(subBuscarCategoria);
 
-        jMenuItem36.setText("Eliminar Categoría");
-        jMenuItem36.addActionListener(new java.awt.event.ActionListener() {
+        subEliminarCategoria.setText("Eliminar Categoría");
+        subEliminarCategoria.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem36ActionPerformed(evt);
+                subEliminarCategoriaActionPerformed(evt);
             }
         });
-        jMenu16.add(jMenuItem36);
+        menuCategoria.add(subEliminarCategoria);
 
-        init_work.add(jMenu16);
+        menuTabajos.add(menuCategoria);
 
-        jMenuBar1.add(init_work);
+        jMenuBar1.add(menuTabajos);
 
-        jMenu3.setText("Trabajadores");
+        menuTrabajadores.setText("Trabajadores");
 
-        new_emp.setText("Nuevo Trabajador");
-        new_emp.addActionListener(new java.awt.event.ActionListener() {
+        subNuevoTrabajador.setText("Nuevo Trabajador");
+        subNuevoTrabajador.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                new_empActionPerformed(evt);
+                subNuevoTrabajadorActionPerformed(evt);
             }
         });
-        jMenu3.add(new_emp);
+        menuTrabajadores.add(subNuevoTrabajador);
 
-        mod_emp.setText("Modificar Trabajador");
-        mod_emp.addActionListener(new java.awt.event.ActionListener() {
+        subModificarTrabajador.setText("Modificar Trabajador");
+        subModificarTrabajador.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mod_empActionPerformed(evt);
+                subModificarTrabajadorActionPerformed(evt);
             }
         });
-        jMenu3.add(mod_emp);
+        menuTrabajadores.add(subModificarTrabajador);
 
-        search_emp.setText("Consultar Trabajador");
-        search_emp.addActionListener(new java.awt.event.ActionListener() {
+        subBuscarTrabajador.setText("Consultar Trabajador");
+        subBuscarTrabajador.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                search_empActionPerformed(evt);
+                subBuscarTrabajadorActionPerformed(evt);
             }
         });
-        jMenu3.add(search_emp);
+        menuTrabajadores.add(subBuscarTrabajador);
 
-        elim_emp.setText("Eliminar Trabajador");
-        elim_emp.addActionListener(new java.awt.event.ActionListener() {
+        subEliminarTrabajador.setText("Eliminar Trabajador");
+        subEliminarTrabajador.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                elim_empActionPerformed(evt);
+                subEliminarTrabajadorActionPerformed(evt);
             }
         });
-        jMenu3.add(elim_emp);
+        menuTrabajadores.add(subEliminarTrabajador);
 
-        jMenu1.setText("Cargos");
+        menuCargos.setText("Cargos");
 
-        new_cargo.setText("Nuevo Cargo");
-        new_cargo.addActionListener(new java.awt.event.ActionListener() {
+        subNuevoCargo.setText("Nuevo Cargo");
+        subNuevoCargo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                new_cargoActionPerformed(evt);
+                subNuevoCargoActionPerformed(evt);
             }
         });
-        jMenu1.add(new_cargo);
+        menuCargos.add(subNuevoCargo);
 
-        mod_cargo.setText("Modificar Cargo");
-        mod_cargo.addActionListener(new java.awt.event.ActionListener() {
+        subModificarCargo.setText("Modificar Cargo");
+        subModificarCargo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mod_cargoActionPerformed(evt);
+                subModificarCargoActionPerformed(evt);
             }
         });
-        jMenu1.add(mod_cargo);
+        menuCargos.add(subModificarCargo);
 
-        search_cargo.setText("Consultar Cargo");
-        search_cargo.addActionListener(new java.awt.event.ActionListener() {
+        subBuscarCargo.setText("Consultar Cargo");
+        subBuscarCargo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                search_cargoActionPerformed(evt);
+                subBuscarCargoActionPerformed(evt);
             }
         });
-        jMenu1.add(search_cargo);
+        menuCargos.add(subBuscarCargo);
 
-        elim_cargo.setText("Eliminar Cargo");
-        elim_cargo.addActionListener(new java.awt.event.ActionListener() {
+        subEliminarCargo.setText("Eliminar Cargo");
+        subEliminarCargo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                elim_cargoActionPerformed(evt);
+                subEliminarCargoActionPerformed(evt);
             }
         });
-        jMenu1.add(elim_cargo);
+        menuCargos.add(subEliminarCargo);
 
-        jMenu3.add(jMenu1);
+        menuTrabajadores.add(menuCargos);
 
-        jMenuBar1.add(jMenu3);
+        jMenuBar1.add(menuTrabajadores);
 
-        jMenu4.setText("Inventario");
+        menuInventario.setText("Inventario");
 
-        newitem.setText("Nuevo Item");
-        newitem.addActionListener(new java.awt.event.ActionListener() {
+        subNuevoItem.setText("Nuevo Item");
+        subNuevoItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newitemActionPerformed(evt);
+                subNuevoItemActionPerformed(evt);
             }
         });
-        jMenu4.add(newitem);
+        menuInventario.add(subNuevoItem);
 
-        mod_item.setText("Modificar Item");
-        mod_item.addActionListener(new java.awt.event.ActionListener() {
+        subModificarItem.setText("Modificar Item");
+        subModificarItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mod_itemActionPerformed(evt);
+                subModificarItemActionPerformed(evt);
             }
         });
-        jMenu4.add(mod_item);
+        menuInventario.add(subModificarItem);
 
-        pedidoingreso.setText("Consultar Item");
-        pedidoingreso.addActionListener(new java.awt.event.ActionListener() {
+        subBuscarItem.setText("Consultar Item");
+        subBuscarItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pedidoingresoActionPerformed(evt);
+                subBuscarItemActionPerformed(evt);
             }
         });
-        jMenu4.add(pedidoingreso);
+        menuInventario.add(subBuscarItem);
 
-        deletitem.setText("Eliminar Item");
-        deletitem.addActionListener(new java.awt.event.ActionListener() {
+        subEliminarItem.setText("Eliminar Item");
+        subEliminarItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deletitemActionPerformed(evt);
+                subEliminarItemActionPerformed(evt);
             }
         });
-        jMenu4.add(deletitem);
+        menuInventario.add(subEliminarItem);
 
-        adj_item.setText("Ajustar Item");
-        adj_item.addActionListener(new java.awt.event.ActionListener() {
+        subAjustarItem.setText("Ajustar Item");
+        subAjustarItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                adj_itemActionPerformed(evt);
+                subAjustarItemActionPerformed(evt);
             }
         });
-        jMenu4.add(adj_item);
+        menuInventario.add(subAjustarItem);
 
-        jMenu12.setText("Unidad de Medida");
+        menuMedida.setText("Unidad de Medida");
 
-        jMenuItem6.setText("Nueva Medida");
-        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+        subNuevaMedida.setText("Nueva Medida");
+        subNuevaMedida.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem6ActionPerformed(evt);
+                subNuevaMedidaActionPerformed(evt);
             }
         });
-        jMenu12.add(jMenuItem6);
+        menuMedida.add(subNuevaMedida);
 
-        jMenuItem7.setText("Modificar Medida");
-        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+        subModificarMedida.setText("Modificar Medida");
+        subModificarMedida.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem7ActionPerformed(evt);
+                subModificarMedidaActionPerformed(evt);
             }
         });
-        jMenu12.add(jMenuItem7);
+        menuMedida.add(subModificarMedida);
 
-        jMenuItem8.setText("Consultar Medida");
-        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+        subBuscarMedida.setText("Consultar Medida");
+        subBuscarMedida.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem8ActionPerformed(evt);
+                subBuscarMedidaActionPerformed(evt);
             }
         });
-        jMenu12.add(jMenuItem8);
+        menuMedida.add(subBuscarMedida);
 
-        jMenuItem10.setText("Eliminar Medida");
-        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+        subEliminarMedida.setText("Eliminar Medida");
+        subEliminarMedida.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem10ActionPerformed(evt);
+                subEliminarMedidaActionPerformed(evt);
             }
         });
-        jMenu12.add(jMenuItem10);
+        menuMedida.add(subEliminarMedida);
 
-        jMenu4.add(jMenu12);
+        menuInventario.add(menuMedida);
 
-        jMenu13.setText("Familia");
+        menuFamilia.setText("Familia");
 
-        jMenuItem11.setText("Nueva Familia");
-        jMenuItem11.addActionListener(new java.awt.event.ActionListener() {
+        subNuevaFamilia.setText("Nueva Familia");
+        subNuevaFamilia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem11ActionPerformed(evt);
+                subNuevaFamiliaActionPerformed(evt);
             }
         });
-        jMenu13.add(jMenuItem11);
+        menuFamilia.add(subNuevaFamilia);
 
-        jMenuItem13.setText("Modificar Familia");
-        jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
+        subModificarFamilia.setText("Modificar Familia");
+        subModificarFamilia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem13ActionPerformed(evt);
+                subModificarFamiliaActionPerformed(evt);
             }
         });
-        jMenu13.add(jMenuItem13);
+        menuFamilia.add(subModificarFamilia);
 
-        jMenuItem15.setText("Consultar Familia");
-        jMenuItem15.addActionListener(new java.awt.event.ActionListener() {
+        subBuscarFamilia.setText("Consultar Familia");
+        subBuscarFamilia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem15ActionPerformed(evt);
+                subBuscarFamiliaActionPerformed(evt);
             }
         });
-        jMenu13.add(jMenuItem15);
+        menuFamilia.add(subBuscarFamilia);
 
-        jMenuItem17.setText("Eliminar Familia");
-        jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
+        subEliminarFamilia.setText("Eliminar Familia");
+        subEliminarFamilia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem17ActionPerformed(evt);
+                subEliminarFamiliaActionPerformed(evt);
             }
         });
-        jMenu13.add(jMenuItem17);
+        menuFamilia.add(subEliminarFamilia);
 
-        jMenu4.add(jMenu13);
+        menuInventario.add(menuFamilia);
 
-        jMenuBar1.add(jMenu4);
+        jMenuBar1.add(menuInventario);
 
-        jMenu5.setText("Clientes");
+        menuClientes.setText("Clientes");
 
-        new_client.setText("Nuevo Cliente");
-        new_client.addActionListener(new java.awt.event.ActionListener() {
+        subNuevoCliente.setText("Nuevo Cliente");
+        subNuevoCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                new_clientActionPerformed(evt);
+                subNuevoClienteActionPerformed(evt);
             }
         });
-        jMenu5.add(new_client);
+        menuClientes.add(subNuevoCliente);
 
-        mod_client.setText("Modificar Cliente");
-        mod_client.addActionListener(new java.awt.event.ActionListener() {
+        subModificarCliente.setText("Modificar Cliente");
+        subModificarCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mod_clientActionPerformed(evt);
+                subModificarClienteActionPerformed(evt);
             }
         });
-        jMenu5.add(mod_client);
+        menuClientes.add(subModificarCliente);
 
-        jMenuItem20.setText("Consultar Cliente");
-        jMenuItem20.addActionListener(new java.awt.event.ActionListener() {
+        subBuscarCliente.setText("Consultar Cliente");
+        subBuscarCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem20ActionPerformed(evt);
+                subBuscarClienteActionPerformed(evt);
             }
         });
-        jMenu5.add(jMenuItem20);
+        menuClientes.add(subBuscarCliente);
 
-        elim_client.setText("Eliminar Cliente");
-        elim_client.addActionListener(new java.awt.event.ActionListener() {
+        subEliminarCliente.setText("Eliminar Cliente");
+        subEliminarCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                elim_clientActionPerformed(evt);
+                subEliminarClienteActionPerformed(evt);
             }
         });
-        jMenu5.add(elim_client);
+        menuClientes.add(subEliminarCliente);
 
-        jMenu14.setText("Ciudad");
+        menuCiudad.setText("Ciudad");
 
-        new_city.setText("Nueva Ciudad");
-        new_city.addActionListener(new java.awt.event.ActionListener() {
+        subNuevaCiudad.setText("Nueva Ciudad");
+        subNuevaCiudad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                new_cityActionPerformed(evt);
+                subNuevaCiudadActionPerformed(evt);
             }
         });
-        jMenu14.add(new_city);
+        menuCiudad.add(subNuevaCiudad);
 
-        modi_city.setText("Modificar Ciudad");
-        modi_city.addActionListener(new java.awt.event.ActionListener() {
+        subModificarCiudad.setText("Modificar Ciudad");
+        subModificarCiudad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                modi_cityActionPerformed(evt);
+                subModificarCiudadActionPerformed(evt);
             }
         });
-        jMenu14.add(modi_city);
+        menuCiudad.add(subModificarCiudad);
 
-        consu_city.setText("Consular Ciudad");
-        consu_city.addActionListener(new java.awt.event.ActionListener() {
+        subBuscarCiudad.setText("Consular Ciudad");
+        subBuscarCiudad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                consu_cityActionPerformed(evt);
+                subBuscarCiudadActionPerformed(evt);
             }
         });
-        jMenu14.add(consu_city);
+        menuCiudad.add(subBuscarCiudad);
 
-        elim_city.setText("Eliminar Ciudad");
-        elim_city.addActionListener(new java.awt.event.ActionListener() {
+        subEliminarCiudad.setText("Eliminar Ciudad");
+        subEliminarCiudad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                elim_cityActionPerformed(evt);
+                subEliminarCiudadActionPerformed(evt);
             }
         });
-        jMenu14.add(elim_city);
+        menuCiudad.add(subEliminarCiudad);
 
-        jMenu5.add(jMenu14);
+        menuClientes.add(menuCiudad);
 
-        jMenuBar1.add(jMenu5);
+        jMenuBar1.add(menuClientes);
 
-        jMenu8.setText("Vehiculos");
+        menuVehiculos.setText("Vehiculos");
 
-        new_car.setText("Ingresar Vehiculo");
-        new_car.addActionListener(new java.awt.event.ActionListener() {
+        subNuevoVehiculo.setText("Ingresar Vehiculo");
+        subNuevoVehiculo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                new_carActionPerformed(evt);
+                subNuevoVehiculoActionPerformed(evt);
             }
         });
-        jMenu8.add(new_car);
+        menuVehiculos.add(subNuevoVehiculo);
 
-        mod_car.setText("Modificar Vehiculo");
-        mod_car.addActionListener(new java.awt.event.ActionListener() {
+        subModificarVehiculo.setText("Modificar Vehiculo");
+        subModificarVehiculo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mod_carActionPerformed(evt);
+                subModificarVehiculoActionPerformed(evt);
             }
         });
-        jMenu8.add(mod_car);
+        menuVehiculos.add(subModificarVehiculo);
 
-        jMenuItem37.setText("Consultar Vehículo");
-        jMenuItem37.addActionListener(new java.awt.event.ActionListener() {
+        subBuscarVehiculo.setText("Consultar Vehículo");
+        subBuscarVehiculo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem37ActionPerformed(evt);
+                subBuscarVehiculoActionPerformed(evt);
             }
         });
-        jMenu8.add(jMenuItem37);
+        menuVehiculos.add(subBuscarVehiculo);
 
-        elim_car.setText("Eliminar Vehiculo");
-        elim_car.addActionListener(new java.awt.event.ActionListener() {
+        subEliminarVehiculo.setText("Eliminar Vehiculo");
+        subEliminarVehiculo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                elim_carActionPerformed(evt);
+                subEliminarVehiculoActionPerformed(evt);
             }
         });
-        jMenu8.add(elim_car);
+        menuVehiculos.add(subEliminarVehiculo);
 
-        jMenu17.setText("Marca");
+        menuMarca.setText("Marca");
 
-        jMenuItem38.setText("Nueva Marca");
-        jMenuItem38.addActionListener(new java.awt.event.ActionListener() {
+        subNuevaMarca.setText("Nueva Marca");
+        subNuevaMarca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem38ActionPerformed(evt);
+                subNuevaMarcaActionPerformed(evt);
             }
         });
-        jMenu17.add(jMenuItem38);
+        menuMarca.add(subNuevaMarca);
 
-        jMenuItem39.setText("Modificar Marca");
-        jMenuItem39.addActionListener(new java.awt.event.ActionListener() {
+        subModificarMarca.setText("Modificar Marca");
+        subModificarMarca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem39ActionPerformed(evt);
+                subModificarMarcaActionPerformed(evt);
             }
         });
-        jMenu17.add(jMenuItem39);
+        menuMarca.add(subModificarMarca);
 
-        jMenuItem41.setText("Consultar Marca");
-        jMenuItem41.addActionListener(new java.awt.event.ActionListener() {
+        subBuscarMarca.setText("Consultar Marca");
+        subBuscarMarca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem41ActionPerformed(evt);
+                subBuscarMarcaActionPerformed(evt);
             }
         });
-        jMenu17.add(jMenuItem41);
+        menuMarca.add(subBuscarMarca);
 
-        jMenuItem42.setText("Eliminar Marca");
-        jMenuItem42.addActionListener(new java.awt.event.ActionListener() {
+        subEliminarMarca.setText("Eliminar Marca");
+        subEliminarMarca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem42ActionPerformed(evt);
+                subEliminarMarcaActionPerformed(evt);
             }
         });
-        jMenu17.add(jMenuItem42);
+        menuMarca.add(subEliminarMarca);
 
-        jMenu8.add(jMenu17);
+        menuVehiculos.add(menuMarca);
 
-        jMenu18.setText("Modelo");
+        menuModelo.setText("Modelo");
 
-        jMenuItem43.setText("Nuevo Modelo");
-        jMenuItem43.addActionListener(new java.awt.event.ActionListener() {
+        subNuevoModelo.setText("Nuevo Modelo");
+        subNuevoModelo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem43ActionPerformed(evt);
+                subNuevoModeloActionPerformed(evt);
             }
         });
-        jMenu18.add(jMenuItem43);
+        menuModelo.add(subNuevoModelo);
 
-        jMenuItem44.setText("Modificar Modelo");
-        jMenuItem44.addActionListener(new java.awt.event.ActionListener() {
+        subModificarModelo.setText("Modificar Modelo");
+        subModificarModelo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem44ActionPerformed(evt);
+                subModificarModeloActionPerformed(evt);
             }
         });
-        jMenu18.add(jMenuItem44);
+        menuModelo.add(subModificarModelo);
 
-        jMenuItem46.setText("Consultar Modelo");
-        jMenuItem46.addActionListener(new java.awt.event.ActionListener() {
+        subBuscarModelo.setText("Consultar Modelo");
+        subBuscarModelo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem46ActionPerformed(evt);
+                subBuscarModeloActionPerformed(evt);
             }
         });
-        jMenu18.add(jMenuItem46);
+        menuModelo.add(subBuscarModelo);
 
-        jMenuItem47.setText("Eliminar Modelo");
-        jMenuItem47.addActionListener(new java.awt.event.ActionListener() {
+        subEliminarModelo.setText("Eliminar Modelo");
+        subEliminarModelo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem47ActionPerformed(evt);
+                subEliminarModeloActionPerformed(evt);
             }
         });
-        jMenu18.add(jMenuItem47);
+        menuModelo.add(subEliminarModelo);
 
-        jMenu8.add(jMenu18);
+        menuVehiculos.add(menuModelo);
 
-        jMenu19.setText("Tipo Vehículo");
+        menuTipoVehiculo.setText("Tipo Vehículo");
 
-        jMenuItem49.setText("Nuevo Tipo Vehículo");
-        jMenuItem49.addActionListener(new java.awt.event.ActionListener() {
+        subNuevoTipoVehiculo.setText("Nuevo Tipo Vehículo");
+        subNuevoTipoVehiculo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem49ActionPerformed(evt);
+                subNuevoTipoVehiculoActionPerformed(evt);
             }
         });
-        jMenu19.add(jMenuItem49);
+        menuTipoVehiculo.add(subNuevoTipoVehiculo);
 
-        jMenuItem50.setText("Modificar Tipo Vehículo");
-        jMenuItem50.addActionListener(new java.awt.event.ActionListener() {
+        subModificarTipoVehiculo.setText("Modificar Tipo Vehículo");
+        subModificarTipoVehiculo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem50ActionPerformed(evt);
+                subModificarTipoVehiculoActionPerformed(evt);
             }
         });
-        jMenu19.add(jMenuItem50);
+        menuTipoVehiculo.add(subModificarTipoVehiculo);
 
-        jMenuItem51.setText("Consultar Tipo Vehiculo");
-        jMenuItem51.addActionListener(new java.awt.event.ActionListener() {
+        subBuscarTipoVehiculo.setText("Consultar Tipo Vehiculo");
+        subBuscarTipoVehiculo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem51ActionPerformed(evt);
+                subBuscarTipoVehiculoActionPerformed(evt);
             }
         });
-        jMenu19.add(jMenuItem51);
+        menuTipoVehiculo.add(subBuscarTipoVehiculo);
 
-        jMenuItem52.setText("Eliminar Tipo Vehiculo");
-        jMenuItem52.addActionListener(new java.awt.event.ActionListener() {
+        subEliminarTipoVehiculo.setText("Eliminar Tipo Vehiculo");
+        subEliminarTipoVehiculo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem52ActionPerformed(evt);
+                subEliminarTipoVehiculoActionPerformed(evt);
             }
         });
-        jMenu19.add(jMenuItem52);
+        menuTipoVehiculo.add(subEliminarTipoVehiculo);
 
-        jMenu8.add(jMenu19);
+        menuVehiculos.add(menuTipoVehiculo);
 
-        jMenu20.setText("Tipo Motor");
+        menuMotor.setText("Tipo Motor");
 
-        jMenuItem53.setText("Nuevo Motor");
-        jMenuItem53.addActionListener(new java.awt.event.ActionListener() {
+        subNuevoMotor.setText("Nuevo Motor");
+        subNuevoMotor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem53ActionPerformed(evt);
+                subNuevoMotorActionPerformed(evt);
             }
         });
-        jMenu20.add(jMenuItem53);
+        menuMotor.add(subNuevoMotor);
 
-        jMenuItem54.setText("Modificar Motor");
-        jMenuItem54.addActionListener(new java.awt.event.ActionListener() {
+        subModificarMotor.setText("Modificar Motor");
+        subModificarMotor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem54ActionPerformed(evt);
+                subModificarMotorActionPerformed(evt);
             }
         });
-        jMenu20.add(jMenuItem54);
+        menuMotor.add(subModificarMotor);
 
-        jMenuItem55.setText("Consultar motor");
-        jMenuItem55.addActionListener(new java.awt.event.ActionListener() {
+        subBuscarMotor.setText("Consultar motor");
+        subBuscarMotor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem55ActionPerformed(evt);
+                subBuscarMotorActionPerformed(evt);
             }
         });
-        jMenu20.add(jMenuItem55);
+        menuMotor.add(subBuscarMotor);
 
-        jMenuItem56.setText("Eliminar Motor");
-        jMenuItem56.addActionListener(new java.awt.event.ActionListener() {
+        subEliminarMotor.setText("Eliminar Motor");
+        subEliminarMotor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem56ActionPerformed(evt);
+                subEliminarMotorActionPerformed(evt);
             }
         });
-        jMenu20.add(jMenuItem56);
+        menuMotor.add(subEliminarMotor);
 
-        jMenu8.add(jMenu20);
+        menuVehiculos.add(menuMotor);
 
-        jMenu21.setText("Tipo Combustible");
+        menuCombustible.setText("Tipo Combustible");
 
-        jMenuItem57.setText("Nuevo Combustible");
-        jMenuItem57.addActionListener(new java.awt.event.ActionListener() {
+        subNuevoCombustible.setText("Nuevo Combustible");
+        subNuevoCombustible.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem57ActionPerformed(evt);
+                subNuevoCombustibleActionPerformed(evt);
             }
         });
-        jMenu21.add(jMenuItem57);
+        menuCombustible.add(subNuevoCombustible);
 
-        jMenuItem58.setText("Modificar Combustible");
-        jMenuItem58.addActionListener(new java.awt.event.ActionListener() {
+        subModificarCombustible.setText("Modificar Combustible");
+        subModificarCombustible.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem58ActionPerformed(evt);
+                subModificarCombustibleActionPerformed(evt);
             }
         });
-        jMenu21.add(jMenuItem58);
+        menuCombustible.add(subModificarCombustible);
 
-        jMenuItem59.setText("Consultar Combustible");
-        jMenuItem59.addActionListener(new java.awt.event.ActionListener() {
+        subBuscarCombustible.setText("Consultar Combustible");
+        subBuscarCombustible.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem59ActionPerformed(evt);
+                subBuscarCombustibleActionPerformed(evt);
             }
         });
-        jMenu21.add(jMenuItem59);
+        menuCombustible.add(subBuscarCombustible);
 
-        jMenuItem60.setText("Eliminar Combustible");
-        jMenu21.add(jMenuItem60);
+        subEliminarCombustible.setText("Eliminar Combustible");
+        menuCombustible.add(subEliminarCombustible);
 
-        jMenu8.add(jMenu21);
+        menuVehiculos.add(menuCombustible);
 
-        jMenuBar1.add(jMenu8);
+        jMenuBar1.add(menuVehiculos);
 
         jMenu22.setText("Repuestos");
 
@@ -795,47 +859,47 @@ public class Principal extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu22);
 
-        jMenu11.setText("Informes");
+        menuInformes.setText("Informes");
 
-        jMenuItem28.setText("Trabajos");
-        jMenu11.add(jMenuItem28);
+        subInfOT.setText("Trabajos");
+        menuInformes.add(subInfOT);
 
-        jMenuItem29.setText("Trabajadores");
-        jMenuItem29.addActionListener(new java.awt.event.ActionListener() {
+        subInfTrabajadores.setText("Trabajadores");
+        subInfTrabajadores.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem29ActionPerformed(evt);
+                subInfTrabajadoresActionPerformed(evt);
             }
         });
-        jMenu11.add(jMenuItem29);
+        menuInformes.add(subInfTrabajadores);
 
-        jMenuItem30.setText("Inventario");
-        jMenuItem30.addActionListener(new java.awt.event.ActionListener() {
+        subInfInventario.setText("Inventario");
+        subInfInventario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem30ActionPerformed(evt);
+                subInfInventarioActionPerformed(evt);
             }
         });
-        jMenu11.add(jMenuItem30);
+        menuInformes.add(subInfInventario);
 
-        jMenuItem31.setText("Clientes");
-        jMenuItem31.addActionListener(new java.awt.event.ActionListener() {
+        subInfClientes.setText("Clientes");
+        subInfClientes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem31ActionPerformed(evt);
+                subInfClientesActionPerformed(evt);
             }
         });
-        jMenu11.add(jMenuItem31);
+        menuInformes.add(subInfClientes);
 
-        jMenuItem32.setText("Vehículos");
-        jMenuItem32.addActionListener(new java.awt.event.ActionListener() {
+        subInfVehiculos.setText("Vehículos");
+        subInfVehiculos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem32ActionPerformed(evt);
+                subInfVehiculosActionPerformed(evt);
             }
         });
-        jMenu11.add(jMenuItem32);
+        menuInformes.add(subInfVehiculos);
 
-        jMenuItem2.setText("Ingresos y Egresos");
-        jMenu11.add(jMenuItem2);
+        subInfIngEgre.setText("Ingresos y Egresos");
+        menuInformes.add(subInfIngEgre);
 
-        jMenuBar1.add(jMenu11);
+        jMenuBar1.add(menuInformes);
 
         setJMenuBar(jMenuBar1);
 
@@ -843,356 +907,374 @@ public class Principal extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 500, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(LBL_trabajador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(LBL_cargo, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE))
+                .addContainerGap(302, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 381, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(318, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(LBL_trabajador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(LBL_cargo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void newitemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newitemActionPerformed
+    private void subNuevoItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subNuevoItemActionPerformed
         // TODO add your handling code here:
         Ingresar_item v1 = new Ingresar_item();
         v1.setVisible(true);
-    }//GEN-LAST:event_newitemActionPerformed
+    }//GEN-LAST:event_subNuevoItemActionPerformed
 
-    private void pedidoingresoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pedidoingresoActionPerformed
+    private void subBuscarItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subBuscarItemActionPerformed
         // TODO add your handling code here:
         Consultar_item v2 = new Consultar_item();
         v2.setVisible(true);
-    }//GEN-LAST:event_pedidoingresoActionPerformed
+    }//GEN-LAST:event_subBuscarItemActionPerformed
 
-    private void deletitemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletitemActionPerformed
+    private void subEliminarItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subEliminarItemActionPerformed
         // TODO add your handling code here:
         Eliminar_item v3 = new Eliminar_item();
         v3.setVisible(true);
-    }//GEN-LAST:event_deletitemActionPerformed
+    }//GEN-LAST:event_subEliminarItemActionPerformed
 
-    private void new_carActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_new_carActionPerformed
+    private void subNuevoVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subNuevoVehiculoActionPerformed
         Ingresar_vehiculo c = new Ingresar_vehiculo();
         c.setVisible(true);
-    }//GEN-LAST:event_new_carActionPerformed
+    }//GEN-LAST:event_subNuevoVehiculoActionPerformed
 
-    private void log_ingreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_log_ingreActionPerformed
+    private void subCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subCerrarSesionActionPerformed
         Ingreso_sistema v = new Ingreso_sistema();
         v.setVisible(true);
         this.dispose();
-    }//GEN-LAST:event_log_ingreActionPerformed
+    }//GEN-LAST:event_subCerrarSesionActionPerformed
 
-    private void new_empActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_new_empActionPerformed
-        Ingresar_empleado r = new Ingresar_empleado();
+    private void subNuevoTrabajadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subNuevoTrabajadorActionPerformed
+        Ingresar_trabajador r = new Ingresar_trabajador();
         r.setVisible(true);
-    }//GEN-LAST:event_new_empActionPerformed
+    }//GEN-LAST:event_subNuevoTrabajadorActionPerformed
 
-    private void elim_empActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_elim_empActionPerformed
-        Eliminar_empleado z = new Eliminar_empleado();
+    private void subEliminarTrabajadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subEliminarTrabajadorActionPerformed
+        Eliminar_trabajador z = new Eliminar_trabajador();
         z.setVisible(true);
-    }//GEN-LAST:event_elim_empActionPerformed
+    }//GEN-LAST:event_subEliminarTrabajadorActionPerformed
 
-    private void elim_clientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_elim_clientActionPerformed
+    private void subEliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subEliminarClienteActionPerformed
         Eliminar_cliente y = new Eliminar_cliente();
         y.setVisible(true);
-    }//GEN-LAST:event_elim_clientActionPerformed
+    }//GEN-LAST:event_subEliminarClienteActionPerformed
 
-    private void elim_carActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_elim_carActionPerformed
+    private void subEliminarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subEliminarVehiculoActionPerformed
         Eliminar_vehiculo x = new Eliminar_vehiculo();
         x.setVisible(true);
-    }//GEN-LAST:event_elim_carActionPerformed
+    }//GEN-LAST:event_subEliminarVehiculoActionPerformed
 
-    private void new_clientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_new_clientActionPerformed
+    private void subNuevoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subNuevoClienteActionPerformed
         Ingresar_cliente m = new Ingresar_cliente();
         m.setVisible(true);
-    }//GEN-LAST:event_new_clientActionPerformed
+    }//GEN-LAST:event_subNuevoClienteActionPerformed
 
-    private void new_cargoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_new_cargoActionPerformed
+    private void subNuevoCargoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subNuevoCargoActionPerformed
         Ingresar_cargo s = new Ingresar_cargo();
         s.setVisible(true);
-    }//GEN-LAST:event_new_cargoActionPerformed
+    }//GEN-LAST:event_subNuevoCargoActionPerformed
 
-    private void new_cityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_new_cityActionPerformed
+    private void subNuevaCiudadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subNuevaCiudadActionPerformed
         Ingresar_ciudad c = new Ingresar_ciudad();
         c.setVisible(true);
-    }//GEN-LAST:event_new_cityActionPerformed
+    }//GEN-LAST:event_subNuevaCiudadActionPerformed
 
-    private void mod_clientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mod_clientActionPerformed
+    private void subModificarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subModificarClienteActionPerformed
         Modificar_cliente rr = new Modificar_cliente();
         rr.setVisible(true);
-    }//GEN-LAST:event_mod_clientActionPerformed
+    }//GEN-LAST:event_subModificarClienteActionPerformed
 
-    private void mod_itemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mod_itemActionPerformed
+    private void subModificarItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subModificarItemActionPerformed
         Modificar_item vv = new Modificar_item();
         vv.setVisible(true);
-    }//GEN-LAST:event_mod_itemActionPerformed
+    }//GEN-LAST:event_subModificarItemActionPerformed
 
-    private void mod_empActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mod_empActionPerformed
-        Modificar_empleado zz = new Modificar_empleado();
+    private void subModificarTrabajadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subModificarTrabajadorActionPerformed
+        Modificar_trabajador zz = new Modificar_trabajador();
         zz.setVisible(true);
-    }//GEN-LAST:event_mod_empActionPerformed
+    }//GEN-LAST:event_subModificarTrabajadorActionPerformed
 
-    private void mod_carActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mod_carActionPerformed
+    private void subModificarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subModificarVehiculoActionPerformed
         Modificar_vehiculo ww = new Modificar_vehiculo();
         ww.setVisible(true);
-    }//GEN-LAST:event_mod_carActionPerformed
+    }//GEN-LAST:event_subModificarVehiculoActionPerformed
 
-    private void adj_itemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adj_itemActionPerformed
+    private void subAjustarItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subAjustarItemActionPerformed
         Ajustar_item xx = new Ajustar_item();
         xx.setVisible(true);
-    }//GEN-LAST:event_adj_itemActionPerformed
+    }//GEN-LAST:event_subAjustarItemActionPerformed
 
-    private void start_workActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_start_workActionPerformed
+    private void subPresupuestoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subPresupuestoActionPerformed
         Presupuestar_trabajo2 yyz = new Presupuestar_trabajo2();
         yyz.setVisible(true);
-    }//GEN-LAST:event_start_workActionPerformed
+    }//GEN-LAST:event_subPresupuestoActionPerformed
 
-    private void update_workActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_workActionPerformed
+    private void subOTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subOTActionPerformed
         Orden_trabajo2 yes = new Orden_trabajo2();
         yes.setVisible(true);
-    }//GEN-LAST:event_update_workActionPerformed
+    }//GEN-LAST:event_subOTActionPerformed
 
-    private void mod_workActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mod_workActionPerformed
+    private void subModificarOTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subModificarOTActionPerformed
         r2_3 kek = new r2_3();
         kek.setVisible(true);
-    }//GEN-LAST:event_mod_workActionPerformed
+    }//GEN-LAST:event_subModificarOTActionPerformed
 
-    private void end_workActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_end_workActionPerformed
+    private void subFacturarOTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subFacturarOTActionPerformed
         r2_4 wii = new r2_4();
         wii.setVisible(true);
-    }//GEN-LAST:event_end_workActionPerformed
+    }//GEN-LAST:event_subFacturarOTActionPerformed
 
-    private void jMenuItem21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem21ActionPerformed
+    private void subSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subSalirActionPerformed
         System.exit(0);
-    }//GEN-LAST:event_jMenuItem21ActionPerformed
+    }//GEN-LAST:event_subSalirActionPerformed
 
-    private void search_empActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_search_empActionPerformed
-        Consultar_empleado aa = new Consultar_empleado();
+    private void subBuscarTrabajadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subBuscarTrabajadorActionPerformed
+        Consultar_trabajador aa = new Consultar_trabajador();
         aa.setVisible(true);
-    }//GEN-LAST:event_search_empActionPerformed
+    }//GEN-LAST:event_subBuscarTrabajadorActionPerformed
 
-    private void mod_cargoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mod_cargoActionPerformed
+    private void subModificarCargoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subModificarCargoActionPerformed
         Modificar_cargo b = new Modificar_cargo();
         b.setVisible(true);
-    }//GEN-LAST:event_mod_cargoActionPerformed
+    }//GEN-LAST:event_subModificarCargoActionPerformed
 
-    private void search_cargoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_search_cargoActionPerformed
+    private void subBuscarCargoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subBuscarCargoActionPerformed
         Consultar_cargo bb = new Consultar_cargo();
         bb.setVisible(true);
-    }//GEN-LAST:event_search_cargoActionPerformed
+    }//GEN-LAST:event_subBuscarCargoActionPerformed
 
-    private void elim_cargoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_elim_cargoActionPerformed
+    private void subEliminarCargoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subEliminarCargoActionPerformed
         Eliminar_cargo a = new Eliminar_cargo();
         a.setVisible(true);
-    }//GEN-LAST:event_elim_cargoActionPerformed
+    }//GEN-LAST:event_subEliminarCargoActionPerformed
 
-    private void modi_cityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modi_cityActionPerformed
+    private void subModificarCiudadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subModificarCiudadActionPerformed
         Modificar_ciudad cc = new Modificar_ciudad();
         cc.setVisible(true);
-    }//GEN-LAST:event_modi_cityActionPerformed
+    }//GEN-LAST:event_subModificarCiudadActionPerformed
 
-    private void consu_cityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consu_cityActionPerformed
+    private void subBuscarCiudadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subBuscarCiudadActionPerformed
         Consultar_ciudad dd = new Consultar_ciudad();
         dd.setVisible(true);
-    }//GEN-LAST:event_consu_cityActionPerformed
+    }//GEN-LAST:event_subBuscarCiudadActionPerformed
 
-    private void elim_cityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_elim_cityActionPerformed
+    private void subEliminarCiudadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subEliminarCiudadActionPerformed
         Eliminar_ciudad d = new Eliminar_ciudad();
         d.setVisible(true);
-    }//GEN-LAST:event_elim_cityActionPerformed
+    }//GEN-LAST:event_subEliminarCiudadActionPerformed
 
-    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+    private void subNuevaMedidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subNuevaMedidaActionPerformed
         Ingresar_medida e = new Ingresar_medida();
         e.setVisible(true);
-    }//GEN-LAST:event_jMenuItem6ActionPerformed
+    }//GEN-LAST:event_subNuevaMedidaActionPerformed
 
-    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+    private void subModificarMedidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subModificarMedidaActionPerformed
         Modificar_medida ee = new Modificar_medida();
         ee.setVisible(true);
-    }//GEN-LAST:event_jMenuItem7ActionPerformed
+    }//GEN-LAST:event_subModificarMedidaActionPerformed
 
-    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+    private void subBuscarMedidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subBuscarMedidaActionPerformed
         Consultar_medida f = new Consultar_medida();
         f.setVisible(true);
-    }//GEN-LAST:event_jMenuItem8ActionPerformed
+    }//GEN-LAST:event_subBuscarMedidaActionPerformed
 
-    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+    private void subEliminarMedidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subEliminarMedidaActionPerformed
         Eliminar_medida ff = new Eliminar_medida();
         ff.setVisible(true);
-    }//GEN-LAST:event_jMenuItem10ActionPerformed
+    }//GEN-LAST:event_subEliminarMedidaActionPerformed
 
-    private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
+    private void subNuevaFamiliaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subNuevaFamiliaActionPerformed
         Ingresar_familia g = new Ingresar_familia();
         g.setVisible(true);
-    }//GEN-LAST:event_jMenuItem11ActionPerformed
+    }//GEN-LAST:event_subNuevaFamiliaActionPerformed
 
-    private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
+    private void subModificarFamiliaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subModificarFamiliaActionPerformed
         Modificar_familia gg = new Modificar_familia();
         gg.setVisible(true);
-    }//GEN-LAST:event_jMenuItem13ActionPerformed
+    }//GEN-LAST:event_subModificarFamiliaActionPerformed
 
-    private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
+    private void subBuscarFamiliaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subBuscarFamiliaActionPerformed
         Consultar_familia h = new Consultar_familia();
         h.setVisible(true);
-    }//GEN-LAST:event_jMenuItem15ActionPerformed
+    }//GEN-LAST:event_subBuscarFamiliaActionPerformed
 
-    private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
+    private void subEliminarFamiliaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subEliminarFamiliaActionPerformed
         Eliminar_familia hh = new Eliminar_familia();
         hh.setVisible(true);
-    }//GEN-LAST:event_jMenuItem17ActionPerformed
+    }//GEN-LAST:event_subEliminarFamiliaActionPerformed
 
-    private void jMenuItem20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem20ActionPerformed
+    private void subBuscarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subBuscarClienteActionPerformed
         Consultar_cliente i = new Consultar_cliente();
         i.setVisible(true);
-    }//GEN-LAST:event_jMenuItem20ActionPerformed
+    }//GEN-LAST:event_subBuscarClienteActionPerformed
 
-    private void jMenuItem23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem23ActionPerformed
+    private void subNuevoServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subNuevoServicioActionPerformed
         Ingresar_servicio ii = new Ingresar_servicio();
         ii.setVisible(true);
-    }//GEN-LAST:event_jMenuItem23ActionPerformed
+    }//GEN-LAST:event_subNuevoServicioActionPerformed
 
-    private void jMenuItem33ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem33ActionPerformed
+    private void subNuevaCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subNuevaCategoriaActionPerformed
         Ingresar_categoria j = new Ingresar_categoria();
         j.setVisible(true);
-    }//GEN-LAST:event_jMenuItem33ActionPerformed
+    }//GEN-LAST:event_subNuevaCategoriaActionPerformed
 
-    private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem24ActionPerformed
+    private void subModificarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subModificarServicioActionPerformed
         Modificar_servicio jj = new Modificar_servicio();
         jj.setVisible(true);
-    }//GEN-LAST:event_jMenuItem24ActionPerformed
+    }//GEN-LAST:event_subModificarServicioActionPerformed
 
-    private void jMenuItem26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem26ActionPerformed
+    private void subBuscarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subBuscarServicioActionPerformed
         Consultar_servicio k = new Consultar_servicio();
         k.setVisible(true);
-    }//GEN-LAST:event_jMenuItem26ActionPerformed
+    }//GEN-LAST:event_subBuscarServicioActionPerformed
 
-    private void jMenuItem27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem27ActionPerformed
+    private void subEliminarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subEliminarServicioActionPerformed
         Eliminar_servicio kk = new Eliminar_servicio();
         kk.setVisible(true);
-    }//GEN-LAST:event_jMenuItem27ActionPerformed
+    }//GEN-LAST:event_subEliminarServicioActionPerformed
 
-    private void jMenuItem34ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem34ActionPerformed
+    private void subModificarCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subModificarCategoriaActionPerformed
         Modificar_categoria l = new Modificar_categoria();
         l.setVisible(true);
-    }//GEN-LAST:event_jMenuItem34ActionPerformed
+    }//GEN-LAST:event_subModificarCategoriaActionPerformed
 
-    private void jMenuItem35ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem35ActionPerformed
+    private void subBuscarCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subBuscarCategoriaActionPerformed
         Consultar_categoria ll = new Consultar_categoria();
         ll.setVisible(true);
-    }//GEN-LAST:event_jMenuItem35ActionPerformed
+    }//GEN-LAST:event_subBuscarCategoriaActionPerformed
 
-    private void jMenuItem36ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem36ActionPerformed
+    private void subEliminarCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subEliminarCategoriaActionPerformed
         Eliminar_categoria m = new Eliminar_categoria();
         m.setVisible(true);
-    }//GEN-LAST:event_jMenuItem36ActionPerformed
+    }//GEN-LAST:event_subEliminarCategoriaActionPerformed
 
-    private void jMenuItem37ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem37ActionPerformed
+    private void subBuscarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subBuscarVehiculoActionPerformed
         Consultar_vehiculo mm = new Consultar_vehiculo();
         mm.setVisible(true);
-    }//GEN-LAST:event_jMenuItem37ActionPerformed
+    }//GEN-LAST:event_subBuscarVehiculoActionPerformed
 
-    private void jMenuItem38ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem38ActionPerformed
+    private void subNuevaMarcaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subNuevaMarcaActionPerformed
         Ingresar_marca o = new Ingresar_marca();
         o.setVisible(true);
-    }//GEN-LAST:event_jMenuItem38ActionPerformed
+    }//GEN-LAST:event_subNuevaMarcaActionPerformed
 
-    private void jMenuItem57ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem57ActionPerformed
+    private void subNuevoCombustibleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subNuevoCombustibleActionPerformed
         Ingresar_combustible oo = new Ingresar_combustible();
         oo.setVisible(true);
-    }//GEN-LAST:event_jMenuItem57ActionPerformed
+    }//GEN-LAST:event_subNuevoCombustibleActionPerformed
 
-    private void jMenuItem53ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem53ActionPerformed
+    private void subNuevoMotorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subNuevoMotorActionPerformed
         Ingresar_motor p = new Ingresar_motor();
         p.setVisible(true);
-    }//GEN-LAST:event_jMenuItem53ActionPerformed
+    }//GEN-LAST:event_subNuevoMotorActionPerformed
 
-    private void jMenuItem49ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem49ActionPerformed
+    private void subNuevoTipoVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subNuevoTipoVehiculoActionPerformed
         Ingresar_tipovehiculo pp = new Ingresar_tipovehiculo();
         pp.setVisible(true);
-    }//GEN-LAST:event_jMenuItem49ActionPerformed
+    }//GEN-LAST:event_subNuevoTipoVehiculoActionPerformed
 
-    private void jMenuItem43ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem43ActionPerformed
+    private void subNuevoModeloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subNuevoModeloActionPerformed
         Ingresar_modelo q = new Ingresar_modelo();
         q.setVisible(true);
-    }//GEN-LAST:event_jMenuItem43ActionPerformed
+    }//GEN-LAST:event_subNuevoModeloActionPerformed
 
-    private void jMenuItem39ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem39ActionPerformed
+    private void subModificarMarcaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subModificarMarcaActionPerformed
         Modificar_marca qq = new Modificar_marca();
         qq.setVisible(true);
-    }//GEN-LAST:event_jMenuItem39ActionPerformed
+    }//GEN-LAST:event_subModificarMarcaActionPerformed
 
-    private void jMenuItem58ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem58ActionPerformed
+    private void subModificarCombustibleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subModificarCombustibleActionPerformed
         Modificar_combustible r = new Modificar_combustible();
         r.setVisible(true);
-    }//GEN-LAST:event_jMenuItem58ActionPerformed
+    }//GEN-LAST:event_subModificarCombustibleActionPerformed
 
-    private void jMenuItem50ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem50ActionPerformed
+    private void subModificarTipoVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subModificarTipoVehiculoActionPerformed
         Modificar_tipovehiculo rr = new Modificar_tipovehiculo();
         rr.setVisible(true);
-    }//GEN-LAST:event_jMenuItem50ActionPerformed
+    }//GEN-LAST:event_subModificarTipoVehiculoActionPerformed
 
-    private void jMenuItem54ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem54ActionPerformed
+    private void subModificarMotorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subModificarMotorActionPerformed
         Modificar_motor s = new Modificar_motor();
         s.setVisible(true);
-    }//GEN-LAST:event_jMenuItem54ActionPerformed
+    }//GEN-LAST:event_subModificarMotorActionPerformed
 
-    private void jMenuItem44ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem44ActionPerformed
+    private void subModificarModeloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subModificarModeloActionPerformed
         Modificar_modelo ss = new Modificar_modelo();
         ss.setVisible(true);
-    }//GEN-LAST:event_jMenuItem44ActionPerformed
+    }//GEN-LAST:event_subModificarModeloActionPerformed
 
-    private void jMenuItem41ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem41ActionPerformed
+    private void subBuscarMarcaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subBuscarMarcaActionPerformed
         Consultar_marca t = new Consultar_marca();
         t.setVisible(true);
-    }//GEN-LAST:event_jMenuItem41ActionPerformed
+    }//GEN-LAST:event_subBuscarMarcaActionPerformed
 
-    private void jMenuItem51ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem51ActionPerformed
+    private void subBuscarTipoVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subBuscarTipoVehiculoActionPerformed
         Consultar_tipovehiculo tt = new Consultar_tipovehiculo();
         tt.setVisible(true);
-    }//GEN-LAST:event_jMenuItem51ActionPerformed
+    }//GEN-LAST:event_subBuscarTipoVehiculoActionPerformed
 
-    private void jMenuItem55ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem55ActionPerformed
+    private void subBuscarMotorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subBuscarMotorActionPerformed
         Consultar_motor u = new Consultar_motor();
         u.setVisible(true);
-    }//GEN-LAST:event_jMenuItem55ActionPerformed
+    }//GEN-LAST:event_subBuscarMotorActionPerformed
 
-    private void jMenuItem59ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem59ActionPerformed
+    private void subBuscarCombustibleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subBuscarCombustibleActionPerformed
         Consultar_combustible uu = new Consultar_combustible();
         uu.setVisible(true);
-    }//GEN-LAST:event_jMenuItem59ActionPerformed
+    }//GEN-LAST:event_subBuscarCombustibleActionPerformed
 
-    private void jMenuItem46ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem46ActionPerformed
+    private void subBuscarModeloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subBuscarModeloActionPerformed
         Consultar_modelo v = new Consultar_modelo();
         v.setVisible(true);
-    }//GEN-LAST:event_jMenuItem46ActionPerformed
+    }//GEN-LAST:event_subBuscarModeloActionPerformed
 
-    private void jMenuItem42ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem42ActionPerformed
+    private void subEliminarMarcaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subEliminarMarcaActionPerformed
         Eliminar_marca vv = new Eliminar_marca();
         vv.setVisible(true);
-    }//GEN-LAST:event_jMenuItem42ActionPerformed
+    }//GEN-LAST:event_subEliminarMarcaActionPerformed
 
-    private void jMenuItem47ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem47ActionPerformed
+    private void subEliminarModeloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subEliminarModeloActionPerformed
         Eliminar_modelo w = new Eliminar_modelo();
         w.setVisible(true);
-    }//GEN-LAST:event_jMenuItem47ActionPerformed
+    }//GEN-LAST:event_subEliminarModeloActionPerformed
 
-    private void jMenuItem52ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem52ActionPerformed
+    private void subEliminarTipoVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subEliminarTipoVehiculoActionPerformed
         Eliminar_tipovehiculo ww = new Eliminar_tipovehiculo();
         ww.setVisible(true);
-    }//GEN-LAST:event_jMenuItem52ActionPerformed
+    }//GEN-LAST:event_subEliminarTipoVehiculoActionPerformed
 
-    private void jMenuItem56ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem56ActionPerformed
+    private void subEliminarMotorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subEliminarMotorActionPerformed
         Eliminar_motor ww = new Eliminar_motor();
         ww.setVisible(true);
-    }//GEN-LAST:event_jMenuItem56ActionPerformed
+    }//GEN-LAST:event_subEliminarMotorActionPerformed
 
     private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
         Ingresar_repuestos x = new Ingresar_repuestos();
         x.setVisible(true);
     }//GEN-LAST:event_jMenuItem18ActionPerformed
 
-    private void jMenuItem29ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem29ActionPerformed
+    private void subInfTrabajadoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subInfTrabajadoresActionPerformed
         try {
             
             JasperReport reporte = null;
@@ -1212,9 +1294,9 @@ public class Principal extends javax.swing.JFrame {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    }//GEN-LAST:event_jMenuItem29ActionPerformed
+    }//GEN-LAST:event_subInfTrabajadoresActionPerformed
 
-    private void jMenuItem31ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem31ActionPerformed
+    private void subInfClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subInfClientesActionPerformed
         try {
             
             JasperReport reporte = null;
@@ -1233,9 +1315,9 @@ public class Principal extends javax.swing.JFrame {
         } catch (JRException ex) {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_jMenuItem31ActionPerformed
+    }//GEN-LAST:event_subInfClientesActionPerformed
 
-    private void jMenuItem32ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem32ActionPerformed
+    private void subInfVehiculosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subInfVehiculosActionPerformed
         try {
             
             JasperReport reporte = null;
@@ -1254,9 +1336,9 @@ public class Principal extends javax.swing.JFrame {
         } catch (JRException ex) {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_jMenuItem32ActionPerformed
+    }//GEN-LAST:event_subInfVehiculosActionPerformed
 
-    private void jMenuItem30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem30ActionPerformed
+    private void subInfInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subInfInventarioActionPerformed
         try {
             
             JasperReport reporte = null;
@@ -1275,7 +1357,7 @@ public class Principal extends javax.swing.JFrame {
         } catch (JRException ex) {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_jMenuItem30ActionPerformed
+    }//GEN-LAST:event_subInfInventarioActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1320,119 +1402,123 @@ public class Principal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem adj_item;
-    private javax.swing.JMenuItem consu_city;
-    private javax.swing.JMenuItem deletitem;
-    private javax.swing.JMenuItem elim_car;
-    private javax.swing.JMenuItem elim_cargo;
-    private javax.swing.JMenuItem elim_city;
-    private javax.swing.JMenuItem elim_client;
-    private javax.swing.JMenuItem elim_emp;
-    private javax.swing.JMenuItem end_work;
-    private javax.swing.JMenu init_work;
-    private javax.swing.JMenu jMenu1;
+    private javax.swing.JLabel LBL_cargo;
+    private javax.swing.JLabel LBL_trabajador;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu10;
-    private javax.swing.JMenu jMenu11;
-    private javax.swing.JMenu jMenu12;
-    private javax.swing.JMenu jMenu13;
-    private javax.swing.JMenu jMenu14;
-    private javax.swing.JMenu jMenu15;
-    private javax.swing.JMenu jMenu16;
-    private javax.swing.JMenu jMenu17;
-    private javax.swing.JMenu jMenu18;
-    private javax.swing.JMenu jMenu19;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu20;
-    private javax.swing.JMenu jMenu21;
     private javax.swing.JMenu jMenu22;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenu jMenu7;
-    private javax.swing.JMenu jMenu8;
     private javax.swing.JMenu jMenu9;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JMenuBar jMenuBar3;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem10;
-    private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem12;
-    private javax.swing.JMenuItem jMenuItem13;
     private javax.swing.JMenuItem jMenuItem14;
-    private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem16;
-    private javax.swing.JMenuItem jMenuItem17;
     private javax.swing.JMenuItem jMenuItem18;
     private javax.swing.JMenuItem jMenuItem19;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem20;
-    private javax.swing.JMenuItem jMenuItem21;
     private javax.swing.JMenuItem jMenuItem22;
-    private javax.swing.JMenuItem jMenuItem23;
-    private javax.swing.JMenuItem jMenuItem24;
     private javax.swing.JMenuItem jMenuItem25;
-    private javax.swing.JMenuItem jMenuItem26;
-    private javax.swing.JMenuItem jMenuItem27;
-    private javax.swing.JMenuItem jMenuItem28;
-    private javax.swing.JMenuItem jMenuItem29;
     private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem30;
-    private javax.swing.JMenuItem jMenuItem31;
-    private javax.swing.JMenuItem jMenuItem32;
-    private javax.swing.JMenuItem jMenuItem33;
-    private javax.swing.JMenuItem jMenuItem34;
-    private javax.swing.JMenuItem jMenuItem35;
-    private javax.swing.JMenuItem jMenuItem36;
-    private javax.swing.JMenuItem jMenuItem37;
-    private javax.swing.JMenuItem jMenuItem38;
-    private javax.swing.JMenuItem jMenuItem39;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem40;
-    private javax.swing.JMenuItem jMenuItem41;
-    private javax.swing.JMenuItem jMenuItem42;
-    private javax.swing.JMenuItem jMenuItem43;
-    private javax.swing.JMenuItem jMenuItem44;
     private javax.swing.JMenuItem jMenuItem45;
-    private javax.swing.JMenuItem jMenuItem46;
-    private javax.swing.JMenuItem jMenuItem47;
     private javax.swing.JMenuItem jMenuItem48;
-    private javax.swing.JMenuItem jMenuItem49;
     private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem50;
-    private javax.swing.JMenuItem jMenuItem51;
-    private javax.swing.JMenuItem jMenuItem52;
-    private javax.swing.JMenuItem jMenuItem53;
-    private javax.swing.JMenuItem jMenuItem54;
-    private javax.swing.JMenuItem jMenuItem55;
-    private javax.swing.JMenuItem jMenuItem56;
-    private javax.swing.JMenuItem jMenuItem57;
-    private javax.swing.JMenuItem jMenuItem58;
-    private javax.swing.JMenuItem jMenuItem59;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem60;
-    private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
-    private javax.swing.JMenuItem log_ingre;
-    private javax.swing.JMenuItem mod_car;
-    private javax.swing.JMenuItem mod_cargo;
-    private javax.swing.JMenuItem mod_client;
-    private javax.swing.JMenuItem mod_emp;
-    private javax.swing.JMenuItem mod_item;
-    private javax.swing.JMenuItem mod_work;
-    private javax.swing.JMenuItem modi_city;
-    private javax.swing.JMenuItem new_car;
-    private javax.swing.JMenuItem new_cargo;
-    private javax.swing.JMenuItem new_city;
-    private javax.swing.JMenuItem new_client;
-    private javax.swing.JMenuItem new_emp;
-    private javax.swing.JMenuItem newitem;
-    private javax.swing.JMenuItem pedidoingreso;
-    private javax.swing.JMenuItem search_cargo;
-    private javax.swing.JMenuItem search_emp;
-    private javax.swing.JMenuItem start_work;
-    private javax.swing.JMenuItem update_work;
+    private javax.swing.JMenu menuCargos;
+    private javax.swing.JMenu menuCategoria;
+    private javax.swing.JMenu menuCiudad;
+    private javax.swing.JMenu menuClientes;
+    private javax.swing.JMenu menuCombustible;
+    private javax.swing.JMenu menuFamilia;
+    private javax.swing.JMenu menuInformes;
+    private javax.swing.JMenu menuInventario;
+    private javax.swing.JMenu menuLogin;
+    private javax.swing.JMenu menuMarca;
+    private javax.swing.JMenu menuMedida;
+    private javax.swing.JMenu menuModelo;
+    private javax.swing.JMenu menuMotor;
+    private javax.swing.JMenu menuServicios;
+    private javax.swing.JMenu menuTabajos;
+    private javax.swing.JMenu menuTipoVehiculo;
+    private javax.swing.JMenu menuTrabajadores;
+    private javax.swing.JMenu menuVehiculos;
+    private javax.swing.JMenuItem subAjustarItem;
+    private javax.swing.JMenuItem subBuscarCargo;
+    private javax.swing.JMenuItem subBuscarCategoria;
+    private javax.swing.JMenuItem subBuscarCiudad;
+    private javax.swing.JMenuItem subBuscarCliente;
+    private javax.swing.JMenuItem subBuscarCombustible;
+    private javax.swing.JMenuItem subBuscarFamilia;
+    private javax.swing.JMenuItem subBuscarItem;
+    private javax.swing.JMenuItem subBuscarMarca;
+    private javax.swing.JMenuItem subBuscarMedida;
+    private javax.swing.JMenuItem subBuscarModelo;
+    private javax.swing.JMenuItem subBuscarMotor;
+    private javax.swing.JMenuItem subBuscarServicio;
+    private javax.swing.JMenuItem subBuscarTipoVehiculo;
+    private javax.swing.JMenuItem subBuscarTrabajador;
+    private javax.swing.JMenuItem subBuscarVehiculo;
+    private javax.swing.JMenuItem subCerrarSesion;
+    private javax.swing.JMenuItem subEliminarCargo;
+    private javax.swing.JMenuItem subEliminarCategoria;
+    private javax.swing.JMenuItem subEliminarCiudad;
+    private javax.swing.JMenuItem subEliminarCliente;
+    private javax.swing.JMenuItem subEliminarCombustible;
+    private javax.swing.JMenuItem subEliminarFamilia;
+    private javax.swing.JMenuItem subEliminarItem;
+    private javax.swing.JMenuItem subEliminarMarca;
+    private javax.swing.JMenuItem subEliminarMedida;
+    private javax.swing.JMenuItem subEliminarModelo;
+    private javax.swing.JMenuItem subEliminarMotor;
+    private javax.swing.JMenuItem subEliminarServicio;
+    private javax.swing.JMenuItem subEliminarTipoVehiculo;
+    private javax.swing.JMenuItem subEliminarTrabajador;
+    private javax.swing.JMenuItem subEliminarVehiculo;
+    private javax.swing.JMenuItem subFacturarOT;
+    private javax.swing.JMenuItem subInfClientes;
+    private javax.swing.JMenuItem subInfIngEgre;
+    private javax.swing.JMenuItem subInfInventario;
+    private javax.swing.JMenuItem subInfOT;
+    private javax.swing.JMenuItem subInfTrabajadores;
+    private javax.swing.JMenuItem subInfVehiculos;
+    private javax.swing.JMenuItem subModificarCargo;
+    private javax.swing.JMenuItem subModificarCategoria;
+    private javax.swing.JMenuItem subModificarCiudad;
+    private javax.swing.JMenuItem subModificarCliente;
+    private javax.swing.JMenuItem subModificarCombustible;
+    private javax.swing.JMenuItem subModificarFamilia;
+    private javax.swing.JMenuItem subModificarItem;
+    private javax.swing.JMenuItem subModificarMarca;
+    private javax.swing.JMenuItem subModificarMedida;
+    private javax.swing.JMenuItem subModificarModelo;
+    private javax.swing.JMenuItem subModificarMotor;
+    private javax.swing.JMenuItem subModificarOT;
+    private javax.swing.JMenuItem subModificarServicio;
+    private javax.swing.JMenuItem subModificarTipoVehiculo;
+    private javax.swing.JMenuItem subModificarTrabajador;
+    private javax.swing.JMenuItem subModificarVehiculo;
+    private javax.swing.JMenuItem subNuevaCategoria;
+    private javax.swing.JMenuItem subNuevaCiudad;
+    private javax.swing.JMenuItem subNuevaFamilia;
+    private javax.swing.JMenuItem subNuevaMarca;
+    private javax.swing.JMenuItem subNuevaMedida;
+    private javax.swing.JMenuItem subNuevoCargo;
+    private javax.swing.JMenuItem subNuevoCliente;
+    private javax.swing.JMenuItem subNuevoCombustible;
+    private javax.swing.JMenuItem subNuevoItem;
+    private javax.swing.JMenuItem subNuevoModelo;
+    private javax.swing.JMenuItem subNuevoMotor;
+    private javax.swing.JMenuItem subNuevoServicio;
+    private javax.swing.JMenuItem subNuevoTipoVehiculo;
+    private javax.swing.JMenuItem subNuevoTrabajador;
+    private javax.swing.JMenuItem subNuevoVehiculo;
+    private javax.swing.JMenuItem subOT;
+    private javax.swing.JMenuItem subPresupuesto;
+    private javax.swing.JMenuItem subSalir;
     // End of variables declaration//GEN-END:variables
 }
