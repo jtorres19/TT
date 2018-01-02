@@ -407,9 +407,6 @@ public class Consultar_vehiculo extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(JT_patente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -432,6 +429,10 @@ public class Consultar_vehiculo extends javax.swing.JFrame {
                                 .addComponent(JT_materno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addContainerGap())))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -452,9 +453,9 @@ public class Consultar_vehiculo extends javax.swing.JFrame {
                     .addComponent(JT_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(JT_paterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(JT_materno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 181, Short.MAX_VALUE)
-                .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(18, 18, 18)
+                .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -476,7 +477,7 @@ public class Consultar_vehiculo extends javax.swing.JFrame {
     private void JT_patenteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_patenteFocusLost
         JT_patente.setFont(new java.awt.Font("Tahoma",2,11));
         JT_patente.setForeground(new java.awt.Color(153,153,153));
-        JT_patente.setText("Buscar por rut");
+        JT_patente.setText("Buscar por patente");
     }//GEN-LAST:event_JT_patenteFocusLost
 
     private void JT_patenteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_patenteMouseClicked
@@ -498,7 +499,7 @@ public class Consultar_vehiculo extends javax.swing.JFrame {
     private void JT_añoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_añoFocusLost
         JT_año.setFont(new java.awt.Font("Tahoma",2,11));
         JT_año.setForeground(new java.awt.Color(153,153,153));
-        JT_año.setText("Buscar por nombre");
+        JT_año.setText("Buscar por año");
     }//GEN-LAST:event_JT_añoFocusLost
 
     private void JT_añoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_añoMouseClicked
@@ -525,7 +526,7 @@ public class Consultar_vehiculo extends javax.swing.JFrame {
     private void JT_kmsFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_kmsFocusLost
         JT_kms.setFont(new java.awt.Font("Tahoma",2,11));
         JT_kms.setForeground(new java.awt.Color(153,153,153));
-        JT_kms.setText("Buscar por rut");
+        JT_kms.setText("Buscar por kms");
     }//GEN-LAST:event_JT_kmsFocusLost
 
     private void JT_kmsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_kmsMouseClicked
@@ -547,7 +548,7 @@ public class Consultar_vehiculo extends javax.swing.JFrame {
     private void JT_vinFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_vinFocusLost
         JT_vin.setFont(new java.awt.Font("Tahoma",2,11));
         JT_vin.setForeground(new java.awt.Color(153,153,153));
-        JT_vin.setText("Buscar por nombre");
+        JT_vin.setText("Buscar por vin");
     }//GEN-LAST:event_JT_vinFocusLost
 
     private void JT_vinMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_vinMouseClicked
@@ -574,7 +575,7 @@ public class Consultar_vehiculo extends javax.swing.JFrame {
     private void JT_colorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_colorFocusLost
         JT_color.setFont(new java.awt.Font("Tahoma",2,11));
         JT_color.setForeground(new java.awt.Color(153,153,153));
-        JT_color.setText("Buscar por rut");
+        JT_color.setText("Buscar por color");
     }//GEN-LAST:event_JT_colorFocusLost
 
     private void JT_colorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_colorMouseClicked
@@ -596,7 +597,7 @@ public class Consultar_vehiculo extends javax.swing.JFrame {
     private void JT_marcaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_marcaFocusLost
         JT_marca.setFont(new java.awt.Font("Tahoma",2,11));
         JT_marca.setForeground(new java.awt.Color(153,153,153));
-        JT_marca.setText("Buscar por rut");
+        JT_marca.setText("Buscar por marca");
     }//GEN-LAST:event_JT_marcaFocusLost
 
     private void JT_marcaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_marcaMouseClicked
@@ -618,7 +619,7 @@ public class Consultar_vehiculo extends javax.swing.JFrame {
     private void JT_modeloFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_modeloFocusLost
         JT_modelo.setFont(new java.awt.Font("Tahoma",2,11));
         JT_modelo.setForeground(new java.awt.Color(153,153,153));
-        JT_modelo.setText("Buscar por nombre");
+        JT_modelo.setText("Buscar por modelo");
     }//GEN-LAST:event_JT_modeloFocusLost
 
     private void JT_modeloMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_modeloMouseClicked

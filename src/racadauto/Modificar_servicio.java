@@ -4,17 +4,23 @@ import Conexion.Conexion;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 public class Modificar_servicio extends javax.swing.JFrame {
 
     private Statement sentencia;
-   Conexion con = new Conexion();
+    Conexion con = new Conexion();
     Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
+    private TableRowSorter trsfiltro;
+    String filtro;
 
     public Modificar_servicio() {
 
@@ -136,6 +142,14 @@ public class Modificar_servicio extends javax.swing.JFrame {
 
         return cont;
     }
+    
+    public void filtroCategoria() {
+
+        filtro = JT_categoria.getText().toUpperCase();
+        int columna = 3;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_categoria.getText().toUpperCase(), columna));
+    }
+    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -153,6 +167,7 @@ public class Modificar_servicio extends javax.swing.JFrame {
         JT_precio = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         CMB_categoria = new javax.swing.JComboBox<>();
+        JT_categoria = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("MODIFICAR SERVICIO");
@@ -200,6 +215,25 @@ public class Modificar_servicio extends javax.swing.JFrame {
 
         jLabel4.setText("Categoría: ");
 
+        JT_categoria.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_categoria.setForeground(new java.awt.Color(153, 153, 153));
+        JT_categoria.setText("Buscar por categoria");
+        JT_categoria.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_categoriaFocusLost(evt);
+            }
+        });
+        JT_categoria.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_categoriaMouseClicked(evt);
+            }
+        });
+        JT_categoria.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_categoriaKeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -215,13 +249,7 @@ public class Modificar_servicio extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(JB_cancel))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel9)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(18, 18, 18)
-                                .addComponent(CMB_categoria, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(173, 173, 173)))
+                        .addComponent(jLabel9)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -230,7 +258,13 @@ public class Modificar_servicio extends javax.swing.JFrame {
                         .addGap(125, 125, 125)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(JT_precio, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(JT_precio, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(18, 18, 18)
+                        .addComponent(CMB_categoria, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(171, 171, 171)
+                        .addComponent(JT_categoria, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -249,9 +283,11 @@ public class Modificar_servicio extends javax.swing.JFrame {
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(JT_precio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(CMB_categoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(CMB_categoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(JT_categoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -366,6 +402,28 @@ public class Modificar_servicio extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_JT_precioKeyTyped
 
+    private void JT_categoriaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_categoriaFocusLost
+        JT_categoria.setFont(new java.awt.Font("Tahoma",2,11));
+        JT_categoria.setForeground(new java.awt.Color(153,153,153));
+        JT_categoria.setText("Buscar por categoria");
+    }//GEN-LAST:event_JT_categoriaFocusLost
+
+    private void JT_categoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_categoriaMouseClicked
+        JT_categoria.setText("");
+        JT_categoria.setFont(new java.awt.Font("Tahoma",0,11));
+        JT_categoria.setForeground(new java.awt.Color(0,0,0));
+    }//GEN-LAST:event_JT_categoriaMouseClicked
+
+    private void JT_categoriaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_categoriaKeyTyped
+        JT_categoria.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroCategoria();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTabla);
+        jTable1.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_categoriaKeyTyped
+
     /**
      * @param args the command line arguments
      */
@@ -436,6 +494,7 @@ public class Modificar_servicio extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> CMB_categoria;
     private javax.swing.JButton JB_OK;
     private javax.swing.JButton JB_cancel;
+    private javax.swing.JTextField JT_categoria;
     private javax.swing.JTextField JT_componente;
     private javax.swing.JTextField JT_precio;
     private javax.swing.JLabel LBL_estado;
