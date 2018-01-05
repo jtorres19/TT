@@ -5,4 +5,3 @@ public class RacadAuto {
         new Principal().setVisible(true);
     }
 }
-

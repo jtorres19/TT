@@ -18,26 +18,29 @@ public class Principal extends javax.swing.JFrame {
     Conexion con = new Conexion();
     Connection cn = (Connection) con.getConnection();
     Trabajador mod;
-
+    
     public Principal() {
+        
         initComponents();
     }
-    
-    public Principal(Trabajador mod){
+
+    public Principal(Trabajador mod) {
+        
         JOptionPane.showMessageDialog(null,
-                        "BIENVENIDO, " + mod.getNombre() + " " + mod.getPaterno() + " " + mod.getMaterno(),"WELCOME", 
-                        JOptionPane.INFORMATION_MESSAGE);
+                "BIENVENIDO, " + mod.getNombre() + " " + mod.getPaterno() + " " + mod.getMaterno(), "WELCOME",
+                JOptionPane.INFORMATION_MESSAGE);
+        
         initComponents();
         setLocationRelativeTo(null);
         this.mod = mod;
-        
+
         LBL_trabajador.setText(mod.getNombre() + " " + mod.getPaterno() + " " + mod.getMaterno());
         LBL_cargo.setText(mod.getCargo());
-        
-        if (mod.getCargo().equals("JEFE DE TALLER")){
-        
-        }else if (mod.getCargo().equals("SUPERVISOR")){
-            
+
+        if (mod.getCargo().equals("JEFE DE TALLER")) {
+
+        } else if (mod.getCargo().equals("SUPERVISOR")) {
+
             subEliminarServicio.setEnabled(false);
             subEliminarCategoria.setEnabled(false);
             subEliminarTrabajador.setEnabled(false);
@@ -53,9 +56,9 @@ public class Principal extends javax.swing.JFrame {
             subEliminarCombustible.setEnabled(false);
             subEliminarMarca.setEnabled(false);
             subEliminarModelo.setEnabled(false);
-            
-        }else{
-            
+
+        } else {
+
             menuTrabajadores.setEnabled(false);
             menuInventario.setEnabled(false);
             menuCategoria.setEnabled(false);
@@ -66,7 +69,7 @@ public class Principal extends javax.swing.JFrame {
             menuCombustible.setEnabled(false);
             menuMotor.setEnabled(false);
             subInfIngEgre.setEnabled(false);
-            
+
         }
     }
 
@@ -237,6 +240,11 @@ public class Principal extends javax.swing.JFrame {
         setTitle("RACAD AUTOMOTRIZ");
         setMinimumSize(new java.awt.Dimension(500, 400));
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel1.setText("Cargo:");
@@ -921,7 +929,7 @@ public class Principal extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(318, Short.MAX_VALUE)
+                .addContainerGap(316, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(LBL_trabajador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1276,7 +1284,7 @@ public class Principal extends javax.swing.JFrame {
 
     private void subInfTrabajadoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subInfTrabajadoresActionPerformed
         try {
-            
+
             JasperReport reporte = null;
             String path = "src\\racadauto\\Reportes\\Trabajadores.jasper";
 
@@ -1298,7 +1306,7 @@ public class Principal extends javax.swing.JFrame {
 
     private void subInfClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subInfClientesActionPerformed
         try {
-            
+
             JasperReport reporte = null;
             String path = "src\\racadauto\\Reportes\\Clientes.jasper";
 
@@ -1319,7 +1327,7 @@ public class Principal extends javax.swing.JFrame {
 
     private void subInfVehiculosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subInfVehiculosActionPerformed
         try {
-            
+
             JasperReport reporte = null;
             String path = "src\\racadauto\\Reportes\\Vehiculos.jasper";
 
@@ -1340,7 +1348,7 @@ public class Principal extends javax.swing.JFrame {
 
     private void subInfInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subInfInventarioActionPerformed
         try {
-            
+
             JasperReport reporte = null;
             String path = "src\\racadauto\\Reportes\\Inventario.jasper";
 
@@ -1358,6 +1366,10 @@ public class Principal extends javax.swing.JFrame {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_subInfInventarioActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        
+    }//GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments

@@ -1,81 +1,174 @@
 package racadauto;
 
 import Conexion.Conexion;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 public class Presupuestar_trabajo2 extends javax.swing.JFrame {
 
     private Statement sentencia;
     Conexion con = new Conexion();
     Connection cn = (Connection) con.getConnection();
-    private String msj;
-    DefaultTableModel modeloTabla;
-    DefaultTableModel modeloTabla2;
-    DefaultTableModel modeloTabla3;
-    DefaultTableModel modeloTabla4;
-    DefaultTableModel modeloTabla5;
-    DefaultTableModel modeloTabla6;
-    DefaultTableModel modeloTabla7;
+    DefaultTableModel modeloTablaCliente;
+    DefaultTableModel modeloTablaVehiculo;
+    DefaultTableModel modeloTablaServicio;
+    DefaultTableModel modeloTablaInsumo;
+    DefaultTableModel modeloTablaServicioaux;
+    DefaultTableModel modeloTablaInsumoaux;
+    DefaultTableModel modeloTablaTrabajador;
+    private TableRowSorter trsfiltro;
+    String filtro;
 
     public Presupuestar_trabajo2() {
-        modeloTabla = new DefaultTableModel(null, getColumnas());
-        modeloTabla2 = new DefaultTableModel(null, getColumnas2());
-        modeloTabla3 = new DefaultTableModel(null, getColumnas3());
-        modeloTabla4 = new DefaultTableModel(null, getColumnas4());
-        modeloTabla5 = new DefaultTableModel(null, getColumnas5());
-        modeloTabla6 = new DefaultTableModel(null, getColumnas6());
-        modeloTabla7 = new DefaultTableModel(null, getColumnas7());
-        setFilas();
-        setFilas3();
-        setFilas5();
-        setFilas7();
+        modeloTablaCliente = new DefaultTableModel(null, getColumnasCliente());
+        modeloTablaVehiculo = new DefaultTableModel(null, getColumnasVehiculo());
+        modeloTablaServicio = new DefaultTableModel(null, getColumnasServicio());
+        modeloTablaInsumo = new DefaultTableModel(null, getColumnasInsumo());
+        modeloTablaServicioaux = new DefaultTableModel(null, getColumnasServicio());
+        modeloTablaInsumoaux = new DefaultTableModel(null, getColumnasInsumoaux());
+        modeloTablaTrabajador = new DefaultTableModel(null, getColumnasTrabajador());
+        setFilasCliente();
+        setFilasInsumo();
+        setFilasServicio();
+        setFilasTrabajador();
         initComponents();
         fechaActual();
         llenarLabels();
     }
 
-    private String[] getColumnas() {
+    private String[] getColumnasCliente() {
         String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO"};
         return columna;
     }
 
-    private String[] getColumnas2() {
+    private String[] getColumnasVehiculo() {
         String columna[] = new String[]{"PATENTE", "AÑO", "KMS", "V.I.N", "COLOR", "MARCA", "MODELO"};
         return columna;
     }
 
-    private String[] getColumnas3() {
+    private String[] getColumnasInsumo() {
         String columna[] = new String[]{"CODIGO", "NOMBRE", "VALOR VENTA"};
         return columna;
     }
 
-    private String[] getColumnas4() {
-        String columna[] = new String[]{"CODIGO", "NOMBRE", "VALOR VENTA", "CANTIDAD"};
+    private String[] getColumnasInsumoaux() {
+        String columna[] = new String[]{"CODIGO", "NOMBRE", "VALOR VENTA", "CANTIDAD", "CODIGO INSUMO"};
         return columna;
     }
 
-    private String[] getColumnas5() {
+    private String[] getColumnasServicio() {
         String columna[] = new String[]{"ID", "COMPONENTE", "PRECIO"};
         return columna;
     }
 
-    private String[] getColumnas6() {
-        String columna[] = new String[]{"ID", "COMPONENTE", "PRECIO"};
-        return columna;
-    }
-
-    private String[] getColumnas7() {
+    private String[] getColumnasTrabajador() {
         String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO"};
         return columna;
     }
 
-    private void setFilas() {
+    public void filtroComponente() {
+
+        filtro = JT_componente.getText().toUpperCase();
+        int columna = 1;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_componente.getText().toUpperCase(), columna));
+    }
+
+    public void filtroInsumo() {
+
+        filtro = JT_insumo.getText().toUpperCase();
+        int columna = 1;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_insumo.getText().toUpperCase(), columna));
+
+    }
+
+    public void filtroRut() {
+
+        filtro = JT_rut.getText();
+        int columna = 0;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_rut.getText(), columna));
+
+    }
+
+    public void filtroNombre() {
+
+        filtro = JT_nombre.getText().toUpperCase();
+        int columna = 1;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_nombre.getText().toUpperCase(), columna));
+    }
+
+    public void filtroPaterno() {
+
+        filtro = JT_paterno.getText().toUpperCase();
+        int columna = 2;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_paterno.getText().toUpperCase(), columna));
+    }
+
+    public void filtroMaterno() {
+
+        filtro = JT_materno.getText().toUpperCase();
+        int columna = 3;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_materno.getText().toUpperCase(), columna));
+    }
+
+    public void filtroPatente() {
+
+        filtro = JT_patente.getText().toUpperCase();
+        int columna = 0;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_patente.getText().toUpperCase(), columna));
+    }
+
+    public void filtroAño() {
+
+        filtro = JT_año.getText().toUpperCase();
+        int columna = 1;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_año.getText().toUpperCase(), columna));
+    }
+
+    public void filtroKms() {
+
+        filtro = JT_kms.getText().toUpperCase();
+        int columna = 2;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_kms.getText().toUpperCase(), columna));
+    }
+
+    public void filtroVin() {
+
+        filtro = JT_vin.getText().toUpperCase();
+        int columna = 3;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_vin.getText().toUpperCase(), columna));
+    }
+
+    public void filtroColor() {
+
+        filtro = JT_color.getText().toUpperCase();
+        int columna = 4;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_color.getText().toUpperCase(), columna));
+    }
+
+    public void filtroMarca() {
+
+        filtro = JT_marca.getText().toUpperCase();
+        int columna = 5;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_marca.getText().toUpperCase(), columna));
+    }
+
+    public void filtroModelo() {
+
+        filtro = JT_modelo.getText().toUpperCase();
+        int columna = 6;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_modelo.getText().toUpperCase(), columna));
+    }
+
+    private void setFilasCliente() {
         try {
             sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT rut_cliente, nombre, ape_paterno, ape_materno "
@@ -85,15 +178,16 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                 for (int i = 0; i < 4; i++) {
                     datos[i] = lista.getObject(i + 1);
                 }
-                modeloTabla.addRow(datos);
+                modeloTablaCliente.addRow(datos);
             }
         } catch (Exception e) {
-            msj = "No se pudo llenar tabla";
-            LBL_estado.setText(msj);
+            JOptionPane.showMessageDialog(null,
+                    "Error, Poblemas con el servidor(Clientes)", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void setFilas7() {
+    private void setFilasTrabajador() {
         try {
             sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT rut_trabajador, nombre, ape_paterno, ape_materno "
@@ -103,15 +197,16 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                 for (int i = 0; i < 4; i++) {
                     datos[i] = lista.getObject(i + 1);
                 }
-                modeloTabla7.addRow(datos);
+                modeloTablaTrabajador.addRow(datos);
             }
         } catch (Exception e) {
-            msj = "No se pudo llenar tabla";
-            LBL_estado.setText(msj);
+            JOptionPane.showMessageDialog(null,
+                    "Error, Poblemas con el servidor(Trabajador)", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void setFilas3() {
+    private void setFilasInsumo() {
         try {
             sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT cod_item, nombre, valor_venta "
@@ -122,15 +217,16 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                 for (int i = 0; i < 3; i++) {
                     datos[i] = lista.getObject(i + 1);
                 }
-                modeloTabla3.addRow(datos);
+                modeloTablaInsumo.addRow(datos);
             }
         } catch (Exception e) {
-            msj = "No se pudo llenar tabla";
-            LBL_estado.setText(msj);
+            JOptionPane.showMessageDialog(null,
+                    "Error, Poblemas con el servidor(Inventario)", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void setFilas5() {
+    private void setFilasServicio() {
         try {
             sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT id_servicio, componente, precio "
@@ -140,11 +236,12 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                 for (int i = 0; i < 3; i++) {
                     datos[i] = lista.getObject(i + 1);
                 }
-                modeloTabla5.addRow(datos);
+                modeloTablaServicio.addRow(datos);
             }
         } catch (Exception e) {
-            msj = "No se pudo llenar tabla";
-            LBL_estado.setText(msj);
+            JOptionPane.showMessageDialog(null,
+                    "Error, Poblemas con el servidor(Servicio)", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -168,7 +265,9 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
             }
             cod++;
         } catch (SQLException f) {
-            msj = "Error con Codigo";
+            JOptionPane.showMessageDialog(null,
+                    "Error, Poblemas con el servidor(Solicitud)", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
         LBL_solicitud.setText("" + cod + "");
         LBL_solicitud1.setText("" + cod + "");
@@ -177,8 +276,8 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
 
     void limpiaTabla() {
         do {
-            modeloTabla2.setRowCount(0);
-        } while (modeloTabla2.getRowCount() != 0);
+            modeloTablaVehiculo.setRowCount(0);
+        } while (modeloTablaVehiculo.getRowCount() != 0);
     }
 
     public int verificar() {
@@ -198,31 +297,31 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
             cont++;
         }
 
-        if (jTable1.getSelectedRow() == -1) {
+        if (tablaClientes.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null,
                     "Error, Seleccione cliente!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
-        } else if (jTable2.getSelectedRow() == -1) {
+        } else if (tablaVehiculo.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null,
                     "Error, Seleccione vehiculo!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
-        } else if (jTable7.getSelectedRow() == -1) {
+        } else if (tablaTrabajador.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null,
                     "Error, Seleccione trabajador!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
 
-        if (jTable4.getRowCount() == 0) {
+        if (tablaServicioaux.getRowCount() == 0) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Añada insumo!", "ERROR",
+                    "Error, Añada Servicio!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
-        } else if (jTable6.getRowCount() == 0) {
+        } else if (tablaInsumoaux.getRowCount() == 0) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Añada servicio!", "ERROR",
+                    "Error, Añada Insumo!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
@@ -232,15 +331,14 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
 
     public void clean() {
         JTA_observaciones.setText("");
-        LBL_estado.setText("");
         lblFecha.setText("");
         lblFecha1.setText("");
         lblFecha2.setText("");
         LBL_solicitud.setText("");
         LBL_solicitud1.setText("");
         LBL_solicitud2.setText("");
-        modeloTabla4.setRowCount(0);
-        modeloTabla6.setRowCount(0);
+        modeloTablaServicioaux.setRowCount(0);
+        modeloTablaInsumoaux.setRowCount(0);
     }
 
     @SuppressWarnings("unchecked")
@@ -256,14 +354,25 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
         lblFecha = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tablaClientes = new javax.swing.JTable();
         jScrollPane6 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tablaVehiculo = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
+        JT_rut = new javax.swing.JTextField();
+        JT_nombre = new javax.swing.JTextField();
+        JT_paterno = new javax.swing.JTextField();
+        JT_materno = new javax.swing.JTextField();
+        JT_patente = new javax.swing.JTextField();
+        JT_año = new javax.swing.JTextField();
+        JT_kms = new javax.swing.JTextField();
+        JT_vin = new javax.swing.JTextField();
+        JT_color = new javax.swing.JTextField();
+        JT_marca = new javax.swing.JTextField();
+        JT_modelo = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -272,22 +381,22 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
         lblFecha1 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jScrollPane7 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
+        tablaServicio = new javax.swing.JTable();
         jLabel15 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btnAddServicio = new javax.swing.JButton();
+        btnQuitarServicio = new javax.swing.JButton();
         jScrollPane8 = new javax.swing.JScrollPane();
-        jTable4 = new javax.swing.JTable();
+        tablaServicioaux = new javax.swing.JTable();
         jScrollPane9 = new javax.swing.JScrollPane();
-        jTable5 = new javax.swing.JTable();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        tablaInsumos = new javax.swing.JTable();
+        btnAddInsumo = new javax.swing.JButton();
+        btnQuitarInsumo = new javax.swing.JButton();
         jScrollPane10 = new javax.swing.JScrollPane();
-        jTable6 = new javax.swing.JTable();
-        jLabel16 = new javax.swing.JLabel();
-        LBL_total = new javax.swing.JLabel();
-        jButton10 = new javax.swing.JButton();
-        jButton11 = new javax.swing.JButton();
+        tablaInsumoaux = new javax.swing.JTable();
+        btnAddCant = new javax.swing.JButton();
+        btnRemoveCant = new javax.swing.JButton();
+        JT_componente = new javax.swing.JTextField();
+        JT_insumo = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -296,13 +405,12 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
         lblFecha2 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jTable7 = new javax.swing.JTable();
+        tablaTrabajador = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         JTA_observaciones = new javax.swing.JTextArea();
         JB_cancel = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        LBL_estado = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("PRESUPUESTO");
@@ -316,21 +424,21 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
 
         jLabel12.setText("Vehiculo:");
 
-        jTable1.setModel(modeloTabla);
-        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+        tablaClientes.setModel(modeloTablaCliente);
+        tablaClientes.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable1MouseClicked(evt);
+                tablaClientesMouseClicked(evt);
             }
         });
-        jScrollPane4.setViewportView(jTable1);
+        jScrollPane4.setViewportView(tablaClientes);
 
-        jTable2.setModel(modeloTabla2);
-        jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
+        tablaVehiculo.setModel(modeloTablaVehiculo);
+        tablaVehiculo.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable2MouseClicked(evt);
+                tablaVehiculoMouseClicked(evt);
             }
         });
-        jScrollPane6.setViewportView(jTable2);
+        jScrollPane6.setViewportView(tablaVehiculo);
 
         jLabel5.setText("Clientes:");
 
@@ -362,39 +470,306 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
             }
         });
 
+        JT_rut.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_rut.setForeground(new java.awt.Color(153, 153, 153));
+        JT_rut.setText("Buscar por rut");
+        JT_rut.setToolTipText("");
+        JT_rut.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_rutFocusLost(evt);
+            }
+        });
+        JT_rut.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_rutMouseClicked(evt);
+            }
+        });
+        JT_rut.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_rutKeyTyped(evt);
+            }
+        });
+
+        JT_nombre.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_nombre.setForeground(new java.awt.Color(153, 153, 153));
+        JT_nombre.setText("Buscar por nombre");
+        JT_nombre.setToolTipText("");
+        JT_nombre.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        JT_nombre.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_nombreFocusLost(evt);
+            }
+        });
+        JT_nombre.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_nombreMouseClicked(evt);
+            }
+        });
+        JT_nombre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JT_nombreActionPerformed(evt);
+            }
+        });
+        JT_nombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_nombreKeyTyped(evt);
+            }
+        });
+
+        JT_paterno.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_paterno.setForeground(new java.awt.Color(153, 153, 153));
+        JT_paterno.setText("Buscar por paterno");
+        JT_paterno.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_paternoFocusLost(evt);
+            }
+        });
+        JT_paterno.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_paternoMouseClicked(evt);
+            }
+        });
+        JT_paterno.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_paternoKeyTyped(evt);
+            }
+        });
+
+        JT_materno.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_materno.setForeground(new java.awt.Color(153, 153, 153));
+        JT_materno.setText("Buscar por materno");
+        JT_materno.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_maternoFocusLost(evt);
+            }
+        });
+        JT_materno.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_maternoMouseClicked(evt);
+            }
+        });
+        JT_materno.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_maternoKeyTyped(evt);
+            }
+        });
+
+        JT_patente.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_patente.setForeground(new java.awt.Color(153, 153, 153));
+        JT_patente.setText("Buscar por patente");
+        JT_patente.setToolTipText("");
+        JT_patente.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_patenteFocusLost(evt);
+            }
+        });
+        JT_patente.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_patenteMouseClicked(evt);
+            }
+        });
+        JT_patente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_patenteKeyTyped(evt);
+            }
+        });
+
+        JT_año.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_año.setForeground(new java.awt.Color(153, 153, 153));
+        JT_año.setText("Buscar por año");
+        JT_año.setToolTipText("");
+        JT_año.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        JT_año.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_añoFocusLost(evt);
+            }
+        });
+        JT_año.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_añoMouseClicked(evt);
+            }
+        });
+        JT_año.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JT_añoActionPerformed(evt);
+            }
+        });
+        JT_año.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_añoKeyTyped(evt);
+            }
+        });
+
+        JT_kms.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_kms.setForeground(new java.awt.Color(153, 153, 153));
+        JT_kms.setText("Buscar por kms");
+        JT_kms.setToolTipText("");
+        JT_kms.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_kmsFocusLost(evt);
+            }
+        });
+        JT_kms.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_kmsMouseClicked(evt);
+            }
+        });
+        JT_kms.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_kmsKeyTyped(evt);
+            }
+        });
+
+        JT_vin.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_vin.setForeground(new java.awt.Color(153, 153, 153));
+        JT_vin.setText("Buscar por vin");
+        JT_vin.setToolTipText("");
+        JT_vin.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        JT_vin.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_vinFocusLost(evt);
+            }
+        });
+        JT_vin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_vinMouseClicked(evt);
+            }
+        });
+        JT_vin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JT_vinActionPerformed(evt);
+            }
+        });
+        JT_vin.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_vinKeyTyped(evt);
+            }
+        });
+
+        JT_color.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_color.setForeground(new java.awt.Color(153, 153, 153));
+        JT_color.setText("Buscar por color");
+        JT_color.setToolTipText("");
+        JT_color.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_colorFocusLost(evt);
+            }
+        });
+        JT_color.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_colorMouseClicked(evt);
+            }
+        });
+        JT_color.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_colorKeyTyped(evt);
+            }
+        });
+
+        JT_marca.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_marca.setForeground(new java.awt.Color(153, 153, 153));
+        JT_marca.setText("Buscar por marca");
+        JT_marca.setToolTipText("");
+        JT_marca.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_marcaFocusLost(evt);
+            }
+        });
+        JT_marca.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_marcaMouseClicked(evt);
+            }
+        });
+        JT_marca.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_marcaKeyTyped(evt);
+            }
+        });
+
+        JT_modelo.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_modelo.setForeground(new java.awt.Color(153, 153, 153));
+        JT_modelo.setText("Buscar por modelo");
+        JT_modelo.setToolTipText("");
+        JT_modelo.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        JT_modelo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_modeloFocusLost(evt);
+            }
+        });
+        JT_modelo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_modeloMouseClicked(evt);
+            }
+        });
+        JT_modelo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JT_modeloActionPerformed(evt);
+            }
+        });
+        JT_modelo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_modeloKeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel9)
-                .addGap(0, 216, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(LBL_solicitud, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel12)
-                    .addComponent(jLabel5)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                            .addComponent(jButton1)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jButton9))
+                            .addComponent(jScrollPane6)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButton1)
+                                    .addComponent(JT_rut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(LBL_solicitud, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel6)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel12)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jButton8)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(JT_patente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(JT_año, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(JT_kms, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(JT_vin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(JT_color, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(JT_marca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(JT_modelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(JT_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(37, 37, 37)
+                                .addComponent(JT_paterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(35, 35, 35)
+                                .addComponent(JT_materno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 488, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton7))
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                            .addComponent(jButton8)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton9))
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(340, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -409,20 +784,36 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel5)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(JT_rut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(JT_paterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(JT_materno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(JT_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton7))
-                .addGap(61, 61, 61)
+                .addGap(39, 39, 39)
                 .addComponent(jLabel12)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(JT_patente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_año, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_kms, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_vin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_color, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_marca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_modelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton8)
                     .addComponent(jButton9))
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Seleccionar Vehiculo", jPanel1);
@@ -436,84 +827,124 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
 
         jLabel14.setText("Insumos:");
 
-        jTable3.setModel(modeloTabla3);
-        jTable3.addMouseListener(new java.awt.event.MouseAdapter() {
+        tablaServicio.setModel(modeloTablaServicio);
+        tablaServicio.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable3MouseClicked(evt);
+                tablaServicioMouseClicked(evt);
             }
         });
-        jScrollPane7.setViewportView(jTable3);
+        jScrollPane7.setViewportView(tablaServicio);
 
         jLabel15.setText("Servicios");
 
-        jButton3.setText("Añadir");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnAddServicio.setText("Añadir");
+        btnAddServicio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnAddServicioActionPerformed(evt);
             }
         });
 
-        jButton4.setText("Quitar");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btnQuitarServicio.setText("Quitar");
+        btnQuitarServicio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                btnQuitarServicioActionPerformed(evt);
             }
         });
 
-        jTable4.setModel(modeloTabla4);
-        jTable4.addMouseListener(new java.awt.event.MouseAdapter() {
+        tablaServicioaux.setModel(modeloTablaServicioaux);
+        tablaServicioaux.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable4MouseClicked(evt);
+                tablaServicioauxMouseClicked(evt);
             }
         });
-        jScrollPane8.setViewportView(jTable4);
+        jScrollPane8.setViewportView(tablaServicioaux);
 
-        jTable5.setModel(modeloTabla5);
-        jTable5.addMouseListener(new java.awt.event.MouseAdapter() {
+        tablaInsumos.setModel(modeloTablaInsumo);
+        tablaInsumos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable5MouseClicked(evt);
+                tablaInsumosMouseClicked(evt);
             }
         });
-        jScrollPane9.setViewportView(jTable5);
+        jScrollPane9.setViewportView(tablaInsumos);
 
-        jButton5.setText("Añadir");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        btnAddInsumo.setText("Añadir");
+        btnAddInsumo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                btnAddInsumoActionPerformed(evt);
             }
         });
 
-        jButton6.setText("Quitar");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        btnQuitarInsumo.setText("Quitar");
+        btnQuitarInsumo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                btnQuitarInsumoActionPerformed(evt);
             }
         });
 
-        jTable6.setModel(modeloTabla6);
-        jTable6.addMouseListener(new java.awt.event.MouseAdapter() {
+        tablaInsumoaux.setModel(modeloTablaInsumoaux);
+        tablaInsumoaux.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable6MouseClicked(evt);
+                tablaInsumoauxMouseClicked(evt);
             }
         });
-        jScrollPane10.setViewportView(jTable6);
+        jScrollPane10.setViewportView(tablaInsumoaux);
 
-        jLabel16.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel16.setText("Total:");
-
-        LBL_total.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-
-        jButton10.setText("+");
-        jButton10.addActionListener(new java.awt.event.ActionListener() {
+        btnAddCant.setText("+");
+        btnAddCant.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
+                btnAddCantActionPerformed(evt);
             }
         });
 
-        jButton11.setText("-");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
+        btnRemoveCant.setText("-");
+        btnRemoveCant.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
+                btnRemoveCantActionPerformed(evt);
+            }
+        });
+
+        JT_componente.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_componente.setForeground(new java.awt.Color(153, 153, 153));
+        JT_componente.setText("Buscar por componente");
+        JT_componente.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_componenteFocusLost(evt);
+            }
+        });
+        JT_componente.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_componenteMouseClicked(evt);
+            }
+        });
+        JT_componente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_componenteKeyTyped(evt);
+            }
+        });
+
+        JT_insumo.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_insumo.setForeground(new java.awt.Color(153, 153, 153));
+        JT_insumo.setText("Buscar por nombre");
+        JT_insumo.setToolTipText("");
+        JT_insumo.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        JT_insumo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_insumoFocusLost(evt);
+            }
+        });
+        JT_insumo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_insumoMouseClicked(evt);
+            }
+        });
+        JT_insumo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JT_insumoActionPerformed(evt);
+            }
+        });
+        JT_insumo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_insumoKeyTyped(evt);
             }
         });
 
@@ -522,45 +953,56 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jLabel10)
-                .addGap(0, 216, Short.MAX_VALUE))
+                .addGap(115, 115, 115)
+                .addComponent(JT_componente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(JT_insumo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(203, 203, 203))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(74, 74, 74)
+                .addComponent(btnAddServicio)
+                .addGap(18, 18, 18)
+                .addComponent(btnQuitarServicio)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 299, Short.MAX_VALUE)
+                .addComponent(btnAddInsumo)
+                .addGap(18, 18, 18)
+                .addComponent(btnQuitarInsumo)
+                .addGap(177, 177, 177))
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel10))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
                         .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(6, 6, 6)
                         .addComponent(LBL_solicitud1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(6, 6, 6)
                         .addComponent(lblFecha1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel14)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel15)
+                        .addGap(343, 343, 343)
+                        .addComponent(jLabel14))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(50, 50, 50)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton3)
-                            .addComponent(jButton4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel15)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+                            .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton5)
-                            .addComponent(jButton6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel16)
-                        .addGap(18, 18, 18)
-                        .addComponent(LBL_total)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(btnRemoveCant, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnAddCant))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -569,48 +1011,40 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                 .addComponent(jLabel10)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblFecha1, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LBL_solicitud1, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(LBL_solicitud1, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
+                    .addComponent(lblFecha1, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jLabel14)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel15)
+                    .addComponent(jLabel14))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(58, 58, 58)
-                        .addComponent(jButton3)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton4))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(67, 67, 67)
-                        .addComponent(jButton10)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton11))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel15)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton5)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(JT_componente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(JT_insumo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(jButton6)
-                        .addGap(140, 140, 140))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAddInsumo)
+                            .addComponent(btnQuitarInsumo)
+                            .addComponent(btnAddServicio)
+                            .addComponent(btnQuitarServicio))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel16)
-                            .addComponent(LBL_total))
-                        .addGap(34, 34, 34))))
+                            .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(124, 124, 124)
+                        .addComponent(btnAddCant)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnRemoveCant)))
+                .addGap(0, 44, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Seleccionar Servicios e Insumos", jPanel2);
@@ -624,13 +1058,13 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
 
         jLabel13.setText("Trabajador :");
 
-        jTable7.setModel(modeloTabla7);
-        jTable7.addMouseListener(new java.awt.event.MouseAdapter() {
+        tablaTrabajador.setModel(modeloTablaTrabajador);
+        tablaTrabajador.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable7MouseClicked(evt);
+                tablaTrabajadorMouseClicked(evt);
             }
         });
-        jScrollPane5.setViewportView(jTable7);
+        jScrollPane5.setViewportView(tablaTrabajador);
 
         jLabel4.setText("Observaciónes :");
 
@@ -644,10 +1078,11 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jLabel11)
-                .addGap(0, 216, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -657,10 +1092,9 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblFecha2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel13)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1))
+                .addContainerGap(290, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -675,12 +1109,12 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                 .addComponent(jLabel13)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(103, 103, 103))
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(101, 101, 101))
         );
 
         jTabbedPane1.addTab("Seleccionar Responsale y otros", jPanel3);
@@ -705,26 +1139,20 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton2)
-                        .addGap(18, 18, 18)
-                        .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 474, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(JB_cancel)))
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(JB_cancel)
                 .addContainerGap())
+            .addComponent(jTabbedPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 593, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton2)
-                        .addComponent(JB_cancel))
-                    .addComponent(LBL_estado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 645, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(JB_cancel))
                 .addContainerGap())
         );
 
@@ -732,9 +1160,11 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+    private void tablaClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaClientesMouseClicked
+
         limpiaTabla();
-        String rut = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
+
+        String rut = tablaClientes.getValueAt(tablaClientes.getSelectedRow(), 0).toString();
         try {
             sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT v.patente,v.año, v.kms,v.vin, v.color, ma.nombre, mo.nombre "
@@ -748,41 +1178,44 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                 }
 
             }
-            modeloTabla2.addRow(datos);
+            modeloTablaVehiculo.addRow(datos);
         } catch (Exception e) {
-            msj = "No se pudo llenar tabla";
-            LBL_estado.setText(msj);
+            JOptionPane.showMessageDialog(null,
+                    "Error, Poblemas con el servidor(Vehiculo)", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_jTable1MouseClicked
+    }//GEN-LAST:event_tablaClientesMouseClicked
 
     private void JB_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_cancelActionPerformed
         this.dispose();
     }//GEN-LAST:event_JB_cancelActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
         if (verificar() == 0) {
-            String pat = jTable2.getValueAt(jTable2.getSelectedRow(), 0).toString();
-            String rut = jTable7.getValueAt(jTable7.getSelectedRow(), 0).toString();
-            int dis;
-            int fol = 0;
+
+            String pat = tablaVehiculo.getValueAt(tablaVehiculo.getSelectedRow(), 0).toString();
+            String rut = tablaTrabajador.getValueAt(tablaTrabajador.getSelectedRow(), 0).toString();
+
+            int cod = 0, subtotal = 0, total = 0, cont = 0;
+
             String fech = lblFecha.getText();
             String obser = JTA_observaciones.getText().toUpperCase().trim();
-            int cod = 0;
 
-            int total = 0;
-            int columna = jTable4.getRowCount(), columna2 = jTable6.getRowCount();
-            for (int i = 0; i < columna; i++) {
-                total = total + Integer.parseInt(jTable4.getValueAt(i, 2).toString()) * Integer.parseInt(jTable4.getValueAt(i, 3).toString());
+            int columnaservicio = tablaServicioaux.getRowCount(), columnainsumo = tablaInsumoaux.getRowCount();
+
+            for (int i = 0; i < columnainsumo; i++) {
+                subtotal = subtotal + Integer.parseInt(tablaInsumoaux.getValueAt(i, 2).toString()) * Integer.parseInt(tablaInsumoaux.getValueAt(i, 3).toString());
             }
 
-            for (int i = 0; i < columna2; i++) {
-                total = total + Integer.parseInt(jTable6.getValueAt(i, 2).toString());
+            for (int i = 0; i < columnaservicio; i++) {
+                subtotal = subtotal + Integer.parseInt(tablaServicioaux.getValueAt(i, 2).toString());
             }
 
-            LBL_total.setText(String.valueOf(total));
-            int mod = 0;
-            int mar = 0;
+            total = (int) (subtotal * 1.19);
+
             String est = "PRESUPUESTO";
+
             try {
                 sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
                 ResultSet rs = sentencia.executeQuery("SELECT MAX(cod_solicitud) as cod_solicitud FROM solicitud_servicio");
@@ -791,112 +1224,117 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                 }
                 cod++;
             } catch (SQLException f) {
-                msj = "Error con Codigo";
+                cont++;
             }
 
-            //la fecha orden y entrega so "place-holders" que se quedarán para que funcione el programa
-            //la fecha presupuesto hay que hacer que sea la actual si
-            //sub-total se dejó en cero, puesto a que esto es un presupuesto
             String sql = "INSERT INTO solicitud_servicio(cod_solicitud,observaciones,subtotal,total,fecha_presupuesto,estado_solicitud,patente,rut_trabajador) "
-                    + "VALUES(" + cod + ",'" + obser + "'," + total + "," + total + ",'" + fech + "','" + est + "','" + pat + "','" + rut + "')";
+                    + "VALUES(" + cod + ",'" + obser + "'," + subtotal + "," + total + ",'" + fech + "','" + est + "','" + pat + "','" + rut + "')";
 
             try {
                 sentencia.executeUpdate(sql);
-                msj = "Datos Guardados";
-                LBL_estado.setText(msj);
-                dis = 1;
-            } catch (SQLException e) {
-                msj = "PRESUPUESTO no Ingresado en bd";
-                LBL_estado.setText(msj);
-                dis = 0;
-            }
-            
-            int i = 1,j = 1,item,venta,cantidad,servicio,precio;
-            while (i < columna &&  j < columna2) {
-                item = Integer.parseInt(jTable4.getValueAt(i, 0).toString());
-                venta = Integer.parseInt(jTable4.getValueAt(i, 2).toString());
-                cantidad = Integer.parseInt(jTable4.getValueAt(i, 3).toString());
-                servicio = Integer.parseInt(jTable6.getValueAt(j, 0).toString());
-                precio = Integer.parseInt(jTable6.getValueAt(j, 2).toString());
 
-                String sql2 = "INSERT INTO detalle_solicitud(cod_solicitud,cod_item,id_servicio,precio,valor_venta,cantidad,observaciones,fecha_presupueto,rut_trabajador) "
-                        + "VALUES(" + cod + "," + item + "," + servicio + "," + precio + "," + venta + "," + cantidad + ",'" + obser + "','" + fech + "','" + rut + "')";
+            } catch (SQLException e) {
+                cont++;
+            }
+
+            for (int i = 0; i < columnaservicio; i++) {
 
                 try {
+
+                    int servicio = Integer.parseInt(tablaServicioaux.getValueAt(i, 0).toString());
+                    int precio = Integer.parseInt(tablaServicioaux.getValueAt(i, 2).toString());
+
+                    String sql2 = "INSERT into detalle_solicitud(cod_solicitud, id_servicio, precio, fecha_presupuesto,rut_trabajador) "
+                            + "VALUES(" + cod + ", " + servicio + "," + precio + ",'" + fech + "','" + rut + "')";
                     sentencia.executeUpdate(sql2);
-                    msj = "Datos Guardados";
-                    LBL_estado.setText(msj);
-                    dis = 1;
-                } catch (SQLException e) {
-                    msj = "DETALLE no Ingresado en bd";
-                    LBL_estado.setText(msj);
-                    dis = 0;
+
+                } catch (SQLException ex) {
+                    cont++;
                 }
-                i++;
-                j++;
+            }
+            
+            for (int i = 0; i < columnainsumo; i++) {
+
+                try {
+
+                    int insumo = Integer.parseInt(tablaInsumoaux.getValueAt(i, 0).toString());
+                    int cantidad = Integer.parseInt(tablaInsumoaux.getValueAt(i, 3).toString());
+                    int servicio = Integer.parseInt(tablaInsumoaux.getValueAt(i, 4).toString());
+
+                    String sql3 = "INSERT into detalle_insumo(cod_item,cod_solicitud, id_servicio, cantidad) "
+                            + "VALUES(" + insumo + ", " + cod + "," + servicio + ",'" + cantidad + "')";
+                    sentencia.executeUpdate(sql3);
+
+                } catch (SQLException ex) {
+                    cont++;
+                }
             }
 
-            if (dis == 1) {
+            if (cont == 0) {
+                JOptionPane.showMessageDialog(null,
+                        "PRESUPUESTO ingresado exitosamente", "INFO",
+                        JOptionPane.INFORMATION_MESSAGE);
                 clean();
                 limpiaTabla();
                 llenarLabels();
                 fechaActual();
-
+            }else{
+                JOptionPane.showMessageDialog(null,
+                            "Problemas con la base de datos,PRESUPUESTO no ingresado", "ERROR",
+                            JOptionPane.ERROR_MESSAGE);
             }
-        } else {
-            msj = "PRESUPUESTO no Ingresado";
-            LBL_estado.setText(msj);
+            
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jTable7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable7MouseClicked
+    private void tablaTrabajadorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaTrabajadorMouseClicked
 
-    }//GEN-LAST:event_jTable7MouseClicked
+    }//GEN-LAST:event_tablaTrabajadorMouseClicked
 
-    private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
+    private void tablaVehiculoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaVehiculoMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTable2MouseClicked
+    }//GEN-LAST:event_tablaVehiculoMouseClicked
 
-    private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
+    private void tablaServicioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaServicioMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTable3MouseClicked
+    }//GEN-LAST:event_tablaServicioMouseClicked
 
-    private void jTable4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable4MouseClicked
+    private void tablaServicioauxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaServicioauxMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTable4MouseClicked
+    }//GEN-LAST:event_tablaServicioauxMouseClicked
 
-    private void jTable5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable5MouseClicked
+    private void tablaInsumosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaInsumosMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTable5MouseClicked
+    }//GEN-LAST:event_tablaInsumosMouseClicked
 
-    private void jTable6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable6MouseClicked
+    private void tablaInsumoauxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaInsumoauxMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTable6MouseClicked
+    }//GEN-LAST:event_tablaInsumoauxMouseClicked
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnAddServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddServicioActionPerformed
 
         int cont = 0;
-        if (jTable3.getSelectedRow() == -1) {
+        if (tablaServicio.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Seleccione insumo!", "ERROR",
+                    "Error, Seleccione Servicio!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
 
         if (cont == 0) {
-            int columnas = jTable4.getRowCount();
-            int cod = Integer.parseInt(jTable3.getValueAt(jTable3.getSelectedRow(), 0).toString().trim());
+
+            int columnas = tablaServicioaux.getRowCount();
+            int cod = Integer.parseInt(tablaServicio.getValueAt(tablaServicio.getSelectedRow(), 0).toString().trim());
             int cod2 = 0;
 
-            Object fila[] = new Object[4];
-            fila[0] = jTable3.getValueAt(jTable3.getSelectedRow(), 0);
-            fila[1] = jTable3.getValueAt(jTable3.getSelectedRow(), 1);
-            fila[2] = jTable3.getValueAt(jTable3.getSelectedRow(), 2);
-            fila[3] = 1;
+            Object fila[] = new Object[3];
+            fila[0] = tablaServicio.getValueAt(tablaServicio.getSelectedRow(), 0);
+            fila[1] = tablaServicio.getValueAt(tablaServicio.getSelectedRow(), 1);
+            fila[2] = tablaServicio.getValueAt(tablaServicio.getSelectedRow(), 2);
 
             if (columnas != 0) {
                 for (int i = 0; i < columnas; i++) {
-                    cod2 = Integer.parseInt(jTable4.getValueAt(i, 0).toString().trim());
+                    cod2 = Integer.parseInt(tablaServicioaux.getValueAt(i, 0).toString().trim());
                     if (cod == cod2) {
                         cont++;
                     }
@@ -904,15 +1342,15 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
             }
 
             if (cont == 0) {
-                modeloTabla4.addRow(fila);
+                modeloTablaServicioaux.addRow(fila);
             } else {
                 JOptionPane.showMessageDialog(null,
-                        "Error, Ya Selecciono este insumo!", "ERROR",
+                        "Error, Ya selecciono este Servicio!", "ERROR",
                         JOptionPane.ERROR_MESSAGE);
             }
 
         }
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnAddServicioActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Ingresar_cliente a = new Ingresar_cliente();
@@ -934,9 +1372,9 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
         a.setVisible(true);
     }//GEN-LAST:event_jButton7ActionPerformed
 
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+    private void btnAddCantActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCantActionPerformed
         int cont = 0;
-        if (jTable4.getSelectedRow() == -1) {
+        if (tablaInsumoaux.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null,
                     "Error, Seleccione insumo!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
@@ -944,15 +1382,15 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
         }
         if (cont == 0) {
 
-            int base = Integer.parseInt(jTable4.getValueAt(jTable4.getSelectedRow(), 3).toString().trim());
+            int base = Integer.parseInt(tablaInsumoaux.getValueAt(tablaInsumoaux.getSelectedRow(), 3).toString().trim());
             int valor = base + 1;
-            jTable4.setValueAt(valor, jTable4.getSelectedRow(), 3);
+            tablaInsumoaux.setValueAt(valor, tablaInsumoaux.getSelectedRow(), 3);
         }
-    }//GEN-LAST:event_jButton10ActionPerformed
+    }//GEN-LAST:event_btnAddCantActionPerformed
 
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+    private void btnRemoveCantActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveCantActionPerformed
         int cont = 0;
-        if (jTable4.getSelectedRow() == -1) {
+        if (tablaInsumoaux.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null,
                     "Error, Seleccione insumo!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
@@ -960,7 +1398,7 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
         }
         if (cont == 0) {
 
-            int base = Integer.parseInt(jTable4.getValueAt(jTable4.getSelectedRow(), 3).toString().trim());
+            int base = Integer.parseInt(tablaInsumoaux.getValueAt(tablaInsumoaux.getSelectedRow(), 3).toString().trim());
             int valor = base - 1;
             if (valor < 1) {
                 JOptionPane.showMessageDialog(null,
@@ -968,29 +1406,36 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                         JOptionPane.ERROR_MESSAGE);
                 cont++;
             } else {
-                jTable4.setValueAt(valor, jTable4.getSelectedRow(), 3);
+                tablaInsumoaux.setValueAt(valor, tablaInsumoaux.getSelectedRow(), 3);
             }
         }
-    }//GEN-LAST:event_jButton11ActionPerformed
+    }//GEN-LAST:event_btnRemoveCantActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void btnQuitarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitarServicioActionPerformed
         int cont = 0;
-        if (jTable4.getSelectedRow() == -1) {
+        if (tablaServicioaux.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Seleccione insumo!", "ERROR",
+                    "Error, Seleccione servicio!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
 
         if (cont == 0) {
-            int fila = jTable4.getSelectedRow();
-            modeloTabla4.removeRow(fila);
+            int fila = tablaServicioaux.getSelectedRow();
+            modeloTablaServicioaux.removeRow(fila);
         }
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_btnQuitarServicioActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void btnAddInsumoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddInsumoActionPerformed
+
         int cont = 0;
-        if (jTable5.getSelectedRow() == -1) {
+
+        if (tablaInsumos.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(null,
+                    "Error, Seleccione INSUMO!", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        } else if (tablaServicioaux.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null,
                     "Error, Seleccione SERVICIO!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
@@ -998,49 +1443,361 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
         }
 
         if (cont == 0) {
-            int columnas = jTable6.getRowCount();
-            int cod = Integer.parseInt(jTable5.getValueAt(jTable5.getSelectedRow(), 0).toString().trim());
-            int cod2 = 0;
+            int columnas = tablaInsumoaux.getRowCount();
+            int cod = Integer.parseInt(tablaInsumos.getValueAt(tablaInsumos.getSelectedRow(), 0).toString().trim());
+            int ser = Integer.parseInt(tablaServicioaux.getValueAt(tablaServicioaux.getSelectedRow(), 0).toString().trim());
+            int cod2 = 0, ser2;
 
-            Object fila[] = new Object[3];
-            fila[0] = jTable5.getValueAt(jTable5.getSelectedRow(), 0);
-            fila[1] = jTable5.getValueAt(jTable5.getSelectedRow(), 1);
-            fila[2] = jTable5.getValueAt(jTable5.getSelectedRow(), 2);
+            Object fila[] = new Object[5];
+            fila[0] = tablaInsumos.getValueAt(tablaInsumos.getSelectedRow(), 0);
+            fila[1] = tablaInsumos.getValueAt(tablaInsumos.getSelectedRow(), 1);
+            fila[2] = tablaInsumos.getValueAt(tablaInsumos.getSelectedRow(), 2);
+            fila[3] = 1;
+            fila[4] = tablaServicioaux.getValueAt(tablaServicioaux.getSelectedRow(), 0);
 
             if (columnas != 0) {
                 for (int i = 0; i < columnas; i++) {
-                    cod2 = Integer.parseInt(jTable6.getValueAt(i, 0).toString().trim());
-                    if (cod == cod2) {
+                    cod2 = Integer.parseInt(tablaInsumoaux.getValueAt(i, 0).toString().trim());
+                    ser2 = Integer.parseInt(tablaInsumoaux.getValueAt(i, 4).toString().trim());
+                    if (cod == cod2 && ser == ser2) {
                         cont++;
                     }
                 }
             }
 
             if (cont == 0) {
-                modeloTabla6.addRow(fila);
+                modeloTablaInsumoaux.addRow(fila);
             } else {
                 JOptionPane.showMessageDialog(null,
-                        "Error, Ya Selecciono este SERVICIO!", "ERROR",
+                        "Error, Ya Selecciono este INSUMO!", "ERROR",
                         JOptionPane.ERROR_MESSAGE);
             }
 
         }
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_btnAddInsumoActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void btnQuitarInsumoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitarInsumoActionPerformed
         int cont = 0;
-        if (jTable6.getSelectedRow() == -1) {
+        if (tablaInsumoaux.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Seleccione SERVICIO!", "ERROR",
+                    "Error, Seleccione INSUMO!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
 
         if (cont == 0) {
-            int fila = jTable6.getSelectedRow();
-            modeloTabla6.removeRow(fila);
+            int fila = tablaInsumoaux.getSelectedRow();
+            modeloTablaInsumoaux.removeRow(fila);
         }
-    }//GEN-LAST:event_jButton6ActionPerformed
+    }//GEN-LAST:event_btnQuitarInsumoActionPerformed
+
+    private void JT_componenteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_componenteFocusLost
+        JT_componente.setFont(new java.awt.Font("Tahoma", 2, 11));
+        JT_componente.setForeground(new java.awt.Color(153, 153, 153));
+        JT_componente.setText("Buscar por componente");
+    }//GEN-LAST:event_JT_componenteFocusLost
+
+    private void JT_componenteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_componenteMouseClicked
+        JT_componente.setText("");
+        JT_componente.setFont(new java.awt.Font("Tahoma", 0, 11));
+        JT_componente.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_JT_componenteMouseClicked
+
+    private void JT_componenteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_componenteKeyTyped
+        JT_componente.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroComponente();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTablaServicio);
+        tablaServicio.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_componenteKeyTyped
+
+    private void JT_insumoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_insumoFocusLost
+        JT_insumo.setFont(new java.awt.Font("Tahoma", 2, 11));
+        JT_insumo.setForeground(new java.awt.Color(153, 153, 153));
+        JT_insumo.setText("Buscar por nombre");
+    }//GEN-LAST:event_JT_insumoFocusLost
+
+    private void JT_insumoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_insumoMouseClicked
+        JT_insumo.setText("");
+        JT_insumo.setFont(new java.awt.Font("Tahoma", 0, 11));
+        JT_insumo.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_JT_insumoMouseClicked
+
+    private void JT_insumoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JT_insumoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JT_insumoActionPerformed
+
+    private void JT_insumoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_insumoKeyTyped
+        JT_insumo.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroNombre();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTablaInsumo);
+        tablaInsumos.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_insumoKeyTyped
+
+    private void JT_rutFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_rutFocusLost
+        JT_rut.setFont(new java.awt.Font("Tahoma", 2, 11));
+        JT_rut.setForeground(new java.awt.Color(153, 153, 153));
+        JT_rut.setText("Buscar por rut");
+    }//GEN-LAST:event_JT_rutFocusLost
+
+    private void JT_rutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_rutMouseClicked
+        JT_rut.setText("");
+        JT_rut.setFont(new java.awt.Font("Tahoma", 0, 11));
+        JT_rut.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_JT_rutMouseClicked
+
+    private void JT_rutKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_rutKeyTyped
+        JT_rut.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroRut();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTablaCliente);
+        tablaClientes.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_rutKeyTyped
+
+    private void JT_nombreFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_nombreFocusLost
+        JT_nombre.setFont(new java.awt.Font("Tahoma", 2, 11));
+        JT_nombre.setForeground(new java.awt.Color(153, 153, 153));
+        JT_nombre.setText("Buscar por nombre");
+    }//GEN-LAST:event_JT_nombreFocusLost
+
+    private void JT_nombreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_nombreMouseClicked
+        JT_nombre.setText("");
+        JT_nombre.setFont(new java.awt.Font("Tahoma", 0, 11));
+        JT_nombre.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_JT_nombreMouseClicked
+
+    private void JT_nombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JT_nombreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JT_nombreActionPerformed
+
+    private void JT_nombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_nombreKeyTyped
+        JT_nombre.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroNombre();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTablaCliente);
+        tablaClientes.setRowSorter(trsfiltro);
+
+    }//GEN-LAST:event_JT_nombreKeyTyped
+
+    private void JT_paternoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_paternoFocusLost
+        JT_paterno.setFont(new java.awt.Font("Tahoma", 2, 11));
+        JT_paterno.setForeground(new java.awt.Color(153, 153, 153));
+        JT_paterno.setText("Buscar por paterno");
+    }//GEN-LAST:event_JT_paternoFocusLost
+
+    private void JT_paternoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_paternoMouseClicked
+        JT_paterno.setText("");
+        JT_paterno.setFont(new java.awt.Font("Tahoma", 0, 11));
+        JT_paterno.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_JT_paternoMouseClicked
+
+    private void JT_paternoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_paternoKeyTyped
+        JT_paterno.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroPaterno();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTablaCliente);
+        tablaClientes.setRowSorter(trsfiltro);
+
+    }//GEN-LAST:event_JT_paternoKeyTyped
+
+    private void JT_maternoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_maternoFocusLost
+        JT_materno.setFont(new java.awt.Font("Tahoma", 2, 11));
+        JT_materno.setForeground(new java.awt.Color(153, 153, 153));
+        JT_materno.setText("Buscar por materno");
+    }//GEN-LAST:event_JT_maternoFocusLost
+
+    private void JT_maternoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_maternoMouseClicked
+        JT_materno.setText("");
+        JT_materno.setFont(new java.awt.Font("Tahoma", 0, 11));
+        JT_materno.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_JT_maternoMouseClicked
+
+    private void JT_maternoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_maternoKeyTyped
+        JT_materno.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroMaterno();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTablaCliente);
+        tablaClientes.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_maternoKeyTyped
+
+    private void JT_patenteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_patenteFocusLost
+        JT_patente.setFont(new java.awt.Font("Tahoma", 2, 11));
+        JT_patente.setForeground(new java.awt.Color(153, 153, 153));
+        JT_patente.setText("Buscar por patente");
+    }//GEN-LAST:event_JT_patenteFocusLost
+
+    private void JT_patenteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_patenteMouseClicked
+        JT_patente.setText("");
+        JT_patente.setFont(new java.awt.Font("Tahoma", 0, 11));
+        JT_patente.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_JT_patenteMouseClicked
+
+    private void JT_patenteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_patenteKeyTyped
+        JT_patente.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroPatente();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTablaVehiculo);
+        tablaVehiculo.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_patenteKeyTyped
+
+    private void JT_añoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_añoFocusLost
+        JT_año.setFont(new java.awt.Font("Tahoma", 2, 11));
+        JT_año.setForeground(new java.awt.Color(153, 153, 153));
+        JT_año.setText("Buscar por año");
+    }//GEN-LAST:event_JT_añoFocusLost
+
+    private void JT_añoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_añoMouseClicked
+        JT_año.setText("");
+        JT_año.setFont(new java.awt.Font("Tahoma", 0, 11));
+        JT_año.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_JT_añoMouseClicked
+
+    private void JT_añoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JT_añoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JT_añoActionPerformed
+
+    private void JT_añoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_añoKeyTyped
+        JT_año.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroAño();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTablaVehiculo);
+        tablaVehiculo.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_añoKeyTyped
+
+    private void JT_kmsFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_kmsFocusLost
+        JT_kms.setFont(new java.awt.Font("Tahoma", 2, 11));
+        JT_kms.setForeground(new java.awt.Color(153, 153, 153));
+        JT_kms.setText("Buscar por kms");
+    }//GEN-LAST:event_JT_kmsFocusLost
+
+    private void JT_kmsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_kmsMouseClicked
+        JT_kms.setText("");
+        JT_kms.setFont(new java.awt.Font("Tahoma", 0, 11));
+        JT_kms.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_JT_kmsMouseClicked
+
+    private void JT_kmsKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_kmsKeyTyped
+        JT_kms.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroKms();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTablaVehiculo);
+        tablaVehiculo.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_kmsKeyTyped
+
+    private void JT_vinFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_vinFocusLost
+        JT_vin.setFont(new java.awt.Font("Tahoma", 2, 11));
+        JT_vin.setForeground(new java.awt.Color(153, 153, 153));
+        JT_vin.setText("Buscar por vin");
+    }//GEN-LAST:event_JT_vinFocusLost
+
+    private void JT_vinMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_vinMouseClicked
+        JT_vin.setText("");
+        JT_vin.setFont(new java.awt.Font("Tahoma", 0, 11));
+        JT_vin.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_JT_vinMouseClicked
+
+    private void JT_vinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JT_vinActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JT_vinActionPerformed
+
+    private void JT_vinKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_vinKeyTyped
+        JT_vin.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroVin();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTablaVehiculo);
+        tablaVehiculo.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_vinKeyTyped
+
+    private void JT_colorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_colorFocusLost
+        JT_color.setFont(new java.awt.Font("Tahoma", 2, 11));
+        JT_color.setForeground(new java.awt.Color(153, 153, 153));
+        JT_color.setText("Buscar por color");
+    }//GEN-LAST:event_JT_colorFocusLost
+
+    private void JT_colorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_colorMouseClicked
+        JT_color.setText("");
+        JT_color.setFont(new java.awt.Font("Tahoma", 0, 11));
+        JT_color.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_JT_colorMouseClicked
+
+    private void JT_colorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_colorKeyTyped
+        JT_color.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroColor();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTablaVehiculo);
+        tablaVehiculo.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_colorKeyTyped
+
+    private void JT_marcaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_marcaFocusLost
+        JT_marca.setFont(new java.awt.Font("Tahoma", 2, 11));
+        JT_marca.setForeground(new java.awt.Color(153, 153, 153));
+        JT_marca.setText("Buscar por marca");
+    }//GEN-LAST:event_JT_marcaFocusLost
+
+    private void JT_marcaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_marcaMouseClicked
+        JT_marca.setText("");
+        JT_marca.setFont(new java.awt.Font("Tahoma", 0, 11));
+        JT_marca.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_JT_marcaMouseClicked
+
+    private void JT_marcaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_marcaKeyTyped
+        JT_marca.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroMarca();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTablaVehiculo);
+        tablaVehiculo.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_marcaKeyTyped
+
+    private void JT_modeloFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_modeloFocusLost
+        JT_modelo.setFont(new java.awt.Font("Tahoma", 2, 11));
+        JT_modelo.setForeground(new java.awt.Color(153, 153, 153));
+        JT_modelo.setText("Buscar por modelo");
+    }//GEN-LAST:event_JT_modeloFocusLost
+
+    private void JT_modeloMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_modeloMouseClicked
+        JT_modelo.setText("");
+        JT_modelo.setFont(new java.awt.Font("Tahoma", 0, 11));
+        JT_modelo.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_JT_modeloMouseClicked
+
+    private void JT_modeloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JT_modeloActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JT_modeloActionPerformed
+
+    private void JT_modeloKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_modeloKeyTyped
+        JT_modelo.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroModelo();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTablaVehiculo);
+        tablaVehiculo.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_modeloKeyTyped
 
     /**
      * @param args the command line arguments
@@ -1080,19 +1837,30 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton JB_cancel;
     private javax.swing.JTextArea JTA_observaciones;
-    private javax.swing.JLabel LBL_estado;
+    private javax.swing.JTextField JT_año;
+    private javax.swing.JTextField JT_color;
+    private javax.swing.JTextField JT_componente;
+    private javax.swing.JTextField JT_insumo;
+    private javax.swing.JTextField JT_kms;
+    private javax.swing.JTextField JT_marca;
+    private javax.swing.JTextField JT_materno;
+    private javax.swing.JTextField JT_modelo;
+    private javax.swing.JTextField JT_nombre;
+    private javax.swing.JTextField JT_patente;
+    private javax.swing.JTextField JT_paterno;
+    private javax.swing.JTextField JT_rut;
+    private javax.swing.JTextField JT_vin;
     private javax.swing.JLabel LBL_solicitud;
     private javax.swing.JLabel LBL_solicitud1;
     private javax.swing.JLabel LBL_solicitud2;
-    private javax.swing.JLabel LBL_total;
+    private javax.swing.JButton btnAddCant;
+    private javax.swing.JButton btnAddInsumo;
+    private javax.swing.JButton btnAddServicio;
+    private javax.swing.JButton btnQuitarInsumo;
+    private javax.swing.JButton btnQuitarServicio;
+    private javax.swing.JButton btnRemoveCant;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
@@ -1103,7 +1871,6 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1124,15 +1891,15 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable3;
-    private javax.swing.JTable jTable4;
-    private javax.swing.JTable jTable5;
-    private javax.swing.JTable jTable6;
-    private javax.swing.JTable jTable7;
     private javax.swing.JLabel lblFecha;
     private javax.swing.JLabel lblFecha1;
     private javax.swing.JLabel lblFecha2;
+    private javax.swing.JTable tablaClientes;
+    private javax.swing.JTable tablaInsumoaux;
+    private javax.swing.JTable tablaInsumos;
+    private javax.swing.JTable tablaServicio;
+    private javax.swing.JTable tablaServicioaux;
+    private javax.swing.JTable tablaTrabajador;
+    private javax.swing.JTable tablaVehiculo;
     // End of variables declaration//GEN-END:variables
 }
