@@ -35,7 +35,7 @@ public class Ingresar_trabajador extends javax.swing.JFrame {
 
     private String[] getColumnas() {
 
-        String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO", "CONTRASEÑA", "FONO", "MAIL", "CARGO"};
+        String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO", "FONO", "MAIL", "CARGO"};
 
         return columna;
     }
@@ -43,18 +43,21 @@ public class Ingresar_trabajador extends javax.swing.JFrame {
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT t.rut_trabajador,t.nombre,t.ape_paterno,t.ape_materno,t.contraseña,t.fono,t.email,c.nombre "
+            ResultSet lista = sentencia.executeQuery("SELECT t.rut_trabajador,t.nombre,t.ape_paterno,t.ape_materno,t.fono,t.email,c.nombre "
                     + " FROM trabajador t,cargo c "
                     + " WHERE t.id_cargo = c.id_cargo");
-            Object datos[] = new Object[8];
+            Object datos[] = new Object[7];
             while (lista.next()) {
-                for (int i = 0; i < 8; i++) {
+                for (int i = 0; i < 7; i++) {
                     datos[i] = lista.getObject(i + 1);
                 }
                 modeloTabla.addRow(datos);
             }
         } catch (SQLException e) {
-            msj = "No se pudo llenar tabla";
+            JOptionPane.showMessageDialog(null,
+                    "Problemas con la base de datos, no se pudo llenar la tabla", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+        
         }
     }
 
@@ -76,7 +79,9 @@ public class Ingresar_trabajador extends javax.swing.JFrame {
                 cmb_cargo.addItem(lista.getString("nombre"));
             }
         } catch (SQLException ed) {
-            msj = "no se pudo seleccionar";
+            JOptionPane.showMessageDialog(null,
+                    "Problemas con la base de datos, no se pudo llenar la lista", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -119,7 +124,9 @@ public class Ingresar_trabajador extends javax.swing.JFrame {
                 }
             }
         } catch (SQLException eg) {
-            msj = "Error con su Solicitud";
+            JOptionPane.showMessageDialog(null,
+                    "Problemas con la base de datos, no se pudo otener informacion", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         if ((rut.equals(""))
@@ -469,26 +476,31 @@ public class Ingresar_trabajador extends javax.swing.JFrame {
                     cargo2 = rs.getInt("id_cargo");
                 }
             } catch (SQLException s) {
-                msj = "Error con Cargo";
+                JOptionPane.showMessageDialog(null,
+                    "Problemas con la base de datos, no se pudo otener informacion", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
             }
 
             String sql = "INSERT INTO trabajador(rut_trabajador,contraseña,nombre,ape_paterno,ape_materno,fono,email,id_cargo) VALUES(" + rut + ",'" + contraseña + "','" + nombre + "','" + paterno + "','" + materno + "'," + fono + ",'" + mail + "'," + cargo2 + ")";
             try {
                 sentencia.executeUpdate(sql);
-                msj = "Datos Guardados";
-                LBL_estado.setText(msj);
+                JOptionPane.showMessageDialog(null,
+                    "TRABAJADOR ingresado correctamente", "INFO",
+                    JOptionPane.INFORMATION_MESSAGE);
                 dis = 1;
             } catch (SQLException e) {
-                msj = "Trabajador no Ingresado, Problema en el servidor";
-                LBL_estado.setText(msj);
+                JOptionPane.showMessageDialog(null,
+                    "Problemas con la base de datos, TRABAJADOR no ingresado", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
                 dis = 0;
             }
             if (dis == 1) {
                 clean();
             }
         } else {
-            msj = "Trabajador no Ingresado";
-            LBL_estado.setText(msj);
+            JOptionPane.showMessageDialog(null,
+                    "TRABAJADOR no ingresado", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         limpiaTabla();

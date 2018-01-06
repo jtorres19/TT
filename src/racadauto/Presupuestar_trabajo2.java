@@ -61,7 +61,7 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
     }
 
     private String[] getColumnasInsumoaux() {
-        String columna[] = new String[]{"CODIGO", "NOMBRE", "VALOR VENTA", "CANTIDAD", "CODIGO INSUMO"};
+        String columna[] = new String[]{"CODIGO", "NOMBRE", "VALOR VENTA", "CANTIDAD", "CODIGO SERVICIO"};
         return columna;
     }
 
@@ -71,7 +71,7 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
     }
 
     private String[] getColumnasTrabajador() {
-        String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO"};
+        String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO", "CARGO"};
         return columna;
     }
 
@@ -117,6 +117,42 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
         filtro = JT_materno.getText().toUpperCase();
         int columna = 3;
         trsfiltro.setRowFilter(RowFilter.regexFilter(JT_materno.getText().toUpperCase(), columna));
+    }
+
+    public void filtroRutTrabajador() {
+
+        filtro = JT_ruttrabajador.getText();
+        int columna = 0;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_ruttrabajador.getText(), columna));
+
+    }
+
+    public void filtroNombreTrabajador() {
+
+        filtro = JT_nombretrabajador.getText().toUpperCase();
+        int columna = 1;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_nombretrabajador.getText().toUpperCase(), columna));
+    }
+
+    public void filtroPaternoTrabajador() {
+
+        filtro = JT_paternotrabajador.getText().toUpperCase();
+        int columna = 2;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_paternotrabajador.getText().toUpperCase(), columna));
+    }
+
+    public void filtroMaternoTrabajador() {
+
+        filtro = JT_maternotrabajador.getText().toUpperCase();
+        int columna = 3;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_maternotrabajador.getText().toUpperCase(), columna));
+    }
+
+    public void filtroCargo() {
+
+        filtro = JT_cargo.getText().toUpperCase();
+        int columna = 7;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_cargo.getText().toUpperCase(), columna));
     }
 
     public void filtroPatente() {
@@ -187,14 +223,40 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
         }
     }
 
+    private void setFilasVehiculo() {
+
+        String rut = tablaClientes.getValueAt(tablaClientes.getSelectedRow(), 0).toString();
+        
+        try {
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+            ResultSet lista = sentencia.executeQuery("SELECT v.patente,v.año, v.kms,v.vin, v.color, ma.nombre, mo.nombre "
+                    + "FROM vehiculo v INNER JOIN cliente c ON v.rut_cliente = '" + rut + "'"
+                    + "LEFT JOIN marca ma ON v.id_marca = ma.id_marca "
+                    + "LEFT JOIN modelo mo ON v.id_modelo = mo.id_modelo ");
+            Object datos[] = new Object[8];
+            while (lista.next()) {
+                for (int i = 0; i < 7; i++) {
+                    datos[i] = lista.getObject(i + 1);
+                }
+
+            }
+            modeloTablaVehiculo.addRow(datos);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,
+                    "Error, Poblemas con el servidor(Vehiculo)", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+    }
+
     private void setFilasTrabajador() {
         try {
             sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT rut_trabajador, nombre, ape_paterno, ape_materno "
-                    + "FROM trabajador ");
-            Object datos[] = new Object[4];
+            ResultSet lista = sentencia.executeQuery("SELECT t.rut_trabajador, t.nombre, t.ape_paterno, t.ape_materno, c.nombre "
+                    + "FROM trabajador t,cargo c WHERE t.id_cargo = c.id_cargo");
+            Object datos[] = new Object[5];
             while (lista.next()) {
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i < 5; i++) {
                     datos[i] = lista.getObject(i + 1);
                 }
                 modeloTablaTrabajador.addRow(datos);
@@ -409,6 +471,13 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         JTA_observaciones = new javax.swing.JTextArea();
+        JT_nombretrabajador = new javax.swing.JTextField();
+        JT_paternotrabajador = new javax.swing.JTextField();
+        JT_maternotrabajador = new javax.swing.JTextField();
+        JT_cargo = new javax.swing.JTextField();
+        JT_ruttrabajador = new javax.swing.JTextField();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         JB_cancel = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -442,7 +511,7 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
 
         jLabel5.setText("Clientes:");
 
-        jButton1.setText("Ingresar");
+        jButton1.setText("Nuevo");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -456,7 +525,7 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
             }
         });
 
-        jButton8.setText("Ingresar");
+        jButton8.setText("Nuevo");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton8ActionPerformed(evt);
@@ -731,7 +800,6 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jButton1)
-                                    .addComponent(JT_rut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel1)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -743,33 +811,35 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                                     .addComponent(jLabel12)
                                     .addComponent(jLabel5)
                                     .addComponent(jButton8)
+                                    .addComponent(JT_rut, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(JT_patente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(JT_año, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(JT_kms, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(JT_vin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(JT_color, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(JT_marca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(JT_modelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(JT_patente, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(JT_año, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(JT_kms, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(JT_vin, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(JT_color, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(8, 8, 8)
+                                        .addComponent(JT_marca, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(JT_modelo, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(104, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(JT_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(37, 37, 37)
-                                .addComponent(JT_paterno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(35, 35, 35)
-                                .addComponent(JT_materno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(112, 112, 112)
+                                .addComponent(JT_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(JT_paterno, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(27, 27, 27)
+                                .addComponent(JT_materno, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 488, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton7))
-                        .addContainerGap(340, Short.MAX_VALUE))))
+                        .addContainerGap(337, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -793,10 +863,10 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                         .addComponent(JT_materno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(JT_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton1)
                     .addComponent(jButton7))
-                .addGap(39, 39, 39)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel12)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -954,10 +1024,10 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(115, 115, 115)
-                .addComponent(JT_componente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(JT_componente, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(JT_insumo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(203, 203, 203))
+                .addComponent(JT_insumo, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(194, 194, 194))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(74, 74, 74)
                 .addComponent(btnAddServicio)
@@ -970,23 +1040,6 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                 .addGap(177, 177, 177))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jLabel10))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jLabel2)
-                        .addGap(6, 6, 6)
-                        .addComponent(LBL_solicitud1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel7)
-                        .addGap(6, 6, 6)
-                        .addComponent(lblFecha1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jLabel15)
-                        .addGap(343, 343, 343)
-                        .addComponent(jLabel14))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -1002,7 +1055,23 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnRemoveCant, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnAddCant))))
+                            .addComponent(btnAddCant)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(6, 6, 6)
+                                .addComponent(LBL_solicitud1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel7)
+                                .addGap(6, 6, 6)
+                                .addComponent(lblFecha1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel15)
+                                .addGap(343, 343, 343)
+                                .addComponent(jLabel14)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -1072,6 +1141,123 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
         JTA_observaciones.setRows(5);
         jScrollPane1.setViewportView(JTA_observaciones);
 
+        JT_nombretrabajador.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_nombretrabajador.setForeground(new java.awt.Color(153, 153, 153));
+        JT_nombretrabajador.setText("Buscar por nombre");
+        JT_nombretrabajador.setToolTipText("");
+        JT_nombretrabajador.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        JT_nombretrabajador.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_nombretrabajadorFocusLost(evt);
+            }
+        });
+        JT_nombretrabajador.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_nombretrabajadorMouseClicked(evt);
+            }
+        });
+        JT_nombretrabajador.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JT_nombretrabajadorActionPerformed(evt);
+            }
+        });
+        JT_nombretrabajador.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_nombretrabajadorKeyTyped(evt);
+            }
+        });
+
+        JT_paternotrabajador.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_paternotrabajador.setForeground(new java.awt.Color(153, 153, 153));
+        JT_paternotrabajador.setText("Buscar por paterno");
+        JT_paternotrabajador.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_paternotrabajadorFocusLost(evt);
+            }
+        });
+        JT_paternotrabajador.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_paternotrabajadorMouseClicked(evt);
+            }
+        });
+        JT_paternotrabajador.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_paternotrabajadorKeyTyped(evt);
+            }
+        });
+
+        JT_maternotrabajador.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_maternotrabajador.setForeground(new java.awt.Color(153, 153, 153));
+        JT_maternotrabajador.setText("Buscar por materno");
+        JT_maternotrabajador.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_maternotrabajadorFocusLost(evt);
+            }
+        });
+        JT_maternotrabajador.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_maternotrabajadorMouseClicked(evt);
+            }
+        });
+        JT_maternotrabajador.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_maternotrabajadorKeyTyped(evt);
+            }
+        });
+
+        JT_cargo.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_cargo.setForeground(new java.awt.Color(153, 153, 153));
+        JT_cargo.setText("Buscar por cargo");
+        JT_cargo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_cargoFocusLost(evt);
+            }
+        });
+        JT_cargo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_cargoMouseClicked(evt);
+            }
+        });
+        JT_cargo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_cargoKeyTyped(evt);
+            }
+        });
+
+        JT_ruttrabajador.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        JT_ruttrabajador.setForeground(new java.awt.Color(153, 153, 153));
+        JT_ruttrabajador.setText("Buscar por rut");
+        JT_ruttrabajador.setToolTipText("");
+        JT_ruttrabajador.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                JT_ruttrabajadorFocusLost(evt);
+            }
+        });
+        JT_ruttrabajador.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JT_ruttrabajadorMouseClicked(evt);
+            }
+        });
+        JT_ruttrabajador.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                JT_ruttrabajadorKeyTyped(evt);
+            }
+        });
+
+        jButton3.setText("Nuevo");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setText("Modificar");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -1093,7 +1279,21 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                         .addComponent(lblFecha2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel13)
                     .addComponent(jLabel4)
-                    .addComponent(jScrollPane1))
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(JT_ruttrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(JT_nombretrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(JT_paternotrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(JT_maternotrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(JT_cargo))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton4)))
                 .addContainerGap(290, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -1114,7 +1314,19 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                 .addComponent(jLabel13)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(101, 101, 101))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(JT_ruttrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(JT_nombretrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(JT_paternotrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(JT_maternotrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(JT_cargo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton3)
+                    .addComponent(jButton4))
+                .addGap(34, 34, 34))
         );
 
         jTabbedPane1.addTab("Seleccionar Responsale y otros", jPanel3);
@@ -1163,27 +1375,8 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
     private void tablaClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaClientesMouseClicked
 
         limpiaTabla();
+        setFilasVehiculo();
 
-        String rut = tablaClientes.getValueAt(tablaClientes.getSelectedRow(), 0).toString();
-        try {
-            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT v.patente,v.año, v.kms,v.vin, v.color, ma.nombre, mo.nombre "
-                    + "FROM vehiculo v INNER JOIN cliente c ON v.rut_cliente = '" + rut + "'"
-                    + "LEFT JOIN marca ma ON v.id_marca = ma.id_marca "
-                    + "LEFT JOIN modelo mo ON v.id_modelo = mo.id_modelo ");
-            Object datos[] = new Object[8];
-            while (lista.next()) {
-                for (int i = 0; i < 7; i++) {
-                    datos[i] = lista.getObject(i + 1);
-                }
-
-            }
-            modeloTablaVehiculo.addRow(datos);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,
-                    "Error, Poblemas con el servidor(Vehiculo)", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-        }
     }//GEN-LAST:event_tablaClientesMouseClicked
 
     private void JB_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_cancelActionPerformed
@@ -1199,7 +1392,7 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
 
             int cod = 0, subtotal = 0, total = 0, cont = 0;
 
-            String fech = lblFecha.getText();
+            String fecha = lblFecha.getText();
             String obser = JTA_observaciones.getText().toUpperCase().trim();
 
             int columnaservicio = tablaServicioaux.getRowCount(), columnainsumo = tablaInsumoaux.getRowCount();
@@ -1228,7 +1421,7 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
             }
 
             String sql = "INSERT INTO solicitud_servicio(cod_solicitud,observaciones,subtotal,total,fecha_presupuesto,estado_solicitud,patente,rut_trabajador) "
-                    + "VALUES(" + cod + ",'" + obser + "'," + subtotal + "," + total + ",'" + fech + "','" + est + "','" + pat + "','" + rut + "')";
+                    + "VALUES(" + cod + ",'" + obser + "'," + subtotal + "," + total + ",'" + fecha + "','" + est + "','" + pat + "','" + rut + "')";
 
             try {
                 sentencia.executeUpdate(sql);
@@ -1245,14 +1438,14 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                     int precio = Integer.parseInt(tablaServicioaux.getValueAt(i, 2).toString());
 
                     String sql2 = "INSERT into detalle_solicitud(cod_solicitud, id_servicio, precio, fecha_presupuesto,rut_trabajador) "
-                            + "VALUES(" + cod + ", " + servicio + "," + precio + ",'" + fech + "','" + rut + "')";
+                            + "VALUES(" + cod + ", " + servicio + "," + precio + ",'" + fecha + "','" + rut + "')";
                     sentencia.executeUpdate(sql2);
 
                 } catch (SQLException ex) {
                     cont++;
                 }
             }
-            
+
             for (int i = 0; i < columnainsumo; i++) {
 
                 try {
@@ -1278,12 +1471,12 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                 limpiaTabla();
                 llenarLabels();
                 fechaActual();
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(null,
-                            "Problemas con la base de datos,PRESUPUESTO no ingresado", "ERROR",
-                            JOptionPane.ERROR_MESSAGE);
+                        "Problemas con la base de datos,PRESUPUESTO no ingresado", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
             }
-            
+
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -1799,6 +1992,130 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
         tablaVehiculo.setRowSorter(trsfiltro);
     }//GEN-LAST:event_JT_modeloKeyTyped
 
+    private void JT_nombretrabajadorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_nombretrabajadorFocusLost
+        JT_nombretrabajador.setFont(new java.awt.Font("Tahoma", 2, 11));
+        JT_nombretrabajador.setForeground(new java.awt.Color(153, 153, 153));
+        JT_nombretrabajador.setText("Buscar por nombre");
+    }//GEN-LAST:event_JT_nombretrabajadorFocusLost
+
+    private void JT_nombretrabajadorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_nombretrabajadorMouseClicked
+        JT_nombretrabajador.setText("");
+        JT_nombretrabajador.setFont(new java.awt.Font("Tahoma", 0, 11));
+        JT_nombretrabajador.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_JT_nombretrabajadorMouseClicked
+
+    private void JT_nombretrabajadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JT_nombretrabajadorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JT_nombretrabajadorActionPerformed
+
+    private void JT_nombretrabajadorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_nombretrabajadorKeyTyped
+        JT_nombretrabajador.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroNombreTrabajador();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTablaTrabajador);
+        tablaTrabajador.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_nombretrabajadorKeyTyped
+
+    private void JT_paternotrabajadorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_paternotrabajadorFocusLost
+        JT_paternotrabajador.setFont(new java.awt.Font("Tahoma", 2, 11));
+        JT_paternotrabajador.setForeground(new java.awt.Color(153, 153, 153));
+        JT_paternotrabajador.setText("Buscar por paterno");
+    }//GEN-LAST:event_JT_paternotrabajadorFocusLost
+
+    private void JT_paternotrabajadorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_paternotrabajadorMouseClicked
+        JT_paternotrabajador.setText("");
+        JT_paternotrabajador.setFont(new java.awt.Font("Tahoma", 0, 11));
+        JT_paternotrabajador.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_JT_paternotrabajadorMouseClicked
+
+    private void JT_paternotrabajadorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_paternotrabajadorKeyTyped
+        JT_paternotrabajador.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroPaternoTrabajador();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTablaTrabajador);
+        tablaTrabajador.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_paternotrabajadorKeyTyped
+
+    private void JT_maternotrabajadorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_maternotrabajadorFocusLost
+        JT_maternotrabajador.setFont(new java.awt.Font("Tahoma", 2, 11));
+        JT_maternotrabajador.setForeground(new java.awt.Color(153, 153, 153));
+        JT_maternotrabajador.setText("Buscar por materno");
+    }//GEN-LAST:event_JT_maternotrabajadorFocusLost
+
+    private void JT_maternotrabajadorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_maternotrabajadorMouseClicked
+        JT_maternotrabajador.setText("");
+        JT_maternotrabajador.setFont(new java.awt.Font("Tahoma", 0, 11));
+        JT_maternotrabajador.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_JT_maternotrabajadorMouseClicked
+
+    private void JT_maternotrabajadorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_maternotrabajadorKeyTyped
+        JT_maternotrabajador.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroMaternoTrabajador();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTablaTrabajador);
+        tablaTrabajador.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_maternotrabajadorKeyTyped
+
+    private void JT_cargoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_cargoFocusLost
+        JT_cargo.setFont(new java.awt.Font("Tahoma", 2, 11));
+        JT_cargo.setForeground(new java.awt.Color(153, 153, 153));
+        JT_cargo.setText("Buscar por ciudad");
+    }//GEN-LAST:event_JT_cargoFocusLost
+
+    private void JT_cargoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_cargoMouseClicked
+        JT_cargo.setText("");
+        JT_cargo.setFont(new java.awt.Font("Tahoma", 0, 11));
+        JT_cargo.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_JT_cargoMouseClicked
+
+    private void JT_cargoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_cargoKeyTyped
+        JT_cargo.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroCargo();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTablaTrabajador);
+        tablaTrabajador.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_cargoKeyTyped
+
+    private void JT_ruttrabajadorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_ruttrabajadorFocusLost
+        JT_ruttrabajador.setFont(new java.awt.Font("Tahoma", 2, 11));
+        JT_ruttrabajador.setForeground(new java.awt.Color(153, 153, 153));
+        JT_ruttrabajador.setText("Buscar por rut");
+    }//GEN-LAST:event_JT_ruttrabajadorFocusLost
+
+    private void JT_ruttrabajadorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JT_ruttrabajadorMouseClicked
+        JT_ruttrabajador.setText("");
+        JT_ruttrabajador.setFont(new java.awt.Font("Tahoma", 0, 11));
+        JT_ruttrabajador.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_JT_ruttrabajadorMouseClicked
+
+    private void JT_ruttrabajadorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_ruttrabajadorKeyTyped
+        JT_ruttrabajador.addKeyListener(new KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtroRutTrabajador();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTablaTrabajador);
+        tablaTrabajador.setRowSorter(trsfiltro);
+    }//GEN-LAST:event_JT_ruttrabajadorKeyTyped
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        Ingresar_trabajador a = new Ingresar_trabajador();
+        a.setVisible(true);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        Modificar_trabajador a = new Modificar_trabajador();
+        a.setVisible(true);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1838,17 +2155,22 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
     private javax.swing.JButton JB_cancel;
     private javax.swing.JTextArea JTA_observaciones;
     private javax.swing.JTextField JT_año;
+    private javax.swing.JTextField JT_cargo;
     private javax.swing.JTextField JT_color;
     private javax.swing.JTextField JT_componente;
     private javax.swing.JTextField JT_insumo;
     private javax.swing.JTextField JT_kms;
     private javax.swing.JTextField JT_marca;
     private javax.swing.JTextField JT_materno;
+    private javax.swing.JTextField JT_maternotrabajador;
     private javax.swing.JTextField JT_modelo;
     private javax.swing.JTextField JT_nombre;
+    private javax.swing.JTextField JT_nombretrabajador;
     private javax.swing.JTextField JT_patente;
     private javax.swing.JTextField JT_paterno;
+    private javax.swing.JTextField JT_paternotrabajador;
     private javax.swing.JTextField JT_rut;
+    private javax.swing.JTextField JT_ruttrabajador;
     private javax.swing.JTextField JT_vin;
     private javax.swing.JLabel LBL_solicitud;
     private javax.swing.JLabel LBL_solicitud1;
@@ -1861,6 +2183,8 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
     private javax.swing.JButton btnRemoveCant;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;

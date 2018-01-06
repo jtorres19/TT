@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package racadauto;
 
 import Conexion.Conexion;
@@ -18,10 +14,7 @@ import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-/**
- *
- * @author falco
- */
+
 public class Modificar_trabajador extends javax.swing.JFrame {
 
     private Statement sentencia;
@@ -41,7 +34,7 @@ public class Modificar_trabajador extends javax.swing.JFrame {
 
     private String[] getColumnas() {
 
-        String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO", "CONTRASEÑA", "FONO", "MAIL", "CARGO"};
+        String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO", "FONO", "MAIL", "CARGO"};
 
         return columna;
     }
@@ -49,18 +42,20 @@ public class Modificar_trabajador extends javax.swing.JFrame {
     private void setFilas() {
         try {
             sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT t.rut_trabajador,t.nombre,t.ape_paterno,t.ape_materno,t.contraseña,t.fono,t.email,c.nombre "
+            ResultSet lista = sentencia.executeQuery("SELECT t.rut_trabajador,t.nombre,t.ape_paterno,t.ape_materno,t.fono,t.email,c.nombre "
                     + "                                 FROM trabajador t,cargo c "
                     + "                                 WHERE t.id_cargo = c.id_cargo");
-            Object datos[] = new Object[8];
+            Object datos[] = new Object[7];
             while (lista.next()) {
-                for (int i = 0; i < 8; i++) {
+                for (int i = 0; i < 7; i++) {
                     datos[i] = lista.getObject(i + 1);
                 }
                 modeloTabla.addRow(datos);
             }
         } catch (SQLException e) {
-            msj = "No se pudo llenar tabla";
+            JOptionPane.showMessageDialog(null,
+                    "Problemas con la base de datos, no se pudo llenar la tabla", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -127,7 +122,9 @@ public class Modificar_trabajador extends javax.swing.JFrame {
                 cmb_cargo.addItem(lista.getString("nombre"));
             }
         } catch (SQLException ed) {
-            msj = "no se pudo seleccionar";
+            JOptionPane.showMessageDialog(null,
+                    "Problemas con la base de datos, no se pudo llenar la lista", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -152,7 +149,9 @@ public class Modificar_trabajador extends javax.swing.JFrame {
                 rut2 = rs.getString("rut_trabajador").trim();
             }
         } catch (SQLException eg) {
-            msj = "Error con su Solicitud";
+            JOptionPane.showMessageDialog(null,
+                    "Problemas con la base de datos, no se pudo obtener informacion", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         if (jTable1.getSelectedRow() == -1) {
@@ -540,11 +539,12 @@ public class Modificar_trabajador extends javax.swing.JFrame {
                         .addComponent(JT_cargo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(JT_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8)
-                    .addComponent(JP_contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel2)
+                        .addComponent(jLabel8)
+                        .addComponent(JP_contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -587,7 +587,7 @@ public class Modificar_trabajador extends javax.swing.JFrame {
     }//GEN-LAST:event_JT_mailActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        // TODO add your handling code here:
+
         String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString();
         JT_nom.setText(nom);
 
@@ -613,7 +613,6 @@ public class Modificar_trabajador extends javax.swing.JFrame {
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void JB_OKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_OKActionPerformed
-        // TODO add your handling code here:
         if (verificar() == 0) {
             String rut = "", cargo, rut2 = "";
             rut = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString().trim();
@@ -636,7 +635,9 @@ public class Modificar_trabajador extends javax.swing.JFrame {
                     cargo2 = rs.getInt("id_cargo");
                 }
             } catch (SQLException s) {
-                msj = "Error con CARGO";
+                JOptionPane.showMessageDialog(null,
+                    "Problemas con la base de datos, no se pudo obtener informacion", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
             }
 
             try {
@@ -647,7 +648,9 @@ public class Modificar_trabajador extends javax.swing.JFrame {
                 }
 
             } catch (SQLException f) {
-                msj = "Error con CODIGO";
+                JOptionPane.showMessageDialog(null,
+                    "Problemas con la base de datos, no se pudo obtener informacion", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
             }
 
             String sql = "UPDATE trabajador "
@@ -661,20 +664,23 @@ public class Modificar_trabajador extends javax.swing.JFrame {
                     + "WHERE rut_trabajador = '" + rut2 + "'";
             try {
                 sentencia.executeUpdate(sql);
-                msj = "Datos modificados";
-                LBL_estado.setText(msj);
+                JOptionPane.showMessageDialog(null,
+                    "TRABAJADOR modificado con exito", "INFO",
+                    JOptionPane.INFORMATION_MESSAGE);
                 dis = 1;
             } catch (SQLException e) {
-                msj = "TRABAJADOR no modificado";
-                LBL_estado.setText(msj);
+                JOptionPane.showMessageDialog(null,
+                    "TRABAJADOR no modificado", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
                 dis = 0;
             }
             if (dis == 1) {
                 clean();
             }
         } else {
-            msj = "Datos mal escritos";
-            LBL_estado.setText(msj);
+            JOptionPane.showMessageDialog(null,
+                    "Datos mal escritos", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         limpiaTabla();

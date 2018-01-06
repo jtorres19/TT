@@ -1,9 +1,7 @@
 package racadauto;
 
 import Conexion.Conexion;
-import com.mysql.jdbc.*;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -44,7 +42,9 @@ public class Modificar_cargo extends javax.swing.JFrame {
                 modeloTabla.addRow(datos);
             }
         } catch (SQLException e) {
-            msj = "No se pudo llenar tabla";
+            JOptionPane.showMessageDialog(null,
+                    "Problemas con la base de datos, no se pudo llenar la tabla", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -77,7 +77,9 @@ public class Modificar_cargo extends javax.swing.JFrame {
         }
             }
         } catch (SQLException eg) {
-            msj = "Error con su Solicitud";
+            JOptionPane.showMessageDialog(null,
+                    "Problemas con la base de datos, no se pudo obtener informacion", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
         
         if (jTable1.getSelectedRow() == -1 ){
@@ -111,7 +113,6 @@ public class Modificar_cargo extends javax.swing.JFrame {
         JB_OK = new javax.swing.JButton();
         JB_cancel = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
-        LBL_estado = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         JT_nom = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -163,12 +164,10 @@ public class Modificar_cargo extends javax.swing.JFrame {
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
                         .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(LBL_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(JB_cancel))
                     .addComponent(jLabel9))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -184,12 +183,10 @@ public class Modificar_cargo extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(JT_nom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, Short.MAX_VALUE)
+                .addGap(18, 22, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(JB_cancel, javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(JB_OK))
-                    .addComponent(LBL_estado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(JB_cancel, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(JB_OK))
                 .addContainerGap())
         );
 
@@ -213,7 +210,9 @@ public class Modificar_cargo extends javax.swing.JFrame {
                 }
 
             } catch (SQLException f) {
-                msj = "Error con CODIGO";
+                JOptionPane.showMessageDialog(null,
+                    "Problemas con la base de datos, no se pudo obtener informacion", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
             }
 
             String sql = "UPDATE cargo "
@@ -221,17 +220,20 @@ public class Modificar_cargo extends javax.swing.JFrame {
                     + "WHERE id_cargo = '" + cargo + "'";
             try {
                 sentencia.executeUpdate(sql);
-                msj = "Datos modificados";
-                LBL_estado.setText(msj);
+                JOptionPane.showMessageDialog(null,
+                    "CARGO modificado exitosamente", "INFO",
+                    JOptionPane.INFORMATION_MESSAGE);
                 JT_nom.setText("");
             } catch (SQLException e) {
-                msj = "CARGO no modificado";
-                LBL_estado.setText(msj);
+                JOptionPane.showMessageDialog(null,
+                    "Problemas con la base de datos, CARGO no modificado", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
             }
 
         } else {
-            msj = "Datos mal escritos";
-            LBL_estado.setText(msj);
+            JOptionPane.showMessageDialog(null,
+                    "Datos mal escritos, CARGO no modificado", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         limpiaTabla();
@@ -308,7 +310,6 @@ public class Modificar_cargo extends javax.swing.JFrame {
     private javax.swing.JButton JB_OK;
     private javax.swing.JButton JB_cancel;
     private javax.swing.JTextField JT_nom;
-    private javax.swing.JLabel LBL_estado;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
