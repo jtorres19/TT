@@ -55,7 +55,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null,
                     "No se pudo llenar tabla", "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -87,7 +87,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
         } catch (SQLException ed) {
             JOptionPane.showMessageDialog(null,
                     "No se pudo seleccionar", "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -102,7 +102,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
         } catch (SQLException ed) {
             JOptionPane.showMessageDialog(null,
                     "No se pudo seleccionar", "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -256,7 +256,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
         } catch (SQLException eg) {
             JOptionPane.showMessageDialog(null,
                     "Solicitud Fallida", "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
         }
         try {
             sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
@@ -270,7 +270,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
         } catch (SQLException t) {
             JOptionPane.showMessageDialog(null,
                     "Solicitud Fallida", "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
         }
         try {
             sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
@@ -284,7 +284,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
         } catch (SQLException t) {
             JOptionPane.showMessageDialog(null,
                     "Solicitud Fallida", "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
         }
         try {
             sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
@@ -298,7 +298,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
         } catch (SQLException t) {
             JOptionPane.showMessageDialog(null,
                     "Solicitud Fallida", "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
         }
         try {
             sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
@@ -312,7 +312,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
         } catch (SQLException t) {
             JOptionPane.showMessageDialog(null,
                     "Solicitud Fallida", "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
         }
         return yes;
     }
@@ -745,7 +745,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
             } catch (SQLException s) {
                 JOptionPane.showMessageDialog(null,
                     "Medida Incorrecta", "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
             }
             try {
                 sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
@@ -756,7 +756,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
             } catch (SQLException t) {
                 JOptionPane.showMessageDialog(null,
                     "Familia Incorrecta", "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
             }
             try {
                 sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
@@ -768,7 +768,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
             } catch (SQLException f) {
                 JOptionPane.showMessageDialog(null,
                     "Codigo Incorrecto", "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
             }
 
             String sql = "UPDATE inventario "
@@ -788,7 +788,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(null,
                     "Datos NO Modificados", "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
                 dis = 0;
             }
             if (dis == 1) {
@@ -797,7 +797,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(null,
                     "Datos Mal Escritos", "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         limpiaTabla();
@@ -1012,7 +1012,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null,
                     "Item no encontrado?", "Error?",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         if (verificar2() == 0 && i== 0) {
@@ -1025,7 +1025,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
             } catch (SQLException ee) {
                 JOptionPane.showMessageDialog(null,
                     "Datos NO Modificados", "Error",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
             }
         }else{
             if(i==0){
@@ -1039,7 +1039,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
                 catch(SQLException ee){
                     JOptionPane.showMessageDialog(null,
                         "No se pudo inactivar?", "Error?",
-                        JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -1072,7 +1072,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null,
                     "No se pudo llenar tabla?", "Error?",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.ERROR_MESSAGE);
         }
         if(modeloTabla.getRowCount() == 0){
             setFilas();
