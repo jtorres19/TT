@@ -101,6 +101,7 @@ public class Principal extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         LBL_trabajador = new javax.swing.JLabel();
         LBL_cargo = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuLogin = new javax.swing.JMenu();
         subCerrarSesion = new javax.swing.JMenuItem();
@@ -188,6 +189,7 @@ public class Principal extends javax.swing.JFrame {
         subEliminarCombustible = new javax.swing.JMenuItem();
         jMenu22 = new javax.swing.JMenu();
         jMenuItem18 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         menuInformes = new javax.swing.JMenu();
         subInfOT = new javax.swing.JMenuItem();
         subInfTrabajadores = new javax.swing.JMenuItem();
@@ -255,6 +257,9 @@ public class Principal extends javax.swing.JFrame {
         LBL_trabajador.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         LBL_cargo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/racadauto/Images/Racad.jpeg"))); // NOI18N
+        jLabel3.setText("jLabel3");
 
         menuLogin.setText("Login");
 
@@ -865,6 +870,14 @@ public class Principal extends javax.swing.JFrame {
         });
         jMenu22.add(jMenuItem18);
 
+        jMenuItem2.setText("Cambiar Repuesto");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu22.add(jMenuItem2);
+
         jMenuBar1.add(jMenu22);
 
         menuInformes.setText("Informes");
@@ -924,20 +937,24 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(LBL_trabajador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(LBL_cargo, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE))
-                .addContainerGap(302, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 709, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(316, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(LBL_trabajador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(LBL_trabajador, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(LBL_cargo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(LBL_cargo, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -1014,7 +1031,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_subModificarClienteActionPerformed
 
     private void subModificarItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subModificarItemActionPerformed
-        Modificar_item vv = new Modificar_item();
+        Modificar_item2 vv = new Modificar_item2();
         vv.setVisible(true);
     }//GEN-LAST:event_subModificarItemActionPerformed
 
@@ -1371,6 +1388,11 @@ public class Principal extends javax.swing.JFrame {
         
     }//GEN-LAST:event_formWindowOpened
 
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        Cambiar_repuestos pf = new Cambiar_repuestos();
+        pf.setVisible(true);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1418,6 +1440,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel LBL_trabajador;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu10;
     private javax.swing.JMenu jMenu22;
     private javax.swing.JMenu jMenu6;
@@ -1432,6 +1455,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem16;
     private javax.swing.JMenuItem jMenuItem18;
     private javax.swing.JMenuItem jMenuItem19;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem22;
     private javax.swing.JMenuItem jMenuItem25;
     private javax.swing.JMenuItem jMenuItem3;
