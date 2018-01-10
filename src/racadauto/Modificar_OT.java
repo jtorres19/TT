@@ -1258,8 +1258,8 @@ public class Modificar_OT extends javax.swing.JFrame {
                                     + "SET fecha_orden = '" + fechaorden + "',"
                                     + "fecha_entrega ='" + fechaentrega + "',"
                                     + "estado_seguimiento ='" + seguimiento + "',"
-                                    + "rut_trabajador = '" + rut + "'"
-                                    + "WHERE cod_solicitud = '" + solicitud + "'";
+                                    + "rut_trabajador = '" + rut + "' "
+                                    + "WHERE cod_solicitud = '" + solicitud + "' AND id_servicio = " + servicio + "";
                             try {
                                 sentencia.executeUpdate(sql3);
                             } catch (Exception e) {

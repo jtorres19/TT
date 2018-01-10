@@ -105,6 +105,13 @@ public class Facturar_OT extends javax.swing.JFrame {
 
     public int verificar() {
         int cont = 0;
+        
+        if (tablaPresupuesto.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(null,
+                    "Seleccione una ORDEN DE TRABAJO", "INFO",
+                    JOptionPane.INFORMATION_MESSAGE);
+            cont++;
+        }
 
         return cont;
     }
@@ -327,12 +334,13 @@ public class Facturar_OT extends javax.swing.JFrame {
                         .addGap(124, 124, 124)
                         .addComponent(jButton1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(JT_codigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(JT_patente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(JT_subtotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(JT_total, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(JT_trabajador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(JT_codigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(JT_subtotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(JT_total, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(JT_trabajador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 196, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
@@ -468,7 +476,7 @@ public class Facturar_OT extends javax.swing.JFrame {
     }//GEN-LAST:event_JT_trabajadorKeyTyped
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Modificar_trabajo a = new Modificar_trabajo();
+        Modificar_OT a = new Modificar_OT();
         a.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -477,23 +485,47 @@ public class Facturar_OT extends javax.swing.JFrame {
         if (verificar() == 0) {
 
             int solicitud = Integer.parseInt(tablaPresupuesto.getValueAt(tablaPresupuesto.getSelectedRow(), 0).toString());
-
-            /*java.util.Date date = JDC_fechaEntrega.getDate();
-            long d = date.getTime();
-            java.sql.Date fechaentrega = new java.sql.Date(d);*/
-
-            int total = 0, subtotal = 0, cont = 0;
-
-            String estado = "FACTURA";
-
-            String sql = "UPDATE solicitud_servicio "
-                    + "SET estado_solicitud ='" + estado + "' "
-                    + "WHERE cod_solicitud = '" + solicitud + "'";
+            int cont = 0, servicio = 0;
 
             try {
-                sentencia.executeUpdate(sql);
-            } catch (SQLException e) {
+
+                ResultSet rs = sentencia.executeQuery("SELECT id_servicio FROM detalle_solicitud "
+                        + "WHERE cod_solicitud = " + solicitud + " AND estado_seguimiento <> 'TERMINADO'");
+
+                while (rs.next()) {
+                    servicio = rs.getInt("id_servicio");
+
+                    if (servicio > 0) {
+                        JOptionPane.showMessageDialog(null,
+                        "ORDEN DE TRABAJO no FACTURADA aun quedan servicios por terminar", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        String estado = "FACTURA";
+
+                        String sql = "UPDATE solicitud_servicio "
+                                + "SET estado_solicitud ='" + estado + "' "
+                                + "WHERE cod_solicitud = '" + solicitud + "'";
+
+                        try {
+                            sentencia.executeUpdate(sql);
+                        } catch (SQLException e) {
+                            cont++;
+                        }
+                    }
+                }
+
+            } catch (SQLException ex) {
                 cont++;
+            }
+
+            if (cont == 0) {
+                JOptionPane.showMessageDialog(null,
+                        "ORDEN DE TRABAJO FACTURADA con exito", "INFO",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else{
+                JOptionPane.showMessageDialog(null,
+                        "ORDEN DE TRABAJO no FACTURADA,problemas con la base de datos", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
             }
 
         }
