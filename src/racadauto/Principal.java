@@ -68,7 +68,6 @@ public class Principal extends javax.swing.JFrame {
             menuTipoVehiculo.setEnabled(false);
             menuCombustible.setEnabled(false);
             menuMotor.setEnabled(false);
-            subInfIngEgre.setEnabled(false);
 
         }
     }
@@ -191,12 +190,10 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem18 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         menuInformes = new javax.swing.JMenu();
-        subInfOT = new javax.swing.JMenuItem();
         subInfTrabajadores = new javax.swing.JMenuItem();
         subInfInventario = new javax.swing.JMenuItem();
         subInfClientes = new javax.swing.JMenuItem();
         subInfVehiculos = new javax.swing.JMenuItem();
-        subInfIngEgre = new javax.swing.JMenuItem();
 
         jMenu6.setText("File");
         jMenuBar2.add(jMenu6);
@@ -882,9 +879,6 @@ public class Principal extends javax.swing.JFrame {
 
         menuInformes.setText("Informes");
 
-        subInfOT.setText("Trabajos");
-        menuInformes.add(subInfOT);
-
         subInfTrabajadores.setText("Trabajadores");
         subInfTrabajadores.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -916,9 +910,6 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         menuInformes.add(subInfVehiculos);
-
-        subInfIngEgre.setText("Ingresos y Egresos");
-        menuInformes.add(subInfIngEgre);
 
         jMenuBar1.add(menuInformes);
 
@@ -1046,28 +1037,26 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_subModificarVehiculoActionPerformed
 
     private void subAjustarItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subAjustarItemActionPerformed
-        Ajustar_item xx = new Ajustar_item();
+        Ajustar_item xx = new Ajustar_item(mod);
         xx.setVisible(true);
     }//GEN-LAST:event_subAjustarItemActionPerformed
 
     private void subPresupuestoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subPresupuestoActionPerformed
-        Presupuestar_trabajo2 yyz = new Presupuestar_trabajo2();
+        Presupuestar_trabajo yyz = new Presupuestar_trabajo();
         yyz.setVisible(true);
     }//GEN-LAST:event_subPresupuestoActionPerformed
 
     private void subOTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subOTActionPerformed
-        Orden_trabajo2 yes = new Orden_trabajo2();
+        Orden_trabajo yes = new Orden_trabajo();
         yes.setVisible(true);
     }//GEN-LAST:event_subOTActionPerformed
 
     private void subModificarOTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subModificarOTActionPerformed
-        r2_3 kek = new r2_3();
-        kek.setVisible(true);
+        Modificar_OT a = new Modificar_OT();
+        a.setVisible(true);
     }//GEN-LAST:event_subModificarOTActionPerformed
 
     private void subFacturarOTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subFacturarOTActionPerformed
-        r2_4 wii = new r2_4();
-        wii.setVisible(true);
     }//GEN-LAST:event_subFacturarOTActionPerformed
 
     private void subSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subSalirActionPerformed
@@ -1517,9 +1506,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem subEliminarVehiculo;
     private javax.swing.JMenuItem subFacturarOT;
     private javax.swing.JMenuItem subInfClientes;
-    private javax.swing.JMenuItem subInfIngEgre;
     private javax.swing.JMenuItem subInfInventario;
-    private javax.swing.JMenuItem subInfOT;
     private javax.swing.JMenuItem subInfTrabajadores;
     private javax.swing.JMenuItem subInfVehiculos;
     private javax.swing.JMenuItem subModificarCargo;

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6a95a04e-51eb-49c5-84bb-aaeddb595c1f">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT
+     cliente.`rut_cliente` AS cliente_rut_cliente,
+     cliente.`nombre` AS cliente_nombre,
+     cliente.`ape_paterno` AS cliente_ape_paterno,
+     cliente.`ape_materno` AS cliente_ape_materno,
+     cliente.`direccion` AS cliente_direccion,
+     ciudad.`nombre` AS ciudad_nombre
+FROM
+     `cliente` cliente INNER JOIN `ciudad` ciudad ON cliente.`cod_ciudad` = ciudad.`cod_ciudad`]]>
+	</queryString>
+	<field name="cliente_rut_cliente" class="java.lang.String"/>
+	<field name="cliente_nombre" class="java.lang.String"/>
+	<field name="cliente_ape_paterno" class="java.lang.String"/>
+	<field name="cliente_ape_materno" class="java.lang.String"/>
+	<field name="cliente_direccion" class="java.lang.String"/>
+	<field name="ciudad_nombre" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="125" splitType="Stretch">
+			<staticText>
+				<reportElement x="193" y="0" width="158" height="41" uuid="506262d3-b04e-4c28-9513-85d2ae89a819"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="24" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[CLIENTES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="142" y="41" width="413" height="17" uuid="4d807cc3-facc-450a-b799-75fc1d6be1ad"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[CALLE BAQUEDANO N°1129, BELLOTO CENTRO, QUILPUÉ.]]></text>
+			</staticText>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="399" y="10" width="126" height="20" uuid="221a8ba8-522c-42a3-a66a-d50d2e76d2a5"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="142" y="58" width="413" height="21" uuid="2e7e0140-6e82-4cad-8e79-7e372fe66b33"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[TELEFONO: 32-3277586 / +56984786687 ]]></text>
+			</staticText>
+			<image>
+				<reportElement x="0" y="0" width="142" height="125" uuid="2d6bd636-9705-4f71-b5ff-081f73cf7ac2"/>
+				<imageExpression><![CDATA["C:\\Users\\JTorres\\Documents\\NetBeansProjects\\RacadAuto\\src\\racadauto\\Images\\Racad.jpeg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="142" y="79" width="413" height="20" uuid="71f220f6-d6d6-4756-8a5b-2987a93cb4a0"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[RRSS: www.facebook.com/racad  /  www.instagram.com/racadautomotriz/]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="69" height="20" uuid="4bd189ba-2653-4c54-979e-76c394d152fb"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="69" y="0" width="73" height="20" uuid="04fb85fc-1338-4d8f-9ca0-a16675bc2dd2"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="142" y="1" width="70" height="19" uuid="aaa86403-8763-4a1d-873d-567b9ac12de3"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[PATERNO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="212" y="0" width="66" height="20" uuid="dd8640c2-cc51-44a0-ae55-e02c912fd09e"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[MATERNO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="278" y="1" width="204" height="19" uuid="8ef4d486-c02b-4a93-8b81-71e2af7b811b"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DIRECCION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="482" y="1" width="73" height="19" uuid="689a6c70-cd97-4afa-957f-491a2f651a52"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CIUDAD]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="69" height="20" uuid="5af42d14-a301-447b-bd2a-879aa99faad1"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cliente_rut_cliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="69" y="0" width="73" height="20" uuid="cce7dc6f-ba0d-42b8-b8f7-726252950f16"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cliente_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="142" y="0" width="70" height="20" uuid="db452743-1094-4ea5-8e27-710620ea9f69"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cliente_ape_paterno}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="212" y="0" width="66" height="20" uuid="11425d32-5cd6-4092-b399-c6d82abb6a78"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cliente_ape_materno}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="278" y="1" width="204" height="19" uuid="f50390f0-710a-4be6-a4a4-ba52f08972e9"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cliente_direccion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="482" y="0" width="73" height="19" uuid="a0c6d096-4eb1-4c19-8d41-293ef4efe666"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ciudad_nombre}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="212" y="0" width="80" height="20" uuid="66825533-4387-4730-9652-8c2c894be8aa"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="292" y="0" width="40" height="20" uuid="cb60f247-52ad-4cd9-b343-cfb15af9818c"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f736c8e7-0f29-4996-a53b-21277d0913bc">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="cod_solicitud" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     detalle_solicitud.`fecha_presupuesto` AS detalle_solicitud_fecha_presupuesto,
+     detalle_solicitud.`fecha_orden` AS detalle_solicitud_fecha_orden,
+     detalle_solicitud.`fecha_entrega` AS detalle_solicitud_fecha_entrega,
+     detalle_solicitud.`estado_seguimiento` AS detalle_solicitud_estado_seguimiento,
+     detalle_solicitud.`rut_trabajador` AS detalle_solicitud_rut_trabajador,
+     detalle_insumo.`cantidad` AS detalle_insumo_cantidad,
+     solicitud_servicio.`observaciones` AS solicitud_servicio_observaciones,
+     solicitud_servicio.`patente` AS solicitud_servicio_patente,
+     solicitud_servicio.`folio` AS solicitud_servicio_folio,
+     inventario.`nombre` AS inventario_nombre,
+     servicio.`componente` AS servicio_componente,
+     trabajador.`nombre` AS trabajador_nombre,
+     trabajador.`ape_paterno` AS trabajador_ape_paterno
+FROM
+     `solicitud_servicio` solicitud_servicio INNER JOIN `detalle_solicitud` detalle_solicitud ON solicitud_servicio.`cod_solicitud` = detalle_solicitud.`cod_solicitud`
+     INNER JOIN `detalle_insumo` detalle_insumo ON detalle_solicitud.`id_servicio` = detalle_insumo.`id_servicio`
+     AND detalle_insumo.`cod_solicitud` = detalle_solicitud.`cod_solicitud`
+     AND detalle_insumo.`cod_solicitud` = solicitud_servicio.`cod_solicitud`
+     INNER JOIN `inventario` inventario ON detalle_insumo.`cod_item` = inventario.`cod_item`
+     INNER JOIN `servicio` servicio ON detalle_insumo.`id_servicio` = servicio.`id_servicio`
+     AND detalle_solicitud.`id_servicio` = servicio.`id_servicio`
+     INNER JOIN `trabajador` trabajador ON detalle_solicitud.`rut_trabajador` = trabajador.`rut_trabajador`
+WHERE
+     estado_solicitud = 'OT'
+ AND solicitud_servicio.cod_solicitud = $P{cod_solicitud}
+ AND detalle_solicitud.cod_solicitud = $P{cod_solicitud}
+ AND detalle_insumo.cod_solicitud = $P{cod_solicitud}]]>
+	</queryString>
+	<field name="detalle_solicitud_fecha_presupuesto" class="java.sql.Date"/>
+	<field name="detalle_solicitud_fecha_orden" class="java.sql.Date"/>
+	<field name="detalle_solicitud_fecha_entrega" class="java.sql.Date"/>
+	<field name="detalle_solicitud_estado_seguimiento" class="java.lang.String"/>
+	<field name="detalle_solicitud_rut_trabajador" class="java.lang.String"/>
+	<field name="detalle_insumo_cantidad" class="java.lang.Integer"/>
+	<field name="solicitud_servicio_observaciones" class="java.lang.String"/>
+	<field name="solicitud_servicio_patente" class="java.lang.String"/>
+	<field name="solicitud_servicio_folio" class="java.lang.Integer"/>
+	<field name="inventario_nombre" class="java.lang.String"/>
+	<field name="servicio_componente" class="java.lang.String"/>
+	<field name="trabajador_nombre" class="java.lang.String"/>
+	<field name="trabajador_ape_paterno" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="109" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="139" height="109" uuid="1864db35-7160-4645-ba10-dd54c259aec9"/>
+				<imageExpression><![CDATA["C:\\Users\\JTorres\\Documents\\NetBeansProjects\\RacadAuto\\src\\racadauto\\Images\\Racad.jpeg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="202" y="0" width="158" height="41" uuid="fcfd7939-586f-4a4d-9529-b90eb52cbb26"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="24" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[OT]]></text>
+			</staticText>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="408" y="10" width="126" height="20" uuid="cc107375-387b-48d6-bd37-1cb389e920a1"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="139" y="58" width="415" height="21" uuid="950a86bb-7548-4914-b85d-2d3d1e0326d9"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[TELEFONO: 32-3277586 / +56984786687 ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="139" y="41" width="415" height="17" uuid="10791169-67c2-4bfe-949c-9ae9c34c1167"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[CALLE BAQUEDANO N°1129, BELLOTO CENTRO, QUILPUÉ.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="139" y="79" width="415" height="20" uuid="0c37bb4d-6e6e-4572-9aeb-bc9a97862d23"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[RRSS: www.facebook.com/racad  /  www.instagram.com/racadautomotriz/]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement x="354" y="0" width="100" height="20" uuid="fecaad9f-4c65-4549-b207-216e1c32faa0"/>
+				<text><![CDATA[FOLIO]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="454" y="0" width="100" height="20" uuid="d7d15929-82f3-4ec3-9c5b-d98d4cbb8e3f"/>
+				<textFieldExpression><![CDATA[$F{solicitud_servicio_folio}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="139" y="0" width="72" height="20" uuid="98897464-9b4d-442c-83fc-1e81b18a3f3f"/>
+				<text><![CDATA[SERVICIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="211" y="0" width="100" height="20" uuid="82e37307-e86e-45d1-a303-5fd15bc4dfe8"/>
+				<text><![CDATA[ESTADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="77" y="0" width="62" height="20" uuid="60bedc6b-5343-4b23-bd88-3cbd498b8b75"/>
+				<text><![CDATA[PATENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="77" height="20" uuid="7683443b-92ee-4301-b0fb-bce716caee19"/>
+				<text><![CDATA[FECHA ORDEN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="311" y="0" width="87" height="20" uuid="ab965488-58db-4f97-b0e0-a31b0da6655d"/>
+				<text><![CDATA[FECHA ENTREGA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="398" y="0" width="157" height="20" uuid="c78e66df-8368-4a50-a86a-745d9a51ba86"/>
+				<text><![CDATA[RESPONSABLE]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="139" y="0" width="72" height="20" uuid="e31fdb1c-f81c-437f-ad17-f0daa89d050c"/>
+				<textFieldExpression><![CDATA[$F{servicio_componente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="211" y="0" width="100" height="20" uuid="d10de31f-f26e-4de3-b175-1c3794b82d63"/>
+				<textFieldExpression><![CDATA[$F{detalle_solicitud_estado_seguimiento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="77" y="0" width="62" height="20" uuid="a9c856ad-95b6-439b-9ee5-10662c52cad2"/>
+				<textFieldExpression><![CDATA[$F{solicitud_servicio_patente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="77" height="20" uuid="8d6fbeca-5f1c-41c2-bfe1-a333f3d1dc14"/>
+				<textFieldExpression><![CDATA[$F{detalle_solicitud_fecha_orden}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="311" y="0" width="87" height="20" uuid="14e09bb4-aa7f-41d4-b594-e3c22817c31f"/>
+				<textFieldExpression><![CDATA[$F{detalle_solicitud_fecha_entrega}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="398" y="0" width="72" height="20" uuid="bc75f426-a122-4f5b-b045-7f4b7b352143"/>
+				<textFieldExpression><![CDATA[$F{trabajador_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="470" y="0" width="84" height="20" uuid="62f128f2-a6a4-4032-8b63-d6ab86a3fc2d"/>
+				<textFieldExpression><![CDATA[$F{trabajador_ape_paterno}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="116" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="34" width="555" height="82" uuid="e52d0a11-8122-4028-8e5a-7394ba58c185"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="14" width="100" height="20" uuid="e138ad3f-097f-4e64-b020-f9dbf9e7e893"/>
+				<text><![CDATA[OBSERVACIONES]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="34" width="554" height="82" uuid="166cd592-f927-4fff-8dd7-10dab7131e78"/>
+				<textFieldExpression><![CDATA[$F{solicitud_servicio_observaciones}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="231" y="0" width="80" height="20" uuid="c8ff9b81-a2cf-490f-aaaa-ed8bf15ee8b1"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="311" y="0" width="40" height="20" uuid="b66700aa-db07-456c-a37f-9ed49697c66f"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

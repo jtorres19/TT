@@ -179,7 +179,8 @@ public class Modificar_trabajador extends javax.swing.JFrame {
                 && (materno.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 3).toString()))
                 && (fono.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 4).toString()))
                 && (mail.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 5).toString()))
-                && (cargo.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 6)))) {
+                && (cargo.equals(jTable1.getValueAt(jTable1.getSelectedRow(), 6)))
+                && pass.equals("")) {
             JOptionPane.showMessageDialog(null,
                     "ERROR, no se ha MODIFICADO nada", "ERROR",
                     JOptionPane.ERROR_MESSAGE);

@@ -790,11 +790,6 @@
             <Property name="text" type="java.lang.String" value="Informes"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="subInfOT">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Trabajos"/>
-              </Properties>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="subInfTrabajadores">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Trabajadores"/>
@@ -826,11 +821,6 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="subInfVehiculosActionPerformed"/>
               </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="subInfIngEgre">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Ingresos y Egresos"/>
-              </Properties>
             </MenuItem>
           </SubComponents>
         </Menu>

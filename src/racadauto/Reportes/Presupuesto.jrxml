@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c8756198-a2ee-41ba-abe8-c21051fe1ac1">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="detalle" uuid="d7e55218-83ae-4ff0-ab95-6de39a5117fe">
+		<queryString language="SQL">
+			<![CDATA[SELECT s.componente,i.nombre 
+FROM servicio s,inventario i,solicitud_servicio ss, detalle_solicitud ds,detalle_insumo di
+WHERE s.id_servicio = ds.id_servicio AND i.cod_item = di.cod_item AND ss.cod_solicitud = 1 AND ds.cod_solicitud = 1 AND di.cod_solicitud = 1]]>
+		</queryString>
+		<field name="componente" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="nombre" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<group name="componente">
+			<groupExpression><![CDATA[$F{componente}]]></groupExpression>
+		</group>
+		<group name="nombre">
+			<groupExpression><![CDATA[$F{nombre}]]></groupExpression>
+		</group>
+	</subDataset>
+	<subDataset name="dataset1" uuid="228e8da2-a255-46f6-973c-b4169d4fd01e"/>
+	<parameter name="cod_solicitud" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     detalle_insumo.`cantidad` AS detalle_insumo_cantidad,
+     detalle_solicitud.`precio` AS detalle_solicitud_precio,
+     inventario.`nombre` AS inventario_nombre,
+     inventario.`valor_venta` AS inventario_valor_venta,
+     servicio.`componente` AS servicio_componente,
+     solicitud_servicio.`total` AS solicitud_servicio_total,
+     solicitud_servicio.`patente` AS solicitud_servicio_patente,
+     vehiculo.`año` AS vehiculo_año,
+     vehiculo.`kms` AS vehiculo_kms,
+     vehiculo.`vin` AS vehiculo_vin,
+     vehiculo.`rut_cliente` AS vehiculo_rut_cliente,
+     cliente.`nombre` AS cliente_nombre,
+     cliente.`ape_paterno` AS cliente_ape_paterno,
+     cliente.`ape_materno` AS cliente_ape_materno,
+     cliente.`direccion` AS cliente_direccion,
+     contacto.`contacto` AS contacto_contacto,
+     marca.`nombre` AS marca_nombre,
+     modelo.`nombre` AS modelo_nombre,
+     tipo_combustible.`nombre` AS tipo_combustible_nombre,
+     tipo_vehiculo.`nombre` AS tipo_vehiculo_nombre,
+     tipo_motor.`nombre` AS tipo_motor_nombre
+FROM
+     `solicitud_servicio` solicitud_servicio INNER JOIN `detalle_insumo` detalle_insumo ON solicitud_servicio.`cod_solicitud` = detalle_insumo.`cod_solicitud`
+     INNER JOIN `detalle_solicitud` detalle_solicitud ON detalle_insumo.`id_servicio` = detalle_solicitud.`id_servicio`
+     AND detalle_solicitud.`id_servicio` = detalle_insumo.`id_servicio`
+     INNER JOIN `inventario` inventario ON detalle_insumo.`cod_item` = inventario.`cod_item`
+     AND inventario.`cod_item` = detalle_insumo.`cod_item`
+     INNER JOIN `servicio` servicio ON detalle_insumo.`id_servicio` = servicio.`id_servicio`
+     AND servicio.`id_servicio` = detalle_insumo.`id_servicio`
+     AND detalle_solicitud.`id_servicio` = servicio.`id_servicio`
+     AND servicio.`id_servicio` = detalle_solicitud.`id_servicio`
+     AND detalle_solicitud.`cod_solicitud` = solicitud_servicio.`cod_solicitud`
+     INNER JOIN `trabajador` trabajador ON detalle_solicitud.`rut_trabajador` = trabajador.`rut_trabajador`
+     AND solicitud_servicio.`rut_trabajador` = trabajador.`rut_trabajador`
+     INNER JOIN `vehiculo` vehiculo ON solicitud_servicio.`patente` = vehiculo.`patente`
+     INNER JOIN `cliente` cliente ON vehiculo.`rut_cliente` = cliente.`rut_cliente`
+     INNER JOIN `modelo` modelo ON vehiculo.`id_marca` = modelo.`id_marca`
+     AND vehiculo.`id_modelo` = modelo.`id_modelo`
+     INNER JOIN `marca` marca ON modelo.`id_marca` = marca.`id_marca`
+     INNER JOIN `tipo_vehiculo` tipo_vehiculo ON modelo.`id_tipo_vehiculo` = tipo_vehiculo.`id_tipo_vehiculo`
+     INNER JOIN `tipo_combustible` tipo_combustible ON modelo.`id_tipo_combustible` = tipo_combustible.`id_tipo_combustible`
+     INNER JOIN `tipo_motor` tipo_motor ON modelo.`id_tipo_motor` = tipo_motor.`id_tipo_motor`
+     INNER JOIN `contacto` contacto ON cliente.`rut_cliente` = contacto.`rut_cliente`
+WHERE
+     solicitud_servicio.`cod_solicitud` = $P{cod_solicitud}
+ AND detalle_solicitud.`cod_solicitud` = $P{cod_solicitud}
+ AND detalle_insumo.`cod_solicitud` = $P{cod_solicitud}
+ AND contacto.contacto_ppal = 1
+]]>
+	</queryString>
+	<field name="detalle_insumo_cantidad" class="java.lang.Integer"/>
+	<field name="detalle_solicitud_precio" class="java.lang.Integer"/>
+	<field name="inventario_nombre" class="java.lang.String"/>
+	<field name="inventario_valor_venta" class="java.lang.Integer"/>
+	<field name="servicio_componente" class="java.lang.String"/>
+	<field name="solicitud_servicio_total" class="java.lang.Integer"/>
+	<field name="solicitud_servicio_patente" class="java.lang.String"/>
+	<field name="vehiculo_año" class="java.lang.Integer"/>
+	<field name="vehiculo_kms" class="java.lang.Integer"/>
+	<field name="vehiculo_vin" class="java.lang.String"/>
+	<field name="vehiculo_rut_cliente" class="java.lang.Integer"/>
+	<field name="cliente_nombre" class="java.lang.String"/>
+	<field name="cliente_ape_paterno" class="java.lang.String"/>
+	<field name="cliente_ape_materno" class="java.lang.String"/>
+	<field name="cliente_direccion" class="java.lang.String"/>
+	<field name="contacto_contacto" class="java.lang.String"/>
+	<field name="marca_nombre" class="java.lang.String"/>
+	<field name="modelo_nombre" class="java.lang.String"/>
+	<field name="tipo_combustible_nombre" class="java.lang.String"/>
+	<field name="tipo_vehiculo_nombre" class="java.lang.String"/>
+	<field name="tipo_motor_nombre" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="109" splitType="Stretch">
+			<staticText>
+				<reportElement x="140" y="89" width="415" height="20" uuid="8520d841-b1b6-46fc-a2f5-d3306e9af857"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[RRSS: www.facebook.com/racad  /  www.instagram.com/racadautomotriz/]]></text>
+			</staticText>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="409" y="20" width="126" height="20" uuid="f298523a-c38a-44f0-bf89-b0567a6674d0"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="0" y="0" width="140" height="109" uuid="cc35e2d1-2882-448e-afc1-8f068eb9a045"/>
+				<imageExpression><![CDATA["C:\\Users\\JTorres\\Documents\\NetBeansProjects\\RacadAuto\\src\\racadauto\\Images\\Racad.jpeg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="140" y="68" width="415" height="21" uuid="a872aff9-57ed-4cae-9f6c-b195008fe7cd"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[TELEFONO: 32-3277586 / +56984786687 ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="203" y="10" width="158" height="41" uuid="fe9ad16b-19e6-4348-99e6-7296d32fbe89"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="24" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Presupuesto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="140" y="51" width="415" height="17" uuid="d9ea7b6b-f882-4500-931c-5686687d31b7"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[CALLE BAQUEDANO N°1129, BELLOTO CENTRO, QUILPUÉ.]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="360" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="120" height="20" uuid="e24e5a07-d429-4cef-a107-11f203b8bf34"/>
+				<textElement>
+					<font size="8" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[DATOS DEL CLIENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="40" width="62" height="20" uuid="7ed33151-deab-46ed-9cc5-b9d4f1615331"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[NOMBRE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="60" width="62" height="20" uuid="48885daf-61a4-4b5e-a0bf-029f4a08b46a"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[DIRECCION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="20" width="62" height="20" uuid="a87bf9fe-bbca-4173-9497-20bc6eb57c3b"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[RUT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="80" width="62" height="20" uuid="2d180103-4daa-44af-ac34-9bd986667409"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[CONTACTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="100" width="120" height="20" uuid="67113838-ecbd-494e-82fb-174d10be1470"/>
+				<textElement>
+					<font size="8" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[DATOS DEL VEHICULO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="120" width="62" height="20" uuid="b917a5a7-f34a-4864-a13b-e001a198fb8f"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[TIPO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="217" y="120" width="100" height="20" uuid="24acad0e-f95f-4cf8-8df2-5359189a9bcc"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[VIN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="217" y="140" width="100" height="20" uuid="78ac1557-03d1-45ef-a86e-d860700664d2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[MOTOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="140" width="62" height="20" uuid="6d438f36-f6b3-4aab-afe6-6f96f0ecdef2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[MARCA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="160" width="62" height="20" uuid="54fd33d6-1c1e-4fdf-8622-f31edc64ed5a"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[MODELO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="217" y="160" width="100" height="20" uuid="3688ed72-7f13-4e72-ae17-e5c73d943e96"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[AÑO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="180" width="62" height="20" uuid="187709f3-830d-41e4-a8cd-6bcc6c1c675e"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[PATENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="217" y="180" width="100" height="20" uuid="c3ccd0af-31e9-4d37-86df-7a4c4942ef09"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[KILOMETRAJE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="200" width="120" height="20" uuid="f4e197b1-1970-41bf-a450-404b5900c975"/>
+				<textElement>
+					<font size="8" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[OPERACIONES A EFECTUAR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="352" y="0" width="100" height="20" uuid="dd4d8535-ed04-4ec3-a377-a4fa46639e6a"/>
+				<textElement>
+					<font isBold="true" isItalic="false" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[SOLICITUD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="220" width="409" height="20" uuid="e47e7bbe-bf94-482c-bf7f-21a0695dbf94"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DETALLE DE GASTOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="409" y="220" width="146" height="20" uuid="62c590b5-35e5-487e-848e-49d325b50672"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MONTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="240" width="120" height="20" uuid="e225de58-8113-42e5-bf6c-5fe27f39e27c"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPUESTOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="280" width="120" height="20" uuid="6b8e1b25-5c3d-477b-9387-a2227038bd00"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SERVICIOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="309" y="320" width="100" height="20" uuid="e5e20485-bf27-4262-86ce-8c08b04fea41"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="340" width="555" height="20" uuid="0106f1a6-6619-4e27-89d9-818d97392046"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[El trabajo tendrá un pago y/o abono del 50% de su valor, terminado, será cancelado en su totalidad, antes de ser retirado.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="260" width="409" height="20" uuid="d58a5295-137e-443e-86ca-41f142351560"/>
+				<textFieldExpression><![CDATA[$F{inventario_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="409" y="300" width="146" height="20" uuid="d6617b62-745d-4d74-98cc-10d67ee9d84d"/>
+				<textFieldExpression><![CDATA[$F{detalle_solicitud_precio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="409" y="260" width="146" height="20" uuid="3c64cdda-7538-436f-a332-fe5655b52381"/>
+				<textFieldExpression><![CDATA[$F{inventario_valor_venta}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="300" width="409" height="20" uuid="e38cf521-3113-4cbd-b8d3-f23c831b8322"/>
+				<textFieldExpression><![CDATA[$F{servicio_componente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="409" y="320" width="146" height="20" uuid="171a8232-2cc9-4e01-8398-6894a00b933f"/>
+				<textFieldExpression><![CDATA[$F{solicitud_servicio_total}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="62" y="180" width="100" height="20" uuid="00792f58-d7f6-4ec3-b896-35fe4e9132ee"/>
+				<textFieldExpression><![CDATA[$F{solicitud_servicio_patente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="317" y="160" width="100" height="20" uuid="103ce23a-8322-4b62-a2eb-a49bcffdaef2"/>
+				<textFieldExpression><![CDATA[$F{vehiculo_año}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="317" y="180" width="100" height="20" uuid="4b17e2d4-7b03-4cf6-a527-e4b63042830f"/>
+				<textFieldExpression><![CDATA[$F{vehiculo_kms}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="317" y="120" width="100" height="20" uuid="38bb40e2-a6fe-4f7e-b992-c08d7443e151"/>
+				<textFieldExpression><![CDATA[$F{vehiculo_vin}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="62" y="20" width="100" height="20" uuid="7205737d-4201-40f2-b24d-bfd77a69b1ef"/>
+				<textFieldExpression><![CDATA[$F{vehiculo_rut_cliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="62" y="40" width="100" height="20" uuid="7b31e4bd-6ee3-4945-a233-7dd97755552f"/>
+				<textFieldExpression><![CDATA[$F{cliente_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="162" y="40" width="100" height="20" uuid="7963eaa6-cdd1-4e86-9cae-6b3c550fe98a"/>
+				<textFieldExpression><![CDATA[$F{cliente_ape_paterno}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="262" y="40" width="100" height="20" uuid="32468a81-344b-4fee-a5e8-82e837f478dd"/>
+				<textFieldExpression><![CDATA[$F{cliente_ape_materno}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="62" y="60" width="100" height="20" uuid="b3d45223-37b5-4b8c-8f54-dbe6b3c8180e"/>
+				<textFieldExpression><![CDATA[$F{cliente_direccion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="62" y="80" width="100" height="20" uuid="bab2446b-a352-48b2-be3a-885acc4c9461"/>
+				<textFieldExpression><![CDATA[$F{contacto_contacto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="62" y="140" width="100" height="20" uuid="041702aa-191b-4730-bbc7-49373919a31b"/>
+				<textFieldExpression><![CDATA[$F{marca_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="62" y="160" width="100" height="20" uuid="165b13a9-aae2-4cfa-9724-d4ebed277037"/>
+				<textFieldExpression><![CDATA[$F{modelo_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="62" y="120" width="100" height="20" uuid="a6e93623-17a7-4b4e-92e4-876a15cf80db"/>
+				<textFieldExpression><![CDATA[$F{tipo_vehiculo_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="317" y="140" width="100" height="20" uuid="84cfbc37-5ad8-43f7-8a09-cce3ddc92a39"/>
+				<textFieldExpression><![CDATA[$F{tipo_motor_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="452" y="0" width="100" height="20" uuid="105c59b2-ef00-4b7b-82d4-866ea44b1227"/>
+				<textFieldExpression><![CDATA[$P{cod_solicitud}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="217" y="0" width="80" height="20" uuid="fc8ffef5-baed-42a6-9043-678674d1e6da"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="297" y="0" width="40" height="20" uuid="ce32325d-c473-4e6b-9d54-1ad69c2ed56c"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

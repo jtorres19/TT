@@ -1,6 +1,7 @@
 package racadauto;
 
 import Conexion.Conexion;
+import Conexion.Trabajador;
 import com.mysql.jdbc.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -21,13 +22,20 @@ public class Ajustar_item extends javax.swing.JFrame {
     private TableRowSorter trsfiltro;
     String msj = "";
     String filtro;
-
-    public Ajustar_item() {
+    Trabajador mod;
+    
+    Ajustar_item() {
+        initComponents();
+    }
+    
+    public Ajustar_item(Trabajador mod) {
 
         modeloTabla = new DefaultTableModel(null, getColumnas());
+        this.mod = mod;
         setFilas();
         initComponents();
         fechaActual();
+        LBL_rut.setText(mod.getRut());
     }
 
     private String[] getColumnas() {
@@ -65,27 +73,13 @@ public class Ajustar_item extends javax.swing.JFrame {
         java.util.Date fechaActual = new java.util.Date();
         long fecha = fechaActual.getTime();
         java.sql.Date sqlDate = new java.sql.Date(fecha);
-        SimpleDateFormat formato = new SimpleDateFormat("dd-MMMM-yyy");
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
         lblFecha.setText(formato.format(sqlDate).toUpperCase());
     }
 
     public int validar() {
         int val = 0;
-        String rut = JT_rut.getText().trim();
-        if (rut.equals("")) {
-            JOptionPane.showMessageDialog(null,
-                    "ERROR, debe ingresar un rut", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            val++;
-        } else if (!rut.matches("^([0-9]*\\d{7,8}[0-9k])$")) {
-            JOptionPane.showMessageDialog(null, "ERROR, RUT mal escrito", "ERROR", JOptionPane.ERROR_MESSAGE);
-            val++;
-        } else if (rut.length() > 9) {
-            JOptionPane.showMessageDialog(null,
-                    "ERROR, RUT maximo 9 digitos", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            val++;
-        }
+        
         if ((txtDesc.getText().equals(""))
                 || (txtCant.getText().equals(""))) {
             JOptionPane.showMessageDialog(null,
@@ -118,7 +112,6 @@ public class Ajustar_item extends javax.swing.JFrame {
 
     public int validar2() {
         int val = 0, can = 0, cont = 0;
-        String rut = JT_rut.getText().trim(), rut2 = "";
         String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
         try {
             sentencia = (Statement) cn.createStatement();
@@ -129,29 +122,6 @@ public class Ajustar_item extends javax.swing.JFrame {
         } catch (SQLException f) {
             msj = "Error con Codigo";
         }
-
-        try {
-            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
-            ResultSet rs = sentencia.executeQuery("SELECT rut_trabajador FROM trabajador");
-            while (rs.next()) {
-                rut2 = rs.getString("rut_trabajador").trim();
-                if (rut.equals(rut2)) {
-                    cont++;
-                }
-            }
-
-        } catch (SQLException eg) {
-            msj = "Error con su Solicitud";
-        }
-        
-        if (cont == 0){
-            JOptionPane.showMessageDialog(null,
-                        "ERROR, Rut no valido", "ERROR",
-                        JOptionPane.ERROR_MESSAGE);
-                JT_rut.setText("");
-                val++;
-        }else val = 0;
-        
         
         if ((txtDesc.getText().equals(""))
                 || (txtCant.getText().equals(""))) {
@@ -205,7 +175,7 @@ public class Ajustar_item extends javax.swing.JFrame {
     public void clean() {
         txtDesc.setText("");
         txtCant.setText("");
-        JT_rut.setText("");
+        LBL_rut.setText("");
     }
 
     @SuppressWarnings("unchecked")
@@ -229,11 +199,11 @@ public class Ajustar_item extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        JT_rut = new javax.swing.JTextField();
         JT_nombre = new javax.swing.JTextField();
         JT_actual = new javax.swing.JTextField();
         JT_vcosto = new javax.swing.JTextField();
         JT_vventa = new javax.swing.JTextField();
+        LBL_rut = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("AJUSTAR ITEM");
@@ -434,7 +404,7 @@ public class Ajustar_item extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel1)
                                 .addGap(18, 18, 18)
-                                .addComponent(JT_rut, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(LBL_rut, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -462,12 +432,11 @@ public class Ajustar_item extends javax.swing.JFrame {
                     .addComponent(JT_vventa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(lblEstado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel6))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel1)
-                        .addComponent(JT_rut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(lblEstado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(LBL_rut, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnRehab)
@@ -502,7 +471,7 @@ public class Ajustar_item extends javax.swing.JFrame {
             int dis = 0;
             int sto = Integer.parseInt(txtCant.getText());
             int fol = 0;
-            String rut = JT_rut.getText().trim();
+            String rut = LBL_rut.getText().trim();
             String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
             int est = 0;
             int cod = 0;
@@ -585,7 +554,7 @@ public class Ajustar_item extends javax.swing.JFrame {
             int dis = 0;
             int sto = Integer.parseInt(txtCant.getText());
             int fol = 0;
-            String rut = JT_rut.getText().trim();
+            String rut = LBL_rut.getText().trim();
             String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
             int est = 0;
             int cod = 0;
@@ -839,9 +808,9 @@ public class Ajustar_item extends javax.swing.JFrame {
     private javax.swing.JButton JB_cancel;
     private javax.swing.JTextField JT_actual;
     private javax.swing.JTextField JT_nombre;
-    private javax.swing.JTextField JT_rut;
     private javax.swing.JTextField JT_vcosto;
     private javax.swing.JTextField JT_vventa;
+    private javax.swing.JLabel LBL_rut;
     private javax.swing.JButton btnDecrease;
     private javax.swing.JButton btnIncrease;
     private javax.swing.JButton btnRehab;

@@ -8,12 +8,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
-public class Presupuestar_trabajo2 extends javax.swing.JFrame {
+public class Presupuestar_trabajo extends javax.swing.JFrame {
 
     private Statement sentencia;
     Conexion con = new Conexion();
@@ -28,7 +39,7 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
     private TableRowSorter trsfiltro;
     String filtro;
 
-    public Presupuestar_trabajo2() {
+    public Presupuestar_trabajo() {
         modeloTablaCliente = new DefaultTableModel(null, getColumnasCliente());
         modeloTablaVehiculo = new DefaultTableModel(null, getColumnasVehiculo());
         modeloTablaServicio = new DefaultTableModel(null, getColumnasServicio());
@@ -43,6 +54,7 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
         initComponents();
         fechaActual();
         llenarLabels();
+        ocultarFila();
     }
 
     private String[] getColumnasCliente() {
@@ -62,7 +74,14 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
 
     private String[] getColumnasInsumoaux() {
         String columna[] = new String[]{"CODIGO", "NOMBRE", "VALOR VENTA", "CANTIDAD", "CODIGO SERVICIO"};
+
         return columna;
+    }
+
+    public void ocultarFila() {
+        tablaInsumoaux.getColumnModel().getColumn(4).setMaxWidth(0);
+        tablaInsumoaux.getColumnModel().getColumn(4).setMinWidth(0);
+        tablaInsumoaux.getColumnModel().getColumn(4).setPreferredWidth(0);
     }
 
     private String[] getColumnasServicio() {
@@ -226,7 +245,7 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
     private void setFilasVehiculo() {
 
         String rut = tablaClientes.getValueAt(tablaClientes.getSelectedRow(), 0).toString();
-        
+
         try {
             sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
             ResultSet lista = sentencia.executeQuery("SELECT v.patente,v.año, v.kms,v.vin, v.color, ma.nombre, mo.nombre "
@@ -348,42 +367,42 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
 
         if ((obser.equals(""))) {
             JOptionPane.showMessageDialog(null,
-                    "Error, dejó una casilla vacía", "ERROR",
+                    "Dejo las observaciones vacias", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
         if (obser.length() > 140) {
             JOptionPane.showMessageDialog(null,
-                    "Error, observacion no puede exceder los 140 caracteres", "ERROR",
+                    "Observacion no puede exceder los 140 caracteres", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
 
         if (tablaClientes.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Seleccione cliente!", "ERROR",
+                    "Seleccione cliente!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         } else if (tablaVehiculo.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Seleccione vehiculo!", "ERROR",
+                    "Seleccione vehiculo!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         } else if (tablaTrabajador.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Seleccione trabajador!", "ERROR",
+                    "Seleccione trabajador!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
 
         if (tablaServicioaux.getRowCount() == 0) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Añada Servicio!", "ERROR",
+                    "Añada Servicio!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         } else if (tablaInsumoaux.getRowCount() == 0) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Añada Insumo!", "ERROR",
+                    "Añada Insumo!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
@@ -1442,7 +1461,7 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                     sentencia.executeUpdate(sql2);
 
                 } catch (SQLException ex) {
-                    cont++;
+                    //cont++;
                 }
             }
 
@@ -1454,12 +1473,12 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                     int cantidad = Integer.parseInt(tablaInsumoaux.getValueAt(i, 3).toString());
                     int servicio = Integer.parseInt(tablaInsumoaux.getValueAt(i, 4).toString());
 
-                    String sql3 = "INSERT into detalle_insumo(cod_item,cod_solicitud, id_servicio, cantidad) "
-                            + "VALUES(" + insumo + ", " + cod + "," + servicio + ",'" + cantidad + "')";
+                    String sql3 = "INSERT into detalle_insumo(cod_solicitud, id_servicio, cod_item, cantidad) "
+                            + "VALUES(" + cod + ", " + servicio + "," + insumo + ",'" + cantidad + "')";
                     sentencia.executeUpdate(sql3);
 
                 } catch (SQLException ex) {
-                    cont++;
+                    //cont++;
                 }
             }
 
@@ -1475,6 +1494,30 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null,
                         "Problemas con la base de datos,PRESUPUESTO no ingresado", "ERROR",
                         JOptionPane.ERROR_MESSAGE);
+            }
+            
+            
+
+            Map parametro = new HashMap();
+                    parametro.put("cod_solicitud",cod);
+
+            try {
+
+                JasperReport reporte = null;
+                String path = "src\\racadauto\\Reportes\\Presupuesto.jasper";
+
+                reporte = (JasperReport) JRLoader.loadObjectFromFile(path);
+
+                JasperPrint jprint = JasperFillManager.fillReport(reporte, parametro, cn);
+
+                JasperViewer view = new JasperViewer(jprint, false);
+
+                view.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+                view.setVisible(true);
+
+            } catch (JRException ex) {
+                Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
@@ -1566,18 +1609,45 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void btnAddCantActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCantActionPerformed
-        int cont = 0;
+        int cont = 0, actual = 0, critico = 0;
+
         if (tablaInsumoaux.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null,
                     "Error, Seleccione insumo!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
+
         if (cont == 0) {
+            int insumo = Integer.parseInt(tablaInsumoaux.getValueAt(tablaInsumoaux.getSelectedRow(), 0).toString());
+
+            try {
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+                ResultSet rs = sentencia.executeQuery("SELECT stock_actual,stock_critico FROM inventario WHERE cod_item = " + insumo + "");
+                while (rs.next()) {
+                    actual = rs.getInt("stock_actual");
+                    critico = rs.getInt("stock_critico");
+                }
+            } catch (SQLException f) {
+                //cont++;
+            }
 
             int base = Integer.parseInt(tablaInsumoaux.getValueAt(tablaInsumoaux.getSelectedRow(), 3).toString().trim());
             int valor = base + 1;
-            tablaInsumoaux.setValueAt(valor, tablaInsumoaux.getSelectedRow(), 3);
+
+            if (valor == critico) {
+                JOptionPane.showMessageDialog(null,
+                        "Insumo en stock critico", "INFO",
+                        JOptionPane.INFORMATION_MESSAGE);
+                tablaInsumoaux.setValueAt(valor, tablaInsumoaux.getSelectedRow(), 3);
+            } else if (valor > actual) {
+                JOptionPane.showMessageDialog(null,
+                        "Insumo no hay suficiente insumo", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                tablaInsumoaux.setValueAt(valor, tablaInsumoaux.getSelectedRow(), 3);
+            }
+
         }
     }//GEN-LAST:event_btnAddCantActionPerformed
 
@@ -1614,7 +1684,21 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
         }
 
         if (cont == 0) {
-            int fila = tablaServicioaux.getSelectedRow();
+            int fila = tablaServicioaux.getSelectedRow(), i = 0;
+            int columnainsumo = tablaInsumoaux.getRowCount();
+            int servicio = Integer.parseInt(tablaServicioaux.getValueAt(tablaServicioaux.getSelectedRow(), 0).toString());
+
+            while (i < columnainsumo) {
+                if (servicio == Integer.parseInt(tablaInsumoaux.getValueAt(i, 4).toString())) {
+                    modeloTablaInsumoaux.removeRow(i);
+                    for (int j = 0; j < columnainsumo; j++) {
+                        if (servicio == Integer.parseInt(tablaInsumoaux.getValueAt(j, 4).toString())) {
+                            modeloTablaInsumoaux.removeRow(j);
+                        }
+                    }
+                }
+                i++;
+            }
             modeloTablaServicioaux.removeRow(fila);
         }
     }//GEN-LAST:event_btnQuitarServicioActionPerformed
@@ -1636,6 +1720,7 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
         }
 
         if (cont == 0) {
+
             int columnas = tablaInsumoaux.getRowCount();
             int cod = Integer.parseInt(tablaInsumos.getValueAt(tablaInsumos.getSelectedRow(), 0).toString().trim());
             int ser = Integer.parseInt(tablaServicioaux.getValueAt(tablaServicioaux.getSelectedRow(), 0).toString().trim());
@@ -1725,7 +1810,7 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
     private void JT_insumoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_insumoKeyTyped
         JT_insumo.addKeyListener(new KeyAdapter() {
             public void keyReleased(final KeyEvent e) {
-                filtroNombre();
+                filtroInsumo();
             }
         });
         trsfiltro = new TableRowSorter(modeloTablaInsumo);
@@ -2133,20 +2218,21 @@ public class Presupuestar_trabajo2 extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Presupuestar_trabajo2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Presupuestar_trabajo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Presupuestar_trabajo2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Presupuestar_trabajo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Presupuestar_trabajo2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Presupuestar_trabajo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Presupuestar_trabajo2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Presupuestar_trabajo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Presupuestar_trabajo2().setVisible(true);
+                new Presupuestar_trabajo().setVisible(true);
             }
         });
     }

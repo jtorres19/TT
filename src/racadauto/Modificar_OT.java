@@ -4,22 +4,24 @@ import Conexion.Conexion;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-public class Orden_trabajo2 extends javax.swing.JFrame {
+public class Modificar_OT extends javax.swing.JFrame {
 
     private Statement sentencia;
     Conexion con = new Conexion();
     Connection cn = (Connection) con.getConnection();
-    private String msj;
     DefaultTableModel modeloTablaPresupuesto;
     DefaultTableModel modeloTablaServicio;
     DefaultTableModel modeloTablaServicioaux;
@@ -29,10 +31,10 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
     private TableRowSorter trsfiltro;
     String filtro;
 
-    public Orden_trabajo2() {
+    public Modificar_OT() {
         modeloTablaPresupuesto = new DefaultTableModel(null, getColumnasPresupuesto());
         modeloTablaServicio = new DefaultTableModel(null, getColumnasServicio());
-        modeloTablaServicioaux = new DefaultTableModel(null, getColumnasServicio());
+        modeloTablaServicioaux = new DefaultTableModel(null, getColumnasServicioaux());
         modeloTablaInsumo = new DefaultTableModel(null, getColumnasInsumo());
         modeloTablaInsumoaux = new DefaultTableModel(null, getColumnasInsumoaux());
         modeloTablaTrabajador = new DefaultTableModel(null, getColumnasTrabajador());
@@ -42,11 +44,11 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
         setFilasTrabajador();
         initComponents();
         fechaActual();
-        llenarLabels();
+        ocultarFila();
     }
 
     private String[] getColumnasPresupuesto() {
-        String columna[] = new String[]{"CODIGO", "SUBTOTAL", "TOTAL", "FECHA PRESUPUESTO", "PATENTE", "RUT TRABAJADOR"};
+        String columna[] = new String[]{"CODIGO", "SUBTOTAL", "TOTAL", "FECHA ORDEN", "PATENTE", "RUT TRABAJADOR"};
         return columna;
     }
 
@@ -59,9 +61,20 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
         String columna[] = new String[]{"CODIGO", "NOMBRE", "VALOR VENTA", "CANTIDAD", "CODIGO SERVICIO"};
         return columna;
     }
+    
+    public void ocultarFila(){
+        tablaInsumoaux.getColumnModel().getColumn(4).setMaxWidth(0);
+        tablaInsumoaux.getColumnModel().getColumn(4).setMinWidth(0);
+        tablaInsumoaux.getColumnModel().getColumn(4).setPreferredWidth(0);
+    }
 
     private String[] getColumnasServicio() {
         String columna[] = new String[]{"ID", "COMPONENTE", "PRECIO"};
+        return columna;
+    }
+
+    private String[] getColumnasServicioaux() {
+        String columna[] = new String[]{"ID", "COMPONENTE", "PRECIO", "ESTADO"};
         return columna;
     }
 
@@ -120,12 +133,47 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
         trsfiltro.setRowFilter(RowFilter.regexFilter(JT_trabajador.getText().toUpperCase(), columna));
     }
 
+    public void filtroRutTrabajador() {
+
+        filtro = JT_ruttrabajador.getText().toUpperCase();
+        int columna = 0;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_ruttrabajador.getText().toUpperCase(), columna));
+    }
+
+    public void filtroNombreTrabajador() {
+
+        filtro = JT_nombretrabajador.getText().toUpperCase();
+        int columna = 1;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_nombretrabajador.getText().toUpperCase(), columna));
+    }
+
+    public void filtroPaternoTrabajador() {
+
+        filtro = JT_paternotrabajador.getText().toUpperCase();
+        int columna = 2;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_paternotrabajador.getText().toUpperCase(), columna));
+    }
+
+    public void filtroMaternoTrabajador() {
+
+        filtro = JT_maternotrabajador.getText().toUpperCase();
+        int columna = 3;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_maternotrabajador.getText().toUpperCase(), columna));
+    }
+
+    public void filtroCargo() {
+
+        filtro = JT_cargo.getText().toUpperCase();
+        int columna = 4;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(JT_cargo.getText().toUpperCase(), columna));
+    }
+
     private void setFilasPresupuesto() {
         try {
             sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT cod_solicitud, subtotal, total, fecha_presupuesto, patente, rut_trabajador "
+            ResultSet lista = sentencia.executeQuery("SELECT cod_solicitud, subtotal, total, fecha_orden, patente, rut_trabajador "
                     + "FROM solicitud_servicio "
-                    + "WHERE estado_solicitud = 'PRESUPUESTO'");
+                    + "WHERE estado_solicitud = 'OT'");
             Object datos[] = new Object[6];
             while (lista.next()) {
                 for (int i = 0; i < 6; i++) {
@@ -228,12 +276,12 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
 
         try {
             sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
-            ResultSet lista = sentencia.executeQuery("SELECT d.id_servicio, s.componente, s.precio "
+            ResultSet lista = sentencia.executeQuery("SELECT d.id_servicio, s.componente, s.precio, d.estado_seguimiento "
                     + "FROM servicio s, detalle_solicitud d "
                     + "WHERE d.cod_solicitud = " + presupuesto + " AND d.id_servicio = s.id_servicio");
-            Object datos[] = new Object[3];
+            Object datos[] = new Object[4];
             while (lista.next()) {
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 4; i++) {
                     datos[i] = lista.getObject(i + 1);
                 }
                 modeloTablaServicioaux.addRow(datos);
@@ -241,6 +289,34 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null,
                     "Problemas con la base de datos, no se pudo llenar la tabla", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+    }
+
+    public void jcomboboxjtable() {
+        String[] DATA = {"EN ESPERA", "EN PROCESO", "TERMINADO"};
+        JComboBox comboBox = new JComboBox(DATA);
+        comboBox.setSelectedIndex(0);
+        DefaultCellEditor defaultCellEditor = new DefaultCellEditor(comboBox);
+        tablaServicioaux.getColumnModel().getColumn(3).setCellEditor(defaultCellEditor);
+    }
+
+    private void setObservaciones() {
+
+        int presupuesto = Integer.parseInt(tablaPresupuesto.getValueAt(tablaPresupuesto.getSelectedRow(), 0).toString());
+
+        try {
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+            ResultSet rs = sentencia.executeQuery("SELECT observaciones "
+                    + "FROM solicitud_servicio "
+                    + "WHERE cod_solicitud = " + presupuesto + "");
+            while (rs.next()) {
+                JTA_observaciones.setText(rs.getString("observaciones"));
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,
+                    "Problemas con la base de datos, no se pudo llenar las observaciones", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -253,26 +329,6 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
         lblFecha.setText(formato.format(sqlDate).trim());
         lblFecha1.setText(formato.format(sqlDate).trim());
         lblFecha2.setText(formato.format(sqlDate).trim());
-    }
-
-    public void llenarLabels() {
-        int cod = 0;
-
-        try {
-            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
-            ResultSet rs = sentencia.executeQuery("SELECT MAX(folio) as folio FROM solicitud_servicio");
-            while (rs.next()) {
-                cod = rs.getInt("folio");
-            }
-            cod++;
-        } catch (SQLException f) {
-            JOptionPane.showMessageDialog(null,
-                    "Problemas con la base de datos, no se pudo llenar la tabla", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-        LBL_folio.setText("" + cod + "");
-        LBL_folio1.setText("" + cod + "");
-        LBL_folio2.setText("" + cod + "");
     }
 
     void limpiaTablaInsumoaux() {
@@ -296,6 +352,16 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
         java.util.Date fechaActual = new java.util.Date();
         long fecha = fechaActual.getTime();
         java.sql.Date sqlDate = new java.sql.Date(fecha);
+        int columnaservicio = tablaServicioaux.getRowCount();
+
+        for (int i = 0; i < columnaservicio; i++) {
+            if (tablaServicioaux.getValueAt(i, 3).toString().equals("")) {
+                JOptionPane.showMessageDialog(null,
+                        "Indique estado de seguimiento del servicio ", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                cont++;
+            }
+        }
 
         if (fechaentrega == null) {
             JOptionPane.showMessageDialog(null,
@@ -359,9 +425,6 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
         lblFecha.setText("");
         lblFecha1.setText("");
         lblFecha2.setText("");
-        LBL_folio.setText("");
-        LBL_folio1.setText("");
-        LBL_folio2.setText("");
         modeloTablaServicioaux.setRowCount(0);
         modeloTablaInsumoaux.setRowCount(0);
         modeloTablaPresupuesto.setRowCount(0);
@@ -374,8 +437,6 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        LBL_folio = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         lblFecha = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -391,8 +452,6 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        LBL_folio1 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         lblFecha1 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
@@ -411,10 +470,10 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
         tablaServicioaux = new javax.swing.JTable();
         jScrollPane10 = new javax.swing.JScrollPane();
         tablaInsumoaux = new javax.swing.JTable();
+        btnAddCant = new javax.swing.JButton();
+        btnRemoveCant = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        LBL_folio2 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         lblFecha2 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
@@ -434,13 +493,11 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("PRESUPUESTO");
+        setTitle("MODIFICAR ORDEN DE TRABAJO");
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel9.setText("RACAD AUTOMOTRIZ - ORDEN DE TRABAJO");
+        jLabel9.setText("RACAD AUTOMOTRIZ - MODIFICAR ORDEN DE TRABAJO");
         jLabel9.setToolTipText("");
-
-        jLabel1.setText("Folio:");
 
         jLabel6.setText("Fecha Actual :");
 
@@ -452,7 +509,7 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
         });
         jScrollPane4.setViewportView(tablaPresupuesto);
 
-        jLabel5.setText("Presupuestos:");
+        jLabel5.setText("ORDENES DE TRABAJO");
 
         jButton1.setText("Nuevo");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -584,10 +641,6 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(LBL_folio, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(231, 231, 231)
                         .addComponent(jLabel6)
                         .addGap(18, 18, 18)
                         .addComponent(lblFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -608,7 +661,7 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
                         .addComponent(jLabel12)
                         .addGap(18, 18, 18)
                         .addComponent(JDC_fechaEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addContainerGap(282, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -618,9 +671,7 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(lblFecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(LBL_folio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel5)
                 .addGap(18, 18, 18)
@@ -642,12 +693,10 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
                 .addContainerGap(174, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Seleccionar Presupueesto", jPanel1);
+        jTabbedPane1.addTab("Seleccionar OT", jPanel1);
 
         jLabel10.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel10.setText("RACAD AUTOMOTRIZ - ORDEN DE TRABAJO");
-
-        jLabel2.setText("Folio:");
+        jLabel10.setText("RACAD AUTOMOTRIZ - MODIFICAR ORDEN DE TRABAJO");
 
         jLabel7.setText("Fecha Actual :");
 
@@ -760,60 +809,69 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
         });
         jScrollPane10.setViewportView(tablaInsumoaux);
 
+        btnAddCant.setText("+");
+        btnAddCant.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddCantActionPerformed(evt);
+            }
+        });
+
+        btnRemoveCant.setText("-");
+        btnRemoveCant.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveCantActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(125, 125, 125)
-                        .addComponent(JT_componente, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(275, 275, 275)
-                        .addComponent(JT_insumo, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(112, 112, 112)
-                        .addComponent(btnAddServicio)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnQuitarServicio)
-                        .addGap(253, 253, 253)
-                        .addComponent(btnAddInsumo)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnQuitarInsumo)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(112, 112, 112)
+                .addComponent(btnAddServicio)
+                .addGap(18, 18, 18)
+                .addComponent(btnQuitarServicio)
+                .addGap(397, 397, 397)
+                .addComponent(btnAddInsumo)
+                .addGap(18, 18, 18)
+                .addComponent(btnQuitarInsumo)
+                .addContainerGap(210, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel15)
+                        .addGap(776, 776, 776))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+                            .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addGap(48, 117, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel14)
+                                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 419, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnAddCant)
+                            .addComponent(btnRemoveCant, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(45, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(LBL_folio1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(283, 283, 283)
                                 .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lblFecha1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel15)
-                                .addGap(343, 343, 343)
-                                .addComponent(jLabel14)))
-                        .addGap(178, 178, 178))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(136, 136, 136))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel10)
+                                .addGap(18, 18, 18)
+                                .addComponent(lblFecha1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE))))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(125, 125, 125)
+                .addComponent(JT_componente, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(JT_insumo, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(237, 237, 237))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -823,8 +881,6 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblFecha1, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LBL_folio1, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -834,29 +890,37 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(JT_componente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(JT_insumo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAddInsumo)
-                    .addComponent(btnQuitarInsumo)
-                    .addComponent(btnAddServicio)
-                    .addComponent(btnQuitarServicio))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(JT_componente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(JT_insumo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAddServicio)
+                            .addComponent(btnQuitarServicio))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnAddCant)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnRemoveCant)
+                        .addGap(81, 81, 81))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(45, 45, 45)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnQuitarInsumo)
+                            .addComponent(btnAddInsumo))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(28, Short.MAX_VALUE))))
         );
 
         jTabbedPane1.addTab("Seleccionar Servicios e Insumos", jPanel2);
 
         jLabel11.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jLabel11.setText("RACAD AUTOMOTRIZ - ORDEN DE TRABAJO");
-
-        jLabel3.setText("Folio :");
+        jLabel11.setText("RACAD AUTOMOTRIZ - MODIFICAR ORDEN DE TRABAJO");
 
         jLabel8.setText("Fecha Actual :");
 
@@ -1002,33 +1066,30 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addComponent(jLabel3)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(LBL_folio2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
                             .addComponent(jLabel8)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGap(18, 18, 18)
                             .addComponent(lblFecha2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(jLabel13)
                         .addComponent(jLabel4)
-                        .addComponent(jScrollPane5)
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addComponent(JT_ruttrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(JT_nombretrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(JT_paternotrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(JT_maternotrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(JT_cargo))
                         .addGroup(jPanel3Layout.createSequentialGroup()
                             .addComponent(jButton3)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton4))
-                        .addComponent(jScrollPane1))
-                    .addComponent(jLabel11))
-                .addContainerGap(271, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 530, Short.MAX_VALUE))
+                    .addComponent(jLabel11)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                            .addComponent(JT_ruttrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(JT_nombretrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(JT_paternotrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(JT_maternotrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(JT_cargo))
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 629, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(368, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1038,8 +1099,6 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblFecha2, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LBL_folio2, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
@@ -1050,12 +1109,11 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(JT_ruttrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(JT_nombretrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(JT_paternotrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(JT_maternotrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(JT_ruttrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_nombretrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_paternotrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JT_maternotrabajador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(JT_cargo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1090,9 +1148,7 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(JB_cancel)
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 816, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jTabbedPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1105,6 +1161,8 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        jTabbedPane1.getAccessibleContext().setAccessibleName("Seleccionar OT");
+
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
@@ -1113,8 +1171,11 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
 
         limpiaTablaServicioaux();
         limpiaTablaInsumoaux();
+        JTA_observaciones.setText("");
+        jcomboboxjtable();
         setFilasServicioaux();
         setFilasInsumoaux();
+        setObservaciones();
 
     }//GEN-LAST:event_tablaPresupuestoMouseClicked
 
@@ -1134,7 +1195,7 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
             long d = date.getTime();
             java.sql.Date fechaentrega = new java.sql.Date(d);
 
-            int folio = 0, total = 0, subtotal = 0, cont = 0;
+            int total = 0, subtotal = 0, cont = 0;
 
             String observaciones = JTA_observaciones.getText().toUpperCase().trim();
 
@@ -1152,20 +1213,8 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
 
             String estado = "OT";
 
-            try {
-                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
-                ResultSet rs = sentencia.executeQuery("SELECT MAX(folio) as folio FROM solicitud_servicio");
-                while (rs.next()) {
-                    folio = rs.getInt("folio");
-                }
-                folio++;
-            } catch (SQLException f) {
-                cont++;
-            }
-
             String sql = "UPDATE solicitud_servicio "
-                    + "SET folio = '" + folio + "',"
-                    + "observaciones ='" + observaciones + "',"
+                    + "SET observaciones ='" + observaciones + "',"
                     + "subtotal = '" + subtotal + "',"
                     + "total = '" + total + "',"
                     + "fecha_orden = '" + fechaorden + "',"
@@ -1175,42 +1224,92 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
                     + "WHERE cod_solicitud = '" + solicitud + "'";
 
             try {
-
                 sentencia.executeUpdate(sql);
-
             } catch (SQLException e) {
-
                 cont++;
-
             }
 
             for (int i = 0; i < columnaservicio; i++) {
-
                 try {
-
                     int servicio = Integer.parseInt(tablaServicioaux.getValueAt(i, 0).toString()), servicio2 = 0;
                     int precio = Integer.parseInt(tablaServicioaux.getValueAt(i, 2).toString());
+                    String fechapresupuesto = tablaPresupuesto.getValueAt(tablaPresupuesto.getSelectedRow(), 3).toString();
+                    String seguimiento = tablaServicioaux.getValueAt(i, 3).toString();
 
                     ResultSet rs = sentencia.executeQuery("SELECT id_servicio FROM detalle_solicitud "
                             + "WHERE cod_solicitud = " + solicitud + "");
 
                     while (rs.next()) {
                         servicio2 = rs.getInt("id_servicio");
+
                         if (servicio != servicio2) {
-                            String sql2 = "INSERT into detalle_solicitud(cod_solicitud, id_servicio, precio, fecha_orden, fecha_entrega, rut_trabajador) "
-                                    + "VALUES( " + solicitud + "," + servicio + "," + precio + ",'" + fechaorden + "','" + fechaentrega + "','" + rut + "')";
-                            sentencia.executeUpdate(sql2);
+
+                            String sql2 = "INSERT into detalle_solicitud(cod_solicitud, id_servicio, precio, fecha_presupuesto, fecha_orden, fecha_entrega,estado_seguimiento, rut_trabajador) "
+                                    + "VALUES( " + solicitud + "," + servicio + "," + precio + ",'" + fechapresupuesto + "','" + fechaorden + "','" + fechaentrega + "','" + seguimiento + "','" + rut + "')";
+
+                            try {
+                                sentencia.executeUpdate(sql2);
+                            } catch (Exception e) {
+                                //cont++;
+                            }
+
                         } else {
                             String sql3 = "UPDATE detalle_solicitud "
                                     + "SET fecha_orden = '" + fechaorden + "',"
                                     + "fecha_entrega ='" + fechaentrega + "',"
+                                    + "estado_seguimiento ='" + seguimiento + "',"
                                     + "rut_trabajador = '" + rut + "'"
                                     + "WHERE cod_solicitud = '" + solicitud + "'";
+                            try {
+                                sentencia.executeUpdate(sql3);
+                            } catch (Exception e) {
+                                //cont++;
+                            }
                         }
                     }
 
                 } catch (SQLException ex) {
-                    cont++;
+                }
+            }
+
+            for (int i = 0; i < columnainsumo; i++) {
+                try {
+                    int servicio = Integer.parseInt(tablaInsumoaux.getValueAt(i, 4).toString()), servicio2 = 0;
+                    int insumo = Integer.parseInt(tablaInsumoaux.getValueAt(i, 0).toString()), insumo2 = 0;
+                    int cantidad = Integer.parseInt(tablaInsumoaux.getValueAt(i, 3).toString()), cantidad2 = 0;
+
+                    ResultSet rs = sentencia.executeQuery("SELECT id_servicio,cod_item,cantidad FROM detalle_insumo "
+                            + "WHERE cod_solicitud = " + solicitud + "");
+
+                    while (rs.next()) {
+                        servicio2 = rs.getInt("id_servicio");
+                        insumo2 = rs.getInt("cod_item");
+                        cantidad2 = rs.getInt("cantidad");
+
+                        if (servicio == servicio2 && insumo == insumo2 && cantidad != cantidad2) {
+
+                            String sql4 = "UPDATE detalle_insumo "
+                                    + "SET cantidad = '" + cantidad + "' "
+                                    + "WHERE cod_solicitud = '" + solicitud + "' AND id_servicio = " + servicio + " AND cod_item = " + insumo + "";
+
+                            try {
+                                sentencia.executeUpdate(sql4);
+                            } catch (Exception e) {
+                                //cont++;
+                            }
+
+                        } else {
+                            String sql5 = "INSERT into detalle_insumo(cod_solicitud, id_servicio, cod_item, cantidad) "
+                                    + "VALUES( " + solicitud + "," + servicio + "," + insumo + "," + cantidad + ")";
+                            try {
+                                sentencia.executeUpdate(sql5);
+                            } catch (Exception e) {
+                                //cont++;
+                            }
+                        }
+                    }
+
+                } catch (SQLException ex) {
                 }
             }
 
@@ -1220,7 +1319,6 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
                         "ORDEN DE TRABAJO ingresado exitosamente", "INFO",
                         JOptionPane.INFORMATION_MESSAGE);
                 clean();
-                llenarLabels();
                 fechaActual();
                 setFilasPresupuesto();
 
@@ -1238,7 +1336,7 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
     }//GEN-LAST:event_tablaTrabajadorMouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Presupuestar_trabajo2 a = new Presupuestar_trabajo2();
+        Presupuestar_trabajo a = new Presupuestar_trabajo();
         a.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -1409,7 +1507,7 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
     private void JT_insumoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JT_insumoKeyTyped
         JT_insumo.addKeyListener(new KeyAdapter() {
             public void keyReleased(final KeyEvent e) {
-                filtroNombre();
+                filtroInsumo();
             }
         });
         trsfiltro = new TableRowSorter(modeloTablaInsumo);
@@ -1432,7 +1530,7 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
             int cod = Integer.parseInt(tablaServicio.getValueAt(tablaServicio.getSelectedRow(), 0).toString().trim());
             int cod2 = 0;
 
-            Object fila[] = new Object[3];
+            Object fila[] = new Object[4];
             fila[0] = tablaServicio.getValueAt(tablaServicio.getSelectedRow(), 0);
             fila[1] = tablaServicio.getValueAt(tablaServicio.getSelectedRow(), 1);
             fila[2] = tablaServicio.getValueAt(tablaServicio.getSelectedRow(), 2);
@@ -1459,16 +1557,78 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
 
     private void btnQuitarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitarServicioActionPerformed
         int cont = 0;
+
         if (tablaServicioaux.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null,
-                    "Error, Seleccione servicio!", "ERROR",
+                    "Seleccione servicio!", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        } else if (tablaServicioaux.getRowCount() <= 1) {
+            JOptionPane.showMessageDialog(null,
+                    "No puede eliminar todos los servicios", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        } else if (tablaPresupuesto.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(null,
+                    "Seleccione Presupuesto!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
         }
 
         if (cont == 0) {
-            int fila = tablaServicioaux.getSelectedRow();
-            modeloTablaServicioaux.removeRow(fila);
+
+            int filaservicio = tablaServicioaux.getSelectedRow(), sw = 0;
+            int columnainsumo = tablaInsumoaux.getRowCount();
+            int presupuesto = Integer.parseInt(tablaPresupuesto.getValueAt(tablaPresupuesto.getSelectedRow(), 0).toString());
+            int servicio = Integer.parseInt(tablaServicioaux.getValueAt(tablaServicioaux.getSelectedRow(), 0).toString()), servicio2 = 0;
+            String nom = tablaServicioaux.getValueAt(tablaServicioaux.getSelectedRow(), 1).toString();
+
+            try {
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+                ResultSet rs = sentencia.executeQuery("SELECT id_servicio FROM detalle_solicitud "
+                        + "WHERE cod_solicitud = " + presupuesto + "");
+                while (rs.next()) {
+                    servicio2 = rs.getInt("id_servicio");
+                    if (servicio == servicio2) {
+                        sw++;
+                    }
+                }
+            } catch (SQLException f) {
+
+            }
+
+            if (sw > 0) {
+
+                int i = JOptionPane.showConfirmDialog(this,
+                        "¿Realmente desea eliminar " + nom + " de la ORDEN DE TRABAJO?", "Confirmar Eliminación",
+                        JOptionPane.YES_NO_OPTION);
+                if (i == 0) {
+                    String sql = "DELETE FROM detalle_solicitud  WHERE cod_solicitud = " + presupuesto + " AND id_servicio = " + servicio + "";
+                    modeloTablaServicioaux.removeRow(filaservicio);
+                    try {
+                        sentencia.executeUpdate(sql);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Orden_trabajo.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    JOptionPane.showMessageDialog(null,
+                            "SERVICIO eliminado correctamente de la ORDEN DE TRABAJO", "INFO",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    for (int j = 0; j < columnainsumo; j++) {
+                        if (servicio == Integer.parseInt(tablaInsumoaux.getValueAt(j, 4).toString())) {
+                            String sql2 = "DELETE FROM detalle_insumo  WHERE cod_solicitud = " + presupuesto + " AND id_servicio = " + servicio + " AND cod_item = " + Integer.parseInt(tablaInsumoaux.getValueAt(j, 0).toString()) + "";
+                            modeloTablaInsumoaux.removeRow(j);
+                            try {
+                                sentencia.executeUpdate(sql2);
+                            } catch (SQLException ex) {
+                                Logger.getLogger(Orden_trabajo.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    }
+                }
+
+            } else {
+                modeloTablaServicioaux.removeRow(filaservicio);
+            }
         }
     }//GEN-LAST:event_btnQuitarServicioActionPerformed
 
@@ -1529,11 +1689,43 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
                     "Error, Seleccione INSUMO!", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             cont++;
+        }else if (tablaPresupuesto.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(null,
+                    "Seleccione ORDEN DE TRABAJO!", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
         }
 
         if (cont == 0) {
-            int fila = tablaInsumoaux.getSelectedRow();
-            modeloTablaInsumoaux.removeRow(fila);
+            String nom = tablaInsumoaux.getValueAt(tablaInsumoaux.getSelectedRow(), 1).toString();
+            int i = JOptionPane.showConfirmDialog(this,
+                    "¿Realmente desea eliminar " + nom + " de la ORDEN DE TRABAJO?", "Confirmar Eliminación",
+                    JOptionPane.YES_NO_OPTION);
+
+            int filainsumo = tablaInsumoaux.getSelectedRow();
+            int presupuesto = Integer.parseInt(tablaPresupuesto.getValueAt(tablaPresupuesto.getSelectedRow(), 0).toString());
+            int servicio = Integer.parseInt(tablaInsumoaux.getValueAt(tablaInsumoaux.getSelectedRow(), 4).toString()), servicio2 = 0;
+            int insumo = Integer.parseInt(tablaInsumoaux.getValueAt(tablaInsumoaux.getSelectedRow(), 0).toString()), insumo2 = 0;
+
+            try {
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+                ResultSet rs = sentencia.executeQuery("SELECT id_servicio, cod_item FROM detalle_insumo "
+                        + "WHERE cod_solicitud = " + presupuesto + "");
+                while (rs.next()) {
+                    servicio2 = rs.getInt("id_servicio");
+                    insumo2 = rs.getInt("cod_item");
+                    if (servicio == servicio2 && insumo == insumo2 && i == 0) {
+                        String sql = "DELETE FROM detalle_insumo  WHERE cod_solicitud = " + presupuesto + " AND id_servicio = " + servicio + " AND cod_item = " + insumo + "";
+                        modeloTablaInsumoaux.removeRow(filainsumo);
+                        sentencia.executeUpdate(sql);
+                        JOptionPane.showMessageDialog(null,
+                                "SERVICIO eliminado correctamente de la ORDEN DE TRABAJO", "INFO",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            } catch (SQLException f) {
+
+            }
         }
     }//GEN-LAST:event_btnQuitarInsumoActionPerformed
 
@@ -1669,6 +1861,74 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
         a.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void btnAddCantActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCantActionPerformed
+        int cont = 0, actual = 0, critico = 0;
+
+        if (tablaInsumoaux.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(null,
+                    "Error, Seleccione insumo!", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        }
+
+        if (cont == 0) {
+            int insumo = Integer.parseInt(tablaInsumoaux.getValueAt(tablaInsumoaux.getSelectedRow(), 0).toString());
+
+            try {
+                sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+                ResultSet rs = sentencia.executeQuery("SELECT stock_actual,stock_critico FROM inventario WHERE cod_item = " + insumo + "");
+                while (rs.next()) {
+                    actual = rs.getInt("stock_actual");
+                    critico = rs.getInt("stock_critico");
+                }
+            } catch (SQLException f) {
+                JOptionPane.showMessageDialog(null,
+                        "Problemas con la base de datos, no se pudo obtener informacion", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
+            int base = Integer.parseInt(tablaInsumoaux.getValueAt(tablaInsumoaux.getSelectedRow(), 3).toString().trim());
+            int valor = base + 1;
+
+            if (valor == critico) {
+                JOptionPane.showMessageDialog(null,
+                        "Insumo en stock critico", "INFO",
+                        JOptionPane.INFORMATION_MESSAGE);
+                tablaInsumoaux.setValueAt(valor, tablaInsumoaux.getSelectedRow(), 3);
+            } else if (valor > actual) {
+                JOptionPane.showMessageDialog(null,
+                        "Insumo no hay suficiente insumo", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                tablaInsumoaux.setValueAt(valor, tablaInsumoaux.getSelectedRow(), 3);
+            }
+
+        }
+    }//GEN-LAST:event_btnAddCantActionPerformed
+
+    private void btnRemoveCantActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveCantActionPerformed
+        int cont = 0;
+        if (tablaInsumoaux.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(null,
+                    "Error, Seleccione insumo!", "ERROR",
+                    JOptionPane.ERROR_MESSAGE);
+            cont++;
+        }
+        if (cont == 0) {
+
+            int base = Integer.parseInt(tablaInsumoaux.getValueAt(tablaInsumoaux.getSelectedRow(), 3).toString().trim());
+            int valor = base - 1;
+            if (valor < 1) {
+                JOptionPane.showMessageDialog(null,
+                        "Error, No se puede seguir disminuyendo insumo!", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                cont++;
+            } else {
+                tablaInsumoaux.setValueAt(valor, tablaInsumoaux.getSelectedRow(), 3);
+            }
+        }
+    }//GEN-LAST:event_btnRemoveCantActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1686,21 +1946,23 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Orden_trabajo2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Modificar_OT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Orden_trabajo2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Modificar_OT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Orden_trabajo2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Modificar_OT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Orden_trabajo2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Modificar_OT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Orden_trabajo2().setVisible(true);
+                new Modificar_OT().setVisible(true);
             }
         });
     }
@@ -1709,59 +1971,34 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
     private javax.swing.JButton JB_cancel;
     private com.toedter.calendar.JDateChooser JDC_fechaEntrega;
     private javax.swing.JTextArea JTA_observaciones;
-    private javax.swing.JTextField JT_año;
     private javax.swing.JTextField JT_cargo;
     private javax.swing.JTextField JT_codigo;
-    private javax.swing.JTextField JT_color;
     private javax.swing.JTextField JT_componente;
     private javax.swing.JTextField JT_insumo;
-    private javax.swing.JTextField JT_kms;
-    private javax.swing.JTextField JT_marca;
-    private javax.swing.JTextField JT_materno;
     private javax.swing.JTextField JT_maternotrabajador;
-    private javax.swing.JTextField JT_modelo;
-    private javax.swing.JTextField JT_nombre;
     private javax.swing.JTextField JT_nombretrabajador;
     private javax.swing.JTextField JT_patente;
-    private javax.swing.JTextField JT_patente1;
-    private javax.swing.JTextField JT_paterno;
     private javax.swing.JTextField JT_paternotrabajador;
-    private javax.swing.JTextField JT_rut;
     private javax.swing.JTextField JT_ruttrabajador;
     private javax.swing.JTextField JT_subtotal;
     private javax.swing.JTextField JT_total;
     private javax.swing.JTextField JT_trabajador;
-    private javax.swing.JTextField JT_vin;
-    private javax.swing.JLabel LBL_folio;
-    private javax.swing.JLabel LBL_folio1;
-    private javax.swing.JLabel LBL_folio2;
-    private javax.swing.JLabel LBL_solicitud;
+    private javax.swing.JButton btnAddCant;
     private javax.swing.JButton btnAddInsumo;
     private javax.swing.JButton btnAddServicio;
     private javax.swing.JButton btnQuitarInsumo;
     private javax.swing.JButton btnQuitarServicio;
+    private javax.swing.JButton btnRemoveCant;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -1771,29 +2008,22 @@ public class Orden_trabajo2 extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
-    private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JLabel lblFecha;
     private javax.swing.JLabel lblFecha1;
     private javax.swing.JLabel lblFecha2;
-    private javax.swing.JLabel lblFecha3;
-    private javax.swing.JTable tablaClientes;
     private javax.swing.JTable tablaInsumoaux;
     private javax.swing.JTable tablaInsumos;
     private javax.swing.JTable tablaPresupuesto;
     private javax.swing.JTable tablaServicio;
     private javax.swing.JTable tablaServicioaux;
     private javax.swing.JTable tablaTrabajador;
-    private javax.swing.JTable tablaVehiculo;
     // End of variables declaration//GEN-END:variables
 }
