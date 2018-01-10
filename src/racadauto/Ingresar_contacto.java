@@ -15,10 +15,13 @@ public class Ingresar_contacto extends javax.swing.JFrame {
     Connection cn = (Connection) con.getConnection();
     private String msj;
     DefaultTableModel modeloTabla;
+    DefaultTableModel modeloTabla2;
 
     public Ingresar_contacto() {
         modeloTabla = new DefaultTableModel(null, getColumnas());
+        modeloTabla2 = new DefaultTableModel(null, getColumnas2());
         setFilas();
+        setFilas2();
         initComponents();
     }
 
@@ -49,11 +52,43 @@ public class Ingresar_contacto extends javax.swing.JFrame {
         }
     }
     
+    private String[] getColumnas2() {
+
+        String columna[] = new String[]{"RUT", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO","DIRECCION","CIUDAD"};
+
+        return columna;
+    }
+    
+    private void setFilas2() {
+        try {
+            sentencia = (com.mysql.jdbc.Statement) cn.createStatement();
+            ResultSet lista = sentencia.executeQuery("SELECT i.rut_cliente,i.nombre,i.ape_paterno,i.ape_materno,i.direccion,c.nombre "
+                    + "                                 FROM cliente i,ciudad c "
+                    + "                                 WHERE i.cod_ciudad = c.cod_ciudad");
+            Object datos[] = new Object[7];
+            while (lista.next()) {
+                for (int i = 0; i < 6; i++) {
+                    datos[i] = lista.getObject(i + 1);
+                }
+                modeloTabla2.addRow(datos);
+            }
+        } catch (SQLException e) {
+            msj = "No se pudo llenar tabla";
+        }
+    }
+    
     void limpiaTabla() {
         do {
             modeloTabla.getRowCount();
             modeloTabla.removeRow(0);
         } while (modeloTabla.getRowCount() != 0);
+    }
+    
+    void limpiaTabla2() {
+        do {
+            modeloTabla2.getRowCount();
+            modeloTabla2.removeRow(0);
+        } while (modeloTabla2.getRowCount() != 0);
     }
 
     public int verificar() {
@@ -79,7 +114,7 @@ public class Ingresar_contacto extends javax.swing.JFrame {
             msj = "Error con su Solicitud";
         }
         
-        if(jTable1.getSelectedRow() == -1){ 
+        if(jTable2.getSelectedRow() == -1){ 
            JOptionPane.showMessageDialog(null, 
                    "ERROR, No se ha seleccionado ningún cliente","ERROR",
                    JOptionPane.ERROR_MESSAGE);
@@ -145,6 +180,11 @@ public class Ingresar_contacto extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
         JB_cancel = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
+        jl_rut = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
 
         jLabel10.setText("Contacto (Correo o Numero) :");
 
@@ -193,37 +233,57 @@ public class Ingresar_contacto extends javax.swing.JFrame {
             }
         });
 
+        jTable2.setModel(modeloTabla2);
+        jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable2MouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(jTable2);
+
+        jLabel2.setText("R.U.T. Cliente :");
+
+        jLabel5.setText("Seleccione Cliente :");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel9))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 511, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane2)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(CMB_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(RB_principal))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel11)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(JT_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(32, 32, 32)
-                        .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel9))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 511, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(jLabel11)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(JT_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jl_rut, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(jLabel8)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(CMB_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(41, 41, 41)
+                                        .addComponent(RB_principal)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(JB_OK, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(18, 18, 18)))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(10, 10, 10)
+                            .addComponent(jLabel5))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -235,18 +295,24 @@ public class Ingresar_contacto extends javax.swing.JFrame {
                     .addComponent(jLabel9))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
                     .addComponent(JT_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(JB_OK)
-                    .addComponent(JB_cancel))
+                    .addComponent(jLabel2)
+                    .addComponent(jl_rut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(CMB_contacto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(RB_principal))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(RB_principal)
+                    .addComponent(JB_OK)
+                    .addComponent(JB_cancel))
+                .addContainerGap())
         );
 
         pack();
@@ -254,7 +320,7 @@ public class Ingresar_contacto extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void CMB_contactoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CMB_contactoActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_CMB_contactoActionPerformed
 
     private void JB_OKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_OKActionPerformed
@@ -262,7 +328,7 @@ public class Ingresar_contacto extends javax.swing.JFrame {
         if (verificar() == 0) {
 
             String rut = "", tipo = "";
-            rut = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
+            rut = jTable2.getValueAt(jTable2.getSelectedRow(), 0).toString();
             int dis, num = 0, ppal = 0;
             String contacto = JT_contacto.getText().trim();
             tipo = (String) CMB_contacto.getSelectedItem().toString().toUpperCase().trim();
@@ -307,7 +373,9 @@ public class Ingresar_contacto extends javax.swing.JFrame {
         }
         
         limpiaTabla();
+        limpiaTabla2();
         setFilas();
+        setFilas2();
 
     }//GEN-LAST:event_JB_OKActionPerformed
 
@@ -315,9 +383,11 @@ public class Ingresar_contacto extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_JB_cancelActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+    private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
+        String rut = jTable2.getValueAt(jTable2.getSelectedRow(), 0).toString();
+        jl_rut.setText(rut);
+    }//GEN-LAST:event_jTable2MouseClicked
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -360,11 +430,16 @@ public class Ingresar_contacto extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     private javax.swing.JTextField jTextField7;
+    private javax.swing.JLabel jl_rut;
     // End of variables declaration//GEN-END:variables
 }

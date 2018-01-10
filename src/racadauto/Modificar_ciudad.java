@@ -351,6 +351,7 @@ public class Modificar_ciudad extends javax.swing.JFrame {
         }
         
         JT_nom.setText("");
+        jTable1.setRowSorter(null);
         limpiaTabla();
         setFilas();
     }//GEN-LAST:event_JB_OKActionPerformed
@@ -390,7 +391,7 @@ public class Modificar_ciudad extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable1.setRowSorter(trsfiltro);
-    
+        JT_nom.setText("");
     }//GEN-LAST:event_JT_nombreKeyTyped
 
     private void BTN_DelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_DelActionPerformed
@@ -428,6 +429,7 @@ public class Modificar_ciudad extends javax.swing.JFrame {
         }
 
         JT_nom.setText("");
+        jTable1.setRowSorter(null);
         limpiaTabla();
         setFilas();
 

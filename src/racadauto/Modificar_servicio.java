@@ -530,6 +530,7 @@ public class Modificar_servicio extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
         }
 
+        jTable1.setRowSorter(null);
         limpiaTabla();
         setFilas();
     }//GEN-LAST:event_JB_OKActionPerformed
@@ -596,6 +597,7 @@ public class Modificar_servicio extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable1.setRowSorter(trsfiltro);
+        clean();
     }//GEN-LAST:event_JT_categoriaKeyTyped
 
     private void JT_componenteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_componenteFocusLost
@@ -618,6 +620,7 @@ public class Modificar_servicio extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable1.setRowSorter(trsfiltro);
+        clean();
     }//GEN-LAST:event_JT_componenteKeyTyped
 
     private void JT_precioFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_precioFocusLost
@@ -640,6 +643,7 @@ public class Modificar_servicio extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable1.setRowSorter(trsfiltro);
+        clean();
     }//GEN-LAST:event_JT_precioKeyTyped
 
     private void BTN_DelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_DelActionPerformed
@@ -683,6 +687,7 @@ public class Modificar_servicio extends javax.swing.JFrame {
         }
 
         clean();
+        jTable1.setRowSorter(null);
         limpiaTabla();
         setFilas();
 

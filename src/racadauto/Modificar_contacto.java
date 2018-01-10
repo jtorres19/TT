@@ -302,6 +302,21 @@ public class Modificar_contacto extends javax.swing.JFrame {
         txtbuscarxnom.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
         txtbuscarxnom.setForeground(new java.awt.Color(153, 153, 153));
         txtbuscarxnom.setText("Buscar por nombre");
+        txtbuscarxnom.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtbuscarxnomFocusLost(evt);
+            }
+        });
+        txtbuscarxnom.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtbuscarxnomMouseClicked(evt);
+            }
+        });
+        txtbuscarxnom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtbuscarxnomActionPerformed(evt);
+            }
+        });
         txtbuscarxnom.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtbuscarxnomKeyTyped(evt);
@@ -429,6 +444,7 @@ public class Modificar_contacto extends javax.swing.JFrame {
 
         }
 
+        jTable1.setRowSorter(null);
         limpiaTabla();
         setFilas();
     }//GEN-LAST:event_JB_OKActionPerformed
@@ -477,6 +493,7 @@ public class Modificar_contacto extends javax.swing.JFrame {
         }
 
         JT_contacto.setText("");
+        jTable1.setRowSorter(null);
         limpiaTabla();
         setFilas();
     }//GEN-LAST:event_BTN_DelActionPerformed
@@ -489,7 +506,24 @@ public class Modificar_contacto extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable1.setRowSorter(trsfiltro);
+        JT_contacto.setText("");
     }//GEN-LAST:event_txtbuscarxnomKeyTyped
+
+    private void txtbuscarxnomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtbuscarxnomActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtbuscarxnomActionPerformed
+
+    private void txtbuscarxnomMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtbuscarxnomMouseClicked
+        txtbuscarxnom.setText("");
+        txtbuscarxnom.setFont(new java.awt.Font("Tahoma",0,11));
+        txtbuscarxnom.setForeground(new java.awt.Color(0,0,0));
+    }//GEN-LAST:event_txtbuscarxnomMouseClicked
+
+    private void txtbuscarxnomFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtbuscarxnomFocusLost
+        txtbuscarxnom.setFont(new java.awt.Font("Tahoma",2,11));
+        txtbuscarxnom.setForeground(new java.awt.Color(153,153,153));
+        txtbuscarxnom.setText("Buscar por nombre");
+    }//GEN-LAST:event_txtbuscarxnomFocusLost
 
     /**
      * @param args the command line arguments

@@ -710,6 +710,7 @@ public class Modificar_cliente extends javax.swing.JFrame {
         }
 
         clean();
+        jTable1.setRowSorter(null);
         limpiaTabla();
         setFilas();        
     }//GEN-LAST:event_JB_OKActionPerformed
@@ -777,7 +778,8 @@ public class Modificar_cliente extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable1.setRowSorter(trsfiltro);
-
+        clean();
+        
     }//GEN-LAST:event_JT_bnombreKeyTyped
 
     private void JT_ciudadFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_ciudadFocusLost
@@ -800,6 +802,7 @@ public class Modificar_cliente extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable1.setRowSorter(trsfiltro);
+        clean();
     }//GEN-LAST:event_JT_ciudadKeyTyped
 
     private void BTN_DelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_DelActionPerformed
@@ -846,6 +849,7 @@ public class Modificar_cliente extends javax.swing.JFrame {
         }
 
         clean();
+        jTable1.setRowSorter(null);
         limpiaTabla();
         setFilas();
     }//GEN-LAST:event_BTN_DelActionPerformed
@@ -870,7 +874,7 @@ public class Modificar_cliente extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable1.setRowSorter(trsfiltro);
-
+        clean();
     }//GEN-LAST:event_JT_paterno1KeyTyped
 
     private void JT_materno1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_materno1FocusLost
@@ -893,6 +897,7 @@ public class Modificar_cliente extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable1.setRowSorter(trsfiltro);
+        clean();
     }//GEN-LAST:event_JT_materno1KeyTyped
 
     private void JT_rutFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_rutFocusLost
@@ -915,6 +920,7 @@ public class Modificar_cliente extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable1.setRowSorter(trsfiltro);
+        clean();
     }//GEN-LAST:event_JT_rutKeyTyped
 
     /**

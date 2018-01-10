@@ -3,13 +3,16 @@ package racadauto;
 import com.mysql.jdbc.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.naming.spi.DirStateFactory.Result;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 public class Cambiar_repuestos extends javax.swing.JFrame {
 
@@ -20,6 +23,9 @@ public class Cambiar_repuestos extends javax.swing.JFrame {
     private String password = "";
     private String msj;
     DefaultTableModel modeloTabla;
+    String filtro;
+    private TableRowSorter trsfiltro;
+
 
     public Cambiar_repuestos() {
         conectar();
@@ -76,6 +82,13 @@ public class Cambiar_repuestos extends javax.swing.JFrame {
         }
         return v;
     }
+    
+    public void filtro() {
+        filtro = txtbuscarxnom.getText().toUpperCase();
+        int columna = 0;
+        trsfiltro.setRowFilter(RowFilter.regexFilter(txtbuscarxnom.getText().toUpperCase(), columna));
+    }
+
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -89,6 +102,7 @@ public class Cambiar_repuestos extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         JB_cancel = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
+        txtbuscarxnom = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -104,6 +118,7 @@ public class Cambiar_repuestos extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTable1);
 
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton1.setText("Borrar Propiedades");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -125,53 +140,73 @@ public class Cambiar_repuestos extends javax.swing.JFrame {
         jLabel3.setText("jLabel3");
         jLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        txtbuscarxnom.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        txtbuscarxnom.setForeground(new java.awt.Color(153, 153, 153));
+        txtbuscarxnom.setText("Buscar por nombre");
+        txtbuscarxnom.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtbuscarxnomFocusLost(evt);
+            }
+        });
+        txtbuscarxnom.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtbuscarxnomMouseClicked(evt);
+            }
+        });
+        txtbuscarxnom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtbuscarxnomActionPerformed(evt);
+            }
+        });
+        txtbuscarxnom.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtbuscarxnomKeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(LBL_estado1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addGap(54, 54, 54)
-                        .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(13, 13, 13))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 479, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel9)
-                        .addGap(104, 104, 104)))
-                .addContainerGap(21, Short.MAX_VALUE))
+                        .addGap(37, 37, 37)
+                        .addComponent(jLabel9))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addGap(13, 13, 13)
+                            .addComponent(txtbuscarxnom, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jLabel1)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(LBL_estado1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(JB_cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(39, 39, 39)
-                        .addComponent(jLabel9))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel3)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel9))
+                .addGap(11, 11, 11)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtbuscarxnom, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton1)
-                        .addComponent(JB_cancel))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jLabel1)
-                        .addComponent(LBL_estado1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(JB_cancel)
+                        .addComponent(jButton1))
+                    .addComponent(LBL_estado1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -181,7 +216,7 @@ public class Cambiar_repuestos extends javax.swing.JFrame {
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         String nom = jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString();
-        LBL_estado1.setText("Item : " + nom +"");
+        LBL_estado1.setText("" + nom + "");
 
     }//GEN-LAST:event_jTable1MouseClicked
 
@@ -219,8 +254,9 @@ public class Cambiar_repuestos extends javax.swing.JFrame {
                         JOptionPane.ERROR_MESSAGE);
 
                 }
-                limpiaTabla();
                 LBL_estado1.setText("");
+                jTable1.setRowSorter(null);
+                limpiaTabla();
                 setFilas();
             }else{
                 JOptionPane.showMessageDialog(null,
@@ -233,6 +269,33 @@ public class Cambiar_repuestos extends javax.swing.JFrame {
     private void JB_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JB_cancelActionPerformed
         this.dispose();
     }//GEN-LAST:event_JB_cancelActionPerformed
+
+    private void txtbuscarxnomFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtbuscarxnomFocusLost
+        txtbuscarxnom.setFont(new java.awt.Font("Tahoma",2,11));
+        txtbuscarxnom.setForeground(new java.awt.Color(153,153,153));
+        txtbuscarxnom.setText("Buscar por nombre");
+    }//GEN-LAST:event_txtbuscarxnomFocusLost
+
+    private void txtbuscarxnomMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtbuscarxnomMouseClicked
+        txtbuscarxnom.setText("");
+        txtbuscarxnom.setFont(new java.awt.Font("Tahoma",0,11));
+        txtbuscarxnom.setForeground(new java.awt.Color(0,0,0));
+    }//GEN-LAST:event_txtbuscarxnomMouseClicked
+
+    private void txtbuscarxnomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtbuscarxnomActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtbuscarxnomActionPerformed
+
+    private void txtbuscarxnomKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtbuscarxnomKeyTyped
+        txtbuscarxnom.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(final KeyEvent e) {
+                filtro();
+            }
+        });
+        trsfiltro = new TableRowSorter(modeloTabla);
+        jTable1.setRowSorter(trsfiltro);
+        LBL_estado1.setText("");
+    }//GEN-LAST:event_txtbuscarxnomKeyTyped
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -276,5 +339,6 @@ public class Cambiar_repuestos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextField txtbuscarxnom;
     // End of variables declaration//GEN-END:variables
 }

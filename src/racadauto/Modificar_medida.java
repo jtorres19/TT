@@ -369,6 +369,7 @@ public class Modificar_medida extends javax.swing.JFrame {
         }
 
         JT_nom.setText("");
+        jTable1.setRowSorter(null);
         limpiaTabla();
         setFilas();
     }//GEN-LAST:event_JB_OKActionPerformed
@@ -438,6 +439,7 @@ public class Modificar_medida extends javax.swing.JFrame {
         }
 
         JT_nom.setText("");
+        jTable1.setRowSorter(null);
         limpiaTabla();
         setFilas();
 
@@ -467,6 +469,7 @@ public class Modificar_medida extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable1.setRowSorter(trsfiltro);
+        JT_nom.setText("");
     }//GEN-LAST:event_JT_nombreKeyTyped
 
     /**

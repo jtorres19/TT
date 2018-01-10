@@ -316,6 +316,20 @@ public class Modificar_item2 extends javax.swing.JFrame {
         }
         return yes;
     }
+    
+    /*
+    public int verificar3(){
+        int ok = 0;
+        if((jTable1.getValueAt(jTable1.getSelectedRow(), 3).toString())==""){
+        }else{
+            JOptionPane.showMessageDialog(null,
+                "Seleccione Algo!", "Error",
+                JOptionPane.ERROR_MESSAGE);
+            ok = 1;
+        }
+        
+        return ok;
+    }*/
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -800,6 +814,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
         }
 
+        jTable1.setRowSorter(null);
         limpiaTabla();
         setFilas();
     }//GEN-LAST:event_JB_OKActionPerformed
@@ -889,6 +904,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable1.setRowSorter(trsfiltro);
+        clean();
     }//GEN-LAST:event_JT_bvcostoKeyTyped
 
     private void JT_bvventaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_bvventaFocusLost
@@ -915,6 +931,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable1.setRowSorter(trsfiltro);
+        clean();
     }//GEN-LAST:event_JT_bvventaKeyTyped
 
     private void JT_nombreFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_nombreFocusLost
@@ -941,6 +958,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable1.setRowSorter(trsfiltro);
+        clean();
     }//GEN-LAST:event_JT_nombreKeyTyped
 
     private void JT_actualFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_actualFocusLost
@@ -963,6 +981,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable1.setRowSorter(trsfiltro);
+        clean();
     }//GEN-LAST:event_JT_actualKeyTyped
 
     private void JT_vcostoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_vcostoFocusLost
@@ -993,6 +1012,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable1.setRowSorter(trsfiltro);
+        clean();
     }//GEN-LAST:event_JT_familiaKeyTyped
 
     private void BTN_DelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_DelActionPerformed
@@ -1044,6 +1064,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
             }
         }
 
+        jTable1.setRowSorter(null);
         clean();
         limpiaTabla();
         setFilas();
@@ -1077,6 +1098,7 @@ public class Modificar_item2 extends javax.swing.JFrame {
         if(modeloTabla.getRowCount() == 0){
             setFilas();
         }
+        clean();
     }//GEN-LAST:event_jButton2ActionPerformed
 
    

@@ -687,6 +687,7 @@ public class Modificar_modelo extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
         }
 
+        jTable2.setRowSorter(null);
         limpiaTabla();
         setFilas();
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -747,6 +748,7 @@ public class Modificar_modelo extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable2.setRowSorter(trsfiltro);
+        txt_nom.setText("");
     }//GEN-LAST:event_JT_motorKeyTyped
 
     private void JT_nombreFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_nombreFocusLost
@@ -773,6 +775,7 @@ public class Modificar_modelo extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable2.setRowSorter(trsfiltro);
+        txt_nom.setText("");
     }//GEN-LAST:event_JT_nombreKeyTyped
 
     private void JT_marcaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_marcaFocusLost
@@ -795,6 +798,7 @@ public class Modificar_modelo extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable2.setRowSorter(trsfiltro);
+        txt_nom.setText("");
     }//GEN-LAST:event_JT_marcaKeyTyped
 
     private void JT_tipoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_tipoFocusLost
@@ -817,7 +821,7 @@ public class Modificar_modelo extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable2.setRowSorter(trsfiltro);
-
+        txt_nom.setText("");
     }//GEN-LAST:event_JT_tipoKeyTyped
 
     private void JT_combustibleFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_JT_combustibleFocusLost
@@ -840,6 +844,7 @@ public class Modificar_modelo extends javax.swing.JFrame {
         });
         trsfiltro = new TableRowSorter(modeloTabla);
         jTable2.setRowSorter(trsfiltro);
+        txt_nom.setText("");
     }//GEN-LAST:event_JT_combustibleKeyTyped
 
     private void BTN_DelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTN_DelActionPerformed
@@ -883,6 +888,7 @@ public class Modificar_modelo extends javax.swing.JFrame {
         }
 
         txt_nom.setText("");
+        jTable2.setRowSorter(null);
         limpiaTabla();
         setFilas();
     }//GEN-LAST:event_BTN_DelActionPerformed
